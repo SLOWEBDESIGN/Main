@@ -14,7 +14,7 @@ const cormorant = Cormorant_Garamond({
   weight: ["500", "600", "700"],
 });
 
-const siteUrl = "https://slowwebdesign.com";
+const siteUrl = "https://slowebdesign.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

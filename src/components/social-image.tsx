@@ -72,7 +72,7 @@ export function createSocialImage() {
             }}
           >
             <span>SLO Web Design</span>
-            <span style={{ color: "#66736e" }}>slowwebdesign.com</span>
+            <span style={{ color: "#66736e" }}>slowebdesign.com</span>
           </div>
         </div>
       </div>

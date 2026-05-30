@@ -30,7 +30,7 @@ const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": ["LocalBusiness", "ProfessionalService"],
   name: "SLO Web Design",
-  url: "https://slowwebdesign.com",
+  url: "https://slowebdesign.com",
   email: "contact@slowebdesign.com",
   telephone: "+1-530-215-5987",
   description:

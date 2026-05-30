@@ -1,6 +1,6 @@
 # SLO Web Design
 
-Premium single-page agency website for [slowwebdesign.com](https://slowwebdesign.com).
+Premium single-page agency website for [slowebdesign.com](https://slowebdesign.com).
 The site is built with Next.js, TypeScript, Tailwind CSS, Framer Motion, Lucide
 icons, Netlify Forms, Stripe Checkout Links, and Calendly. It exports to static
 files for fast, low-maintenance Netlify hosting without a database or custom
@@ -86,7 +86,7 @@ deployed static build.
 3. Confirm the publish directory is `out`.
 4. Add `NEXT_PUBLIC_GA_MEASUREMENT_ID` in the Netlify environment variables.
 5. Deploy the site.
-6. Point `slowwebdesign.com` to Netlify using the DNS instructions shown in the
+6. Point `slowebdesign.com` to Netlify using the DNS instructions shown in the
    Netlify domain setup screen.
 
 `netlify.toml` already includes the build settings, Node version, static asset
@@ -182,7 +182,7 @@ The site includes:
 Before launch:
 
 1. Add the deployed site to Google Search Console.
-2. Submit `https://slowwebdesign.com/sitemap.xml`.
+2. Submit `https://slowebdesign.com/sitemap.xml`.
 3. Validate the homepage with Google's Rich Results Test.
 4. Confirm the social preview after DNS propagation.
 5. Replace placeholder testimonials and comparison assets with approved client
