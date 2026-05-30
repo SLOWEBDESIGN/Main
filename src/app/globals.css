@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f4ed;
+  --foreground: #17392f;
+  --forest: #17392f;
+  --forest-light: #255447;
+  --cream: #f7f4ed;
+  --paper: #fffcf7;
+  --sand: #eae4d8;
+  --charcoal: #26332f;
+  --muted: #66736e;
+  --navy: #263f4e;
+  --line: rgba(23, 57, 47, 0.14);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-forest: var(--forest);
+  --color-forest-light: var(--forest-light);
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-sand: var(--sand);
+  --color-charcoal: var(--charcoal);
+  --color-muted: var(--muted);
+  --color-navy: var(--navy);
+  --color-line: var(--line);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-cormorant);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(37, 84, 71, 0.22);
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  outline-offset: 4px;
+}
+
+.section-shell {
+  margin-inline: auto;
+  width: min(100% - 2rem, 1200px);
+}
+
+.eyebrow {
+  color: var(--forest-light);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.display-title {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+}
+
+.logo-script {
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.subtle-grid {
+  background-image:
+    linear-gradient(rgba(23, 57, 47, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 57, 47, 0.045) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+
+.field {
+  width: 100%;
+  border: 1px solid rgba(23, 57, 47, 0.16);
+  border-radius: 0.75rem;
+  background: rgba(255, 252, 247, 0.84);
+  padding: 0.85rem 0.95rem;
+  color: var(--charcoal);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.field:focus {
+  border-color: var(--forest-light);
+  background: #fffdf9;
+  box-shadow: 0 0 0 4px rgba(37, 84, 71, 0.1);
+  outline: none;
+}
+
+.field::placeholder {
+  color: #8a9692;
+}
+
+@media (min-width: 768px) {
+  .section-shell {
+    width: min(100% - 4rem, 1200px);
+  }
+}
