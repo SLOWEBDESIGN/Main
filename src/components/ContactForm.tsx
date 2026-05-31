@@ -35,18 +35,21 @@ export const ContactForm: React.FC = () => {
     setSubmitStatus('loading');
 
     try {
-      // Netlify Forms automatically intercepts form submissions on the site
-      // POST to current URL with form-name and bot-field fields
-      // The plugin handles the interception - no fetch needed
+      // Next.js Runtime v5 (@netlify/plugin-nextjs v5) detects the form from the
+      // static public/__forms.html file at build time. Submissions must be POSTed
+      // to that file as url-encoded data. See:
+      // https://docs.netlify.com/frameworks/next-js/runtime-v5/forms/migration/
       const form = e.currentTarget;
-      const formDataObj = new FormData(form);
+      const body = new URLSearchParams(
+        new FormData(form) as unknown as Record<string, string>
+      ).toString();
 
-      const response = await fetch('/', {
+      const response = await fetch('/__forms.html', {
         method: 'POST',
-        body: formDataObj,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
       });
 
-      // Netlify Forms handles submission and redirects or responds
       if (response.ok) {
         setSubmitStatus('success');
         setFormData({
