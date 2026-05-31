@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { Header } from '@/src/components/Header';
 import { Hero } from '@/src/components/Hero';
 import { Services } from '@/src/components/Services';
-import { ImageComparison } from '@/src/components/ImageComparison';
+import { WebsiteComparison } from '@/src/components/WebsiteComparison';
 import { Pricing } from '@/src/components/Pricing';
 import { MaintenancePlans } from '@/src/components/MaintenancePlans';
 import { Process } from '@/src/components/Process';
@@ -90,7 +90,7 @@ export default function Home() {
         <Header />
         <Hero />
         <Services />
-        <ImageComparison />
+        <WebsiteComparison />
         <Pricing />
         <MaintenancePlans />
         <Process />

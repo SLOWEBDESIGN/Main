@@ -1,7 +1,6 @@
 [build]
   command = "npm run build"
   publish = ".next"
-  functions = "netlify/functions"
 
 [build.environment]
   NEXT_PUBLIC_GA_ID = "G-3SD2928MVG"

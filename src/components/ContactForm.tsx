@@ -35,7 +35,9 @@ export const ContactForm: React.FC = () => {
     setSubmitStatus('loading');
 
     try {
-      const response = await fetch('/.netlify/functions/submit-contact', {
+      // Submit form data to Netlify Forms endpoint
+      // Netlify will intercept this and handle form submission natively
+      const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -44,7 +46,8 @@ export const ContactForm: React.FC = () => {
         }).toString(),
       });
 
-      if (response.ok) {
+      // Netlify Forms returns a redirect on success, or 200 status
+      if (response.ok || response.type === 'opaqueredirect') {
         setSubmitStatus('success');
         setFormData({
           name: '',

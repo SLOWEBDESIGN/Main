@@ -1,0 +1,44 @@
+<svg width="1200" height="750" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .old-bg { fill: #d0d0d0; }
+      .old-header { fill: #333333; }
+      .old-text { font-family: Arial, sans-serif; fill: #333; }
+      .old-warning { fill: #cc3333; }
+      .old-nav { fill: #0066ff; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="750" class="old-bg"/>
+
+  <!-- Header (dated) -->
+  <rect width="1200" height="80" class="old-header"/>
+  <text x="30" y="50" font-size="32" class="old-text" font-weight="bold" fill="#ffff00">OLDCO.COM</text>
+
+  <!-- Cluttered nav -->
+  <text x="500" y="50" font-size="14" class="old-nav" text-decoration="underline">Home | About | Products | Contact | Sitemap</text>
+
+  <!-- Ads and clutter -->
+  <rect x="30" y="120" width="300" height="100" class="old-warning" opacity="0.7"/>
+  <text x="50" y="170" font-size="20" class="old-text" font-weight="bold" fill="#ffff00">CLICK HERE!!</text>
+
+  <rect x="370" y="120" width="300" height="100" class="old-warning" opacity="0.5"/>
+  <text x="400" y="170" font-size="20" class="old-text" font-weight="bold" fill="#fff">BUY NOW!</text>
+
+  <rect x="710" y="120" width="300" height="100" fill="#ffaa00" opacity="0.6"/>
+  <text x="750" y="170" font-size="20" class="old-text" font-weight="bold">SALE 50%!</text>
+
+  <!-- Main content area (misaligned) -->
+  <rect x="30" y="280" width="1140" height="400" fill="#e0e0e0" stroke="#999" stroke-width="3"/>
+  <text x="50" y="330" font-size="18" class="old-text">Featured Content</text>
+  <text x="50" y="370" font-size="14" class="old-text" fill="#666">This website was built in 2005 and has not been updated since...</text>
+
+  <!-- Floating elements -->
+  <rect x="100" y="450" width="200" height="80" fill="#ffcccc" stroke="#999" stroke-width="2" opacity="0.7"/>
+  <text x="120" y="490" font-size="12" class="old-text" font-weight="bold">Pop-up Ad</text>
+
+  <!-- Label -->
+  <rect x="450" y="650" width="300" height="60" fill="#333" opacity="0.8"/>
+  <text x="470" y="685" font-size="24" fill="#ffff00" font-weight="bold">Outdated Design</text>
+</svg>
