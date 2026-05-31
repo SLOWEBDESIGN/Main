@@ -35,7 +35,7 @@ export const ContactForm: React.FC = () => {
     setSubmitStatus('loading');
 
     try {
-      const response = await fetch('/', {
+      const response = await fetch('/.netlify/functions/submit-contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -96,10 +96,12 @@ export const ContactForm: React.FC = () => {
             method="POST"
             className="space-y-6"
             onSubmit={handleSubmit}
-            data-netlify="true"
-            data-netlify-honeypot="bot-field"
           >
           <div className="grid md:grid-cols-2 gap-6">
+            {/* Honeypot field for spam protection - hidden from users */}
+            <input type="hidden" name="bot-field" value="" />
+
+            {/* Form name for Netlify Functions */}
             <input type="hidden" name="form-name" value="contact" />
             
             {/* Full Name */}

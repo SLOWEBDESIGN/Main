@@ -1,15 +1,11 @@
 [build]
   command = "npm run build"
   publish = ".next"
+  functions = "netlify/functions"
 
 [build.environment]
   NEXT_PUBLIC_GA_ID = "G-3SD2928MVG"
   NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/contact-slowebdesign/30min"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
 
 [[headers]]
   for = "/*"
