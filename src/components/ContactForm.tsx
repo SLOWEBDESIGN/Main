@@ -35,19 +35,19 @@ export const ContactForm: React.FC = () => {
     setSubmitStatus('loading');
 
     try {
-      // Submit form data to Netlify Forms endpoint
-      // Netlify will intercept this and handle form submission natively
+      // Netlify Forms automatically intercepts form submissions on the site
+      // POST to current URL with form-name and bot-field fields
+      // The plugin handles the interception - no fetch needed
+      const form = e.currentTarget;
+      const formDataObj = new FormData(form);
+
       const response = await fetch('/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          'form-name': 'contact',
-          ...formData,
-        }).toString(),
+        body: formDataObj,
       });
 
-      // Netlify Forms returns a redirect on success, or 200 status
-      if (response.ok || response.type === 'opaqueredirect') {
+      // Netlify Forms handles submission and redirects or responds
+      if (response.ok) {
         setSubmitStatus('success');
         setFormData({
           name: '',
@@ -66,6 +66,7 @@ export const ContactForm: React.FC = () => {
         setSubmitStatus('error');
       }
     } catch {
+      // Network error or submission failed
       setSubmitStatus('error');
     }
   };
