@@ -1,0 +1,17 @@
+{
+  "name": "SLO Web Design",
+  "short_name": "SLO Web Design",
+  "description": "Premium web design agency in San Luis Obispo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf7",
+  "theme_color": "#3d5e3f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

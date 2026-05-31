@@ -1,0 +1,31 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#E8E8E8"/>
+  
+  <!-- Outdated header -->
+  <rect x="50" y="100" width="1100" height="50" fill="#CCCCCC" stroke="#999999" stroke-width="2"/>
+  
+  <!-- Outdated sidebar -->
+  <rect x="50" y="200" width="350" height="300" fill="#F0F0F0" stroke="#999999" stroke-width="2"/>
+  
+  <!-- Outdated content -->
+  <rect x="450" y="200" width="700" height="300" fill="#FFFFFF" stroke="#999999" stroke-width="2"/>
+  
+  <!-- Placeholder lines (outdated design) -->
+  <line x1="70" y1="230" x2="370" y2="230" stroke="#CCCCCC" stroke-width="8"/>
+  <line x1="70" y1="260" x2="370" y2="260" stroke="#E0E0E0" stroke-width="8"/>
+  <line x1="70" y1="290" x2="320" y2="290" stroke="#E0E0E0" stroke-width="8"/>
+  
+  <line x1="470" y1="230" x2="1120" y2="230" stroke="#CCCCCC" stroke-width="8"/>
+  <line x1="470" y1="270" x2="1120" y2="270" stroke="#E0E0E0" stroke-width="8"/>
+  <line x1="470" y1="310" x2="1050" y2="310" stroke="#E0E0E0" stroke-width="8"/>
+  <line x1="470" y1="350" x2="1100" y2="350" stroke="#E0E0E0" stroke-width="8"/>
+  
+  <!-- Text label -->
+  <text x="600" y="500" font-size="48" font-weight="bold" text-anchor="middle" fill="#666666">
+    Outdated Website
+  </text>
+  <text x="600" y="550" font-size="24" text-anchor="middle" fill="#999999">
+    Replace this with your before screenshot
+  </text>
+</svg>

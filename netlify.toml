@@ -1,0 +1,31 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NEXT_PUBLIC_GA_ID = "G-3SD2928MVG"
+  NEXT_PUBLIC_CALENDLY_URL = "https://calendly.com/contact-slowebdesign/30min"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -1,0 +1,43 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Modern background -->
+  <rect width="1200" height="800" fill="#F5F5F0"/>
+  
+  <!-- Modern header with forest green -->
+  <rect x="0" y="0" width="1200" height="80" fill="#3d5e3f"/>
+  
+  <!-- Header text/logo -->
+  <text x="100" y="50" font-size="32" font-weight="bold" font-family="Georgia" fill="#F5F5F0">
+    SLO Web Design
+  </text>
+  
+  <!-- Modern accent bar -->
+  <rect x="100" y="150" width="1000" height="50" fill="#E0E0C8" rx="8"/>
+  
+  <!-- Modern content area -->
+  <rect x="100" y="250" width="1000" height="450" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="1" rx="12"/>
+  
+  <!-- Modern circular accent 1 -->
+  <circle cx="200" cy="350" r="50" fill="#3d5e3f" opacity="0.1"/>
+  
+  <!-- Modern circular accent 2 -->
+  <circle cx="1050" cy="550" r="40" fill="#E0E0C8" opacity="0.5"/>
+  
+  <!-- Modern content lines (smooth and minimal) -->
+  <line x1="150" y1="310" x2="1050" y2="310" stroke="#E0E0C8" stroke-width="4"/>
+  <line x1="150" y1="350" x2="950" y2="350" stroke="#D0D0D0" stroke-width="3"/>
+  <line x1="150" y1="385" x2="1000" y2="385" stroke="#D0D0D0" stroke-width="3"/>
+  <line x1="150" y1="420" x2="900" y2="420" stroke="#D0D0D0" stroke-width="3"/>
+  
+  <!-- Text label -->
+  <text x="600" y="500" font-size="48" font-weight="bold" text-anchor="middle" fill="#3d5e3f">
+    Modernized Design
+  </text>
+  <text x="600" y="550" font-size="24" text-anchor="middle" fill="#64748b">
+    Beautiful • Fast • Responsive
+  </text>
+  
+  <!-- Footer text -->
+  <text x="600" y="740" font-size="16" text-anchor="middle" fill="#999999">
+    Replace this with your after screenshot
+  </text>
+</svg>
