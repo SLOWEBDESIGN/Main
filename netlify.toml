@@ -51,6 +51,56 @@
   status = 200
   force = true
 
+# Pretty URLs for the static pages.
+#
+# These files live in public/, which Next.js serves by EXACT path only: it does not resolve
+# /3dprintdash/status/ to that folder's index.html the way a plain static server does. That
+# difference is easy to miss, because testing with `python3 -m http.server` resolves it and
+# production does not.
+#
+# Not forced, so a real file always wins and these only fill the gap. Harmless if Netlify's
+# own static layer already handles it.
+[[redirects]]
+  from = "/3dprintdash"
+  to = "/3dprintdash/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/3dprintdash/status"
+  to = "/3dprintdash/status/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/3dprintdash/blog"
+  to = "/3dprintdash/blog/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/3dprintdash/changelog"
+  to = "/3dprintdash/changelog/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/3dprintdash/incidents"
+  to = "/3dprintdash/incidents/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/3dprintdash/security"
+  to = "/3dprintdash/security/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/3dprintdash/subprocessors"
+  to = "/3dprintdash/subprocessors/index.html"
+  status = 200
+
+# Individual blog posts, once there are any: /3dprintdash/blog/<slug> -> its index.html
+[[redirects]]
+  from = "/3dprintdash/blog/:slug"
+  to = "/3dprintdash/blog/:slug/index.html"
+  status = 200
+
 # The status page must always be fresh; a cached "all systems operational" during an
 # outage is worse than no status page.
 [[headers]]
