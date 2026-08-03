@@ -51,6 +51,16 @@
   status = 200
   force = true
 
+# security.txt must answer at the RFC 9116 path, /.well-known/security.txt, because that
+# is the only place researchers look. The file is committed under a dot-directory and
+# Netlify does not publish those, so the real copy lives at well-known/ (no dot) and this
+# maps the spec path onto it. Forced, so the 404 from the missing dot-dir cannot win.
+[[redirects]]
+  from = "/3dprintdash/.well-known/security.txt"
+  to = "/3dprintdash/well-known/security.txt"
+  status = 200
+  force = true
+
 # Pretty URLs for the static pages.
 #
 # These files live in public/, which Next.js serves by EXACT path only: it does not resolve

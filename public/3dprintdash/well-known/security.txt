@@ -1,0 +1,9 @@
+# 3D Print Dash security contact (RFC 9116).
+# Researchers check this file first, so it is the difference between someone telling us
+# about a hole in payouts and someone posting it publicly.
+
+Contact: mailto:louwrensventures@gmail.com
+Expires: 2027-08-02T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://www.3dprintdash.com/.well-known/security.txt
+Policy: https://www.3dprintdash.com/security/
