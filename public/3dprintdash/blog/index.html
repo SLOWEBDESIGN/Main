@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blog — 3D Print Dash</title>
+<meta name="description" content="Posts about 3D printing, distributed manufacturing, and how 3D Print Dash is built." />
+<meta name="theme-color" content="#0A0A0B" />
+<link rel="icon" href="/3dprintdash/assets/favicon.svg" />
+<link rel="alternate" type="application/rss+xml" title="3D Print Dash blog" href="/3dprintdash/blog/feed.xml" />
+<link rel="alternate" type="application/rss+xml" title="3D Print Dash incidents" href="/3dprintdash/incidents/feed.xml" />
+<link rel="stylesheet" href="/3dprintdash/assets/site.css" />
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="/3dprintdash/" aria-label="3D Print Dash">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="8.1" y="14.1" width="28.9" height="4.6" rx="2.3" fill="currentColor" stroke="none"/><rect x="3" y="21.4" width="18.6" height="4.5" rx="2.25" fill="currentColor" stroke="none"/></svg>
+      <span class="brand-word">3D Print Dash</span>
+    </a>
+    <a class="home" href="https://3printdash-app.vercel.app">Go to the app &rarr;</a>
+  </div>
+</header>
+
+<main class="wrap" id="main" style="padding-top:34px">
+  <p class="eyebrow">Blog</p>
+  <h1 class="page">Writing.</h1>
+  <p class="lede">Longer pieces about 3D printing, running a distributed print network, and the
+    decisions behind how this is built. Short "what shipped" notes live in the
+    <a href="/3dprintdash/changelog/" style="color:var(--silver);text-decoration:underline">changelog</a> instead.</p>
+
+  <div id="list"><p class="meta">Loading&hellip;</p></div>
+
+<script>
+  /* Posts come from posts.json so adding one is: copy _template/, write it, add a line here.
+     No build step, and the list can never disagree with itself. If the fetch fails we say so
+     rather than showing an empty page that looks like there is nothing to read. */
+  fetch("/3dprintdash/blog/posts.json", { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (posts) {
+      var el = document.getElementById("list");
+      if (!posts.length) {
+        el.innerHTML = '<div class="empty">No posts yet. The first one is coming.</div>';
+        return;
+      }
+      posts.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+      el.innerHTML = posts.map(function (p) {
+        return '<a class="card" style="display:block" href="/3dprintdash/blog/' + esc(p.slug) + '/">' +
+          '<p class="meta">' + fmt(p.date) + '</p>' +
+          '<h3>' + esc(p.title) + '</h3>' +
+          '<p>' + esc(p.summary || "") + '</p></a>';
+      }).join("");
+    })
+    .catch(function () {
+      document.getElementById("list").innerHTML =
+        '<div class="empty">The post list could not be loaded. Try a refresh.</div>';
+    });
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function fmt(d) {
+    try {
+      return new Date(d + "T00:00:00Z").toLocaleDateString("en-US",
+        { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+    } catch (e) { return esc(d); }
+  }
+</script>
+
+</main>
+
+<footer>
+  <!-- Section links live here rather than in a top nav: this is a handful of low-traffic
+       reference pages, and a persistent nav bar would give them more prominence on the
+       page than they warrant. -->
+  <div class="wrap">
+    <nav class="nav" aria-label="Sections" style="margin-bottom:16px"><a href="/3dprintdash/">Overview</a><a href="/3dprintdash/status/">Status</a><a href="/3dprintdash/blog/" aria-current="page">Blog</a><a href="/3dprintdash/changelog/">Changelog</a><a href="/3dprintdash/incidents/">Incidents</a><a href="/3dprintdash/security/">Security</a><a href="/3dprintdash/subprocessors/">Subprocessors</a></nav>
+  </div>
+  <div class="wrap fl">
+    <a href="https://3printdash-app.vercel.app">3dprintdash.com</a>
+    <a href="https://3printdash-app.vercel.app/quote">Get a quote</a>
+    <a href="https://3printdash-app.vercel.app/pricing">Pricing</a>
+    <a href="https://3printdash-app.vercel.app/faq">FAQ</a>
+    <a href="https://3printdash-app.vercel.app/terms">Terms</a>
+    <a href="https://3printdash-app.vercel.app/privacy">Privacy</a>
+    <a href="mailto:louwrensventures@gmail.com">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>

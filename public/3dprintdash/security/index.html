@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Security — 3D Print Dash</title>
+<meta name="description" content="How to report a security vulnerability in 3D Print Dash, and how we handle customer data." />
+<meta name="theme-color" content="#0A0A0B" />
+<link rel="icon" href="/3dprintdash/assets/favicon.svg" />
+<link rel="alternate" type="application/rss+xml" title="3D Print Dash blog" href="/3dprintdash/blog/feed.xml" />
+<link rel="alternate" type="application/rss+xml" title="3D Print Dash incidents" href="/3dprintdash/incidents/feed.xml" />
+<link rel="stylesheet" href="/3dprintdash/assets/site.css" />
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="/3dprintdash/" aria-label="3D Print Dash">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="8.1" y="14.1" width="28.9" height="4.6" rx="2.3" fill="currentColor" stroke="none"/><rect x="3" y="21.4" width="18.6" height="4.5" rx="2.25" fill="currentColor" stroke="none"/></svg>
+      <span class="brand-word">3D Print Dash</span>
+    </a>
+    <a class="home" href="https://3printdash-app.vercel.app">Go to the app &rarr;</a>
+  </div>
+</header>
+
+<main class="wrap" id="main" style="padding-top:34px">
+  <p class="eyebrow">Security</p>
+  <h1 class="page">Reporting a vulnerability.</h1>
+  <p class="lede">If you have found a security problem in 3D Print Dash, please tell us before you
+    tell anyone else. We will not take legal action against anyone who reports a genuine issue in
+    good faith and gives us a reasonable chance to fix it.</p>
+
+  <div class="card">
+    <h3>How to reach us</h3>
+    <p>Email <a href="mailto:louwrensventures@gmail.com" style="color:var(--silver);text-decoration:underline">louwrensventures@gmail.com</a>
+      with the subject line <code>SECURITY</code>. Include what you found, how to reproduce it, and
+      what you think the impact is. A machine-readable copy of this lives at
+      <a href="/3dprintdash/.well-known/security.txt" style="color:var(--silver);text-decoration:underline">/.well-known/security.txt</a>.</p>
+  </div>
+
+  <div class="card">
+    <h3>What to expect</h3>
+    <p>We aim to acknowledge a report within 3 business days and to tell you what we intend to do
+      about it within 10. We are a very small team, so we would rather promise a slow honest reply
+      than a fast one we cannot keep. There is no paid bounty programme today; if your report leads
+      to a fix we will credit you here unless you would rather we did not.</p>
+  </div>
+
+  <div class="card">
+    <h3>Please do not</h3>
+    <p>Run automated scanners against production, attempt denial of service, access or modify data
+      that is not yours, or social-engineer our operators or customers. If a proof of concept needs
+      real customer data to demonstrate, stop and describe it to us instead.</p>
+  </div>
+
+  <h2 style="font-size:20px;margin:38px 0 14px;letter-spacing:-.01em">How we handle your data</h2>
+
+  <dl class="sub">
+    <dt>In transit and at rest</dt>
+    <dd>Everything is served over HTTPS. Customer data lives in a managed Postgres database
+      (Supabase), which is encrypted at rest, with row-level security so an account can only reach
+      its own records.</dd>
+
+    <dt>Payments</dt>
+    <dd>Card details never reach our servers. Payment fields are hosted by Stripe and the card
+      number goes straight to them; we store only a token and the last four digits.</dd>
+
+    <dt>Your models</dt>
+    <dd>Uploaded and generated model files are private to your account. An operator receives a file
+      only for a job they have accepted.</dd>
+
+    <dt>Who else touches it</dt>
+    <dd>Listed in full on the <a href="/3dprintdash/subprocessors/" style="color:var(--silver);text-decoration:underline">subprocessors</a>
+      page.</dd>
+  </dl>
+
+  <p class="note">This page describes our practice, not a certification. We do not hold SOC 2 or
+    ISO 27001 today and we will not imply otherwise.</p>
+
+</main>
+
+<footer>
+  <!-- Section links live here rather than in a top nav: this is a handful of low-traffic
+       reference pages, and a persistent nav bar would give them more prominence on the
+       page than they warrant. -->
+  <div class="wrap">
+    <nav class="nav" aria-label="Sections" style="margin-bottom:16px"><a href="/3dprintdash/">Overview</a><a href="/3dprintdash/status/">Status</a><a href="/3dprintdash/blog/">Blog</a><a href="/3dprintdash/changelog/">Changelog</a><a href="/3dprintdash/incidents/">Incidents</a><a href="/3dprintdash/security/" aria-current="page">Security</a><a href="/3dprintdash/subprocessors/">Subprocessors</a></nav>
+  </div>
+  <div class="wrap fl">
+    <a href="https://3printdash-app.vercel.app">3dprintdash.com</a>
+    <a href="https://3printdash-app.vercel.app/quote">Get a quote</a>
+    <a href="https://3printdash-app.vercel.app/pricing">Pricing</a>
+    <a href="https://3printdash-app.vercel.app/faq">FAQ</a>
+    <a href="https://3printdash-app.vercel.app/terms">Terms</a>
+    <a href="https://3printdash-app.vercel.app/privacy">Privacy</a>
+    <a href="mailto:louwrensventures@gmail.com">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>

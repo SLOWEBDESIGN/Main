@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Status — 3D Print Dash</title>
+<meta name="description" content="Live status of 3D Print Dash services — website, app, payments, uploads, and email." />
+<meta name="theme-color" content="#0A0A0B" />
+<link rel="icon" href="/3dprintdash/assets/favicon.svg" />
+<link rel="stylesheet" href="/3dprintdash/assets/site.css" />
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="/3dprintdash/" aria-label="3D Print Dash home">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="8.1" y="14.1" width="28.9" height="4.6" rx="2.3" fill="currentColor" stroke="none"/><rect x="3" y="21.4" width="18.6" height="4.5" rx="2.25" fill="currentColor" stroke="none"/></svg>
+      <span class="brand-text" style="display:inline-flex;flex-direction:column">
+        <span class="brand-word">3D Print Dash</span>
+      </span>
+    </a>
+    <a class="home" href="https://3printdash-app.vercel.app">Go to the app →</a>
+  </div>
+</header>
+
+<main class="wrap" style="padding-top:34px">
+  <!-- Overall banner. The class (none = green, "amber", "red") + the headline are
+       driven by the worst component status below, computed on load. -->
+  <div class="overall" id="overall">
+    <span class="pulse"></span>
+    <div>
+      <h1 id="overall-text">All systems operational</h1>
+      <div class="upd" id="updated">Last updated —</div>
+    </div>
+  </div>
+
+  <section class="sec">
+    <h2>3D Print Dash</h2>
+    <div class="list" id="services"></div>
+  </section>
+
+  <section class="sec">
+    <h2>Dependencies</h2>
+    <div class="list" id="deps"></div>
+    <p class="note">Payments, sign-in, file storage, email, hosting, and shipping
+      labels run on trusted third parties. We link their official status pages —
+      if one of them has an incident, parts of 3D Print Dash may be affected.</p>
+  </section>
+
+  <p class="note">Past incidents and what changed because of them are on the <a href="/3dprintdash/incidents/" style="color:var(--silver)">incident history</a> page (<a href="/3dprintdash/incidents/feed.xml" style="color:var(--silver)">RSS</a>). This page is maintained by the 3D Print Dash team. For real-time
+    automated monitoring + email/SMS alerts we may move to a hosted status provider.
+    Questions during an outage: <a href="mailto:louwrensventures@gmail.com" style="color:var(--silver)">louwrensventures@gmail.com</a>.</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <nav class="nav" aria-label="Sections" style="margin-bottom:16px"><a href="/3dprintdash/">Overview</a><a href="/3dprintdash/status/" aria-current="page">Status</a><a href="/3dprintdash/blog/">Blog</a><a href="/3dprintdash/changelog/">Changelog</a><a href="/3dprintdash/incidents/">Incidents</a><a href="/3dprintdash/security/">Security</a><a href="/3dprintdash/subprocessors/">Subprocessors</a></nav>
+  </div>
+  <div class="wrap fl">
+    <a href="https://3printdash-app.vercel.app">3dprintdash.com</a>
+    <a href="https://3printdash-app.vercel.app/quote">Get a quote</a>
+    <a href="https://3printdash-app.vercel.app/pricing">Pricing</a>
+    <a href="https://3printdash-app.vercel.app/cookies">Cookie policy</a>
+    <a href="https://3printdash-app.vercel.app/terms">Terms</a>
+  </div>
+</footer>
+
+<script>
+  /* ── EDIT HERE during an incident ───────────────────────────────────────────
+     Set each service's status to "operational" | "degraded" | "outage" |
+     "maintenance". Update LAST_UPDATED. The overall banner auto-reflects the
+     worst service status. (Dependencies just link out — their own pages are the
+     source of truth.) */
+  var LAST_UPDATED = "2026-06-16";   // [OWNER: bump when you change a status]
+  var SERVICES = [
+    { name: "Website", desc: "www.3dprintdash.com", status: "operational" },
+    { name: "App", desc: "Quote builder, checkout & operator portal", status: "operational" },
+    { name: "Instant quote & pricing", desc: "Runs inside the app", status: "operational" },
+    { name: "File uploads", desc: "Model uploads", status: "operational" }
+  ];
+  var DEPS = [
+    { name: "Payments & payouts", desc: "Stripe", url: "https://status.stripe.com" },
+    { name: "Sign-in & data", desc: "Supabase", url: "https://status.supabase.com" },
+    { name: "Email / notifications", desc: "Resend", url: "https://resend-status.com" },
+    { name: "Hosting", desc: "Vercel", url: "https://www.vercel-status.com" },
+    { name: "Shipping labels", desc: "Shippo", url: "https://status.goshippo.com" }
+  ];
+
+  var LABEL = { operational:"Operational", degraded:"Degraded", outage:"Outage", maintenance:"Maintenance" };
+  var DOT = { operational:"", degraded:"amber", outage:"red", maintenance:"grey" };
+  var RANK = { operational:0, maintenance:1, degraded:2, outage:3 };
+
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+  function renderServices() {
+    document.getElementById("services").innerHTML = SERVICES.map(function(s){
+      return '<div class="row"><span class="dot ' + DOT[s.status] + '"></span>' +
+        '<div class="mid"><div class="name">' + esc(s.name) + '</div><div class="desc">' + esc(s.desc) + '</div></div>' +
+        '<div class="state">' + LABEL[s.status] + '</div></div>';
+    }).join("");
+  }
+  function renderDeps() {
+    document.getElementById("deps").innerHTML = DEPS.map(function(d){
+      return '<div class="row"><span class="dot grey"></span>' +
+        '<div class="mid"><div class="name">' + esc(d.name) + '</div><div class="desc">' + esc(d.desc) + '</div></div>' +
+        '<a class="ext" href="' + d.url + '" target="_blank" rel="noopener">status ↗</a></div>';
+    }).join("");
+  }
+  function renderOverall() {
+    var worst = SERVICES.reduce(function(m,s){ return Math.max(m, RANK[s.status]); }, 0);
+    var el = document.getElementById("overall");
+    var txt = "All systems operational";
+    el.className = "overall";
+    if (worst === 1) { txt = "Maintenance in progress"; }
+    else if (worst === 2) { txt = "Degraded performance"; el.className = "overall amber"; }
+    else if (worst === 3) { txt = "Service disruption"; el.className = "overall red"; }
+    document.getElementById("overall-text").textContent = txt;
+    document.getElementById("updated").textContent = "Last updated " + LAST_UPDATED;
+  }
+  renderServices(); renderDeps(); renderOverall();
+</script>
+<script defer src="/assets/cookie-consent.js"></script>
+<script defer src="/assets/back-nav.js"></script>
+</body>
+</html>
