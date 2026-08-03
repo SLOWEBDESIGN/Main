@@ -24,3 +24,41 @@
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# ── 3D Print Dash service site ────────────────────────────────────────────────────────
+# The status / blog / changelog / incidents / security / subprocessors pages for 3D Print
+# Dash are hosted out of this site's public/3dprintdash/ as plain static HTML.
+#
+# Why here, on somebody else's site: a status page must not share infrastructure with the
+# app it reports on, or it goes down at the only moment anyone needs it. This repo is on
+# Netlify and the app is on Vercel, which is exactly the separation that buys.
+#
+# These rewrites serve those files at the ROOT of status.3dprintdash.com, so the public
+# URLs are status.3dprintdash.com/status and so on, with no /3dprintdash/ in them and
+# nothing about 3D Print Dash appearing on slowebdesign.com's own pages.
+#
+# OWNER: add status.3dprintdash.com as a domain on this Netlify site, and point a CNAME at
+# it, or these rules never match anything.
+[[redirects]]
+  from = "https://status.3dprintdash.com/*"
+  to = "/3dprintdash/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "http://status.3dprintdash.com/*"
+  to = "/3dprintdash/:splat"
+  status = 200
+  force = true
+
+# The status page must always be fresh; a cached "all systems operational" during an
+# outage is worse than no status page.
+[[headers]]
+  for = "/3dprintdash/status/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/3dprintdash/incidents/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

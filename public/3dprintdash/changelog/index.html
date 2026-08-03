@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Changelog — 3D Print Dash</title>
+<meta name="description" content="What shipped on 3D Print Dash, by date." />
+<meta name="theme-color" content="#0A0A0B" />
+<link rel="icon" href="/3dprintdash/assets/favicon.svg" />
+<link rel="alternate" type="application/rss+xml" title="3D Print Dash blog" href="/3dprintdash/blog/feed.xml" />
+<link rel="alternate" type="application/rss+xml" title="3D Print Dash incidents" href="/3dprintdash/incidents/feed.xml" />
+<link rel="stylesheet" href="/3dprintdash/assets/site.css" />
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="/3dprintdash/" aria-label="3D Print Dash">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="8.1" y="14.1" width="28.9" height="4.6" rx="2.3" fill="currentColor" stroke="none"/><rect x="3" y="21.4" width="18.6" height="4.5" rx="2.25" fill="currentColor" stroke="none"/></svg>
+      <span class="brand-word">3D Print Dash</span>
+    </a>
+    <a class="home" href="https://3printdash-app.vercel.app">Go to the app &rarr;</a>
+  </div>
+</header>
+
+<main class="wrap" id="main" style="padding-top:34px">
+  <p class="eyebrow">Changelog</p>
+  <h1 class="page">What shipped.</h1>
+  <p class="lede">Dated, short, and honest. Anything that changes what you can do on the site
+    ends up here. Longer pieces live on the <a href="/3dprintdash/blog/" style="color:var(--silver);text-decoration:underline">blog</a>.</p>
+
+  <div id="list"><p class="meta">Loading&hellip;</p></div>
+
+<script>
+  /* Same shape as the blog: one JSON file, edited by hand, rendered here. Entries carry a
+     kind (added / changed / fixed) because "what changed" and "what broke and is now fixed"
+     are read very differently by a customer. */
+  var KIND = { added: "Added", changed: "Changed", fixed: "Fixed" };
+
+  fetch("/3dprintdash/changelog/entries.json", { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (entries) {
+      var el = document.getElementById("list");
+      if (!entries.length) {
+        el.innerHTML = '<div class="empty">Nothing logged yet.</div>';
+        return;
+      }
+      entries.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+      el.innerHTML = entries.map(function (e) {
+        var kind = KIND[e.kind] ? e.kind : "changed";
+        return '<div class="card">' +
+          '<p class="meta">' + fmt(e.date) + '</p>' +
+          '<h3>' + esc(e.title) + '<span class="tag ' + kind + '">' + KIND[kind] + '</span></h3>' +
+          (e.body ? '<p>' + esc(e.body) + '</p>' : '') +
+          '</div>';
+      }).join("");
+    })
+    .catch(function () {
+      document.getElementById("list").innerHTML =
+        '<div class="empty">The changelog could not be loaded. Try a refresh.</div>';
+    });
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function fmt(d) {
+    try {
+      return new Date(d + "T00:00:00Z").toLocaleDateString("en-US",
+        { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+    } catch (e) { return esc(d); }
+  }
+</script>
+
+</main>
+
+<footer>
+  <!-- Section links live here rather than in a top nav: this is a handful of low-traffic
+       reference pages, and a persistent nav bar would give them more prominence on the
+       page than they warrant. -->
+  <div class="wrap">
+    <nav class="nav" aria-label="Sections" style="margin-bottom:16px"><a href="/3dprintdash/">Overview</a><a href="/3dprintdash/status/">Status</a><a href="/3dprintdash/blog/">Blog</a><a href="/3dprintdash/changelog/" aria-current="page">Changelog</a><a href="/3dprintdash/incidents/">Incidents</a><a href="/3dprintdash/security/">Security</a><a href="/3dprintdash/subprocessors/">Subprocessors</a></nav>
+  </div>
+  <div class="wrap fl">
+    <a href="https://3printdash-app.vercel.app">3dprintdash.com</a>
+    <a href="https://3printdash-app.vercel.app/quote">Get a quote</a>
+    <a href="https://3printdash-app.vercel.app/pricing">Pricing</a>
+    <a href="https://3printdash-app.vercel.app/faq">FAQ</a>
+    <a href="https://3printdash-app.vercel.app/terms">Terms</a>
+    <a href="https://3printdash-app.vercel.app/privacy">Privacy</a>
+    <a href="mailto:louwrensventures@gmail.com">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>

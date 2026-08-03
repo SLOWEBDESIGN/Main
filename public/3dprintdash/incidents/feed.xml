@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>3D Print Dash — Incidents</title>
+    <link>https://status.3dprintdash.com/incidents/</link>
+    <atom:link href="https://status.3dprintdash.com/incidents/feed.xml" rel="self" type="application/rss+xml" />
+    <description>Incident reports for 3D Print Dash: what happened, and what changed because of it.</description>
+    <language>en-us</language>
+
+  </channel>
+</rss>
