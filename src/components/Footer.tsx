@@ -134,6 +134,45 @@ export const Footer: React.FC = () => {
         {/* Divider */}
         <div className="border-t border-primary-600 my-8" />
 
+        {/* 3D Print Dash service pages.
+            These are hosted out of this site's public/3dprintdash/ folder, but they belong
+            to a different product. They sit in their own row below the divider rather than
+            as a fifth column in the grid above, so they read as "also hosted here" instead
+            of as one of this agency's own sections.
+            Once status.3dprintdash.com is live these can point there instead, or come out
+            of this footer entirely — see public/3dprintdash/README.md. */}
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h4 className="font-semibold text-secondary-50 mb-3 text-sm">3D Print Dash</h4>
+          <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            {[
+              ['Status', '/3dprintdash/status/'],
+              ['Blog', '/3dprintdash/blog/'],
+              ['Changelog', '/3dprintdash/changelog/'],
+              ['Incidents', '/3dprintdash/incidents/'],
+              ['Security', '/3dprintdash/security/'],
+              ['Subprocessors', '/3dprintdash/subprocessors/'],
+            ].map(([label, href]) => (
+              <li key={href}>
+                <a
+                  href={href}
+                  className="text-secondary-200 hover:text-secondary-100 transition-colors"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+
+        {/* Divider */}
+        <div className="border-t border-primary-600 my-8" />
+
         {/* Bottom */}
         <motion.div
           className="flex flex-col md:flex-row justify-between items-center text-sm text-secondary-200"
@@ -145,15 +184,26 @@ export const Footer: React.FC = () => {
           <p>
             © {currentYear} SLO Web Design. All rights reserved. • Based in San Luis Obispo, California
           </p>
-          <a
-            href="https://github.com/SLOWEBDESIGN"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 hover:text-secondary-100 transition-colors mt-4 md:mt-0"
-          >
-            <Github size={18} />
-            GitHub
-          </a>
+          <div className="flex items-center gap-6 mt-4 md:mt-0">
+            <p>
+              Designed by{' '}
+              <a
+                href="https://slowebdesign.com"
+                className="font-medium text-secondary-100 hover:text-white underline-offset-2 hover:underline transition-colors"
+              >
+                SLO Web Design
+              </a>
+            </p>
+            <a
+              href="https://github.com/SLOWEBDESIGN"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-secondary-100 transition-colors"
+            >
+              <Github size={18} />
+              GitHub
+            </a>
+          </div>
         </motion.div>
       </div>
     </footer>
