@@ -38,7 +38,7 @@ export const Hero: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <button
-            onClick={() => scrollToSection('calendly')}
+            onClick={() => scrollToSection('booking')}
             className="btn btn-primary px-8 py-3 text-lg flex items-center justify-center gap-2"
           >
             Schedule Consultation

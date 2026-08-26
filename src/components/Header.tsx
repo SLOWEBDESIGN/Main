@@ -29,7 +29,7 @@ export const Header: React.FC = () => {
             Contact
           </button>
           <button
-            onClick={() => scrollToSection('calendly')}
+            onClick={() => scrollToSection('booking')}
             className="btn btn-primary text-sm"
           >
             Schedule Consultation

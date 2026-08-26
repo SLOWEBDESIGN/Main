@@ -9,7 +9,7 @@ import { MaintenancePlans } from '@/src/components/MaintenancePlans';
 import { Process } from '@/src/components/Process';
 import { Testimonials } from '@/src/components/Testimonials';
 import { ContactForm } from '@/src/components/ContactForm';
-import { Calendly } from '@/src/components/Calendly';
+import { BookingScheduler } from '@/src/components/BookingScheduler';
 import { Footer } from '@/src/components/Footer';
 import {
   generateLocalBusinessSchema,
@@ -96,7 +96,7 @@ export default function Home() {
         <Process />
         <Testimonials />
         <ContactForm />
-        <Calendly />
+        <BookingScheduler />
         <Footer />
       </main>
     </>

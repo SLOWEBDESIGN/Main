@@ -19,6 +19,7 @@ export const ContactForm: React.FC = () => {
   });
 
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [botField, setBotField] = useState('');
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -35,19 +36,10 @@ export const ContactForm: React.FC = () => {
     setSubmitStatus('loading');
 
     try {
-      // Next.js Runtime v5 (@netlify/plugin-nextjs v5) detects the form from the
-      // static public/__forms.html file at build time. Submissions must be POSTed
-      // to that file as url-encoded data. See:
-      // https://docs.netlify.com/frameworks/next-js/runtime-v5/forms/migration/
-      const form = e.currentTarget;
-      const body = new URLSearchParams(
-        new FormData(form) as unknown as Record<string, string>
-      ).toString();
-
-      const response = await fetch('/__forms.html', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, botField }),
       });
 
       if (response.ok) {
@@ -64,6 +56,7 @@ export const ContactForm: React.FC = () => {
           description: '',
           contactMethod: 'email',
         });
+        setBotField('');
         setTimeout(() => setSubmitStatus('idle'), 5000);
       } else {
         setSubmitStatus('error');
@@ -98,20 +91,21 @@ export const ContactForm: React.FC = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.1 }}
         >
-          <form
-            name="contact"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-            className="space-y-6"
-            onSubmit={handleSubmit}
-          >
+          <form name="contact" className="space-y-6" onSubmit={handleSubmit}>
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Honeypot field for spam protection - hidden from users */}
-            <input type="hidden" name="bot-field" value="" />
-
-            {/* Form name for Netlify Forms - required for form detection */}
-            <input type="hidden" name="form-name" value="contact" />
+            {/* Honeypot: hidden from people, autofilled by bots; a value gets the
+                submission silently dropped server-side. A visible-to-DOM text input
+                catches far more bots than type="hidden" ever did. */}
+            <div className="hidden" aria-hidden="true">
+              <input
+                type="text"
+                name="botField"
+                tabIndex={-1}
+                autoComplete="off"
+                value={botField}
+                onChange={(e) => setBotField(e.target.value)}
+              />
+            </div>
             
             {/* Full Name */}
             <div>
