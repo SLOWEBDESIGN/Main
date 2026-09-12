@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Github } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, Instagram } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -194,6 +194,15 @@ export const Footer: React.FC = () => {
                 SLO Web Design
               </a>
             </p>
+            <a
+              href="https://www.instagram.com/slowebdesign/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-secondary-100 transition-colors"
+            >
+              <Instagram size={18} />
+              Instagram
+            </a>
             <a
               href="https://github.com/SLOWEBDESIGN"
               target="_blank"
