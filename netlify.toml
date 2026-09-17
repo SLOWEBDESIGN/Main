@@ -124,3 +124,28 @@
   for = "/3dprintdash/incidents/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# ── Unlisted share link ──────────────────────────────────────────────────────────────
+# Static page under public/jam8kAuHyMDar5HkbgidFg/, reachable only by its exact URL: nothing
+# links to it, it is not in sitemap.xml, and it is deliberately NOT named in robots.txt (a
+# Disallow line there would publish the path). Same exact-path rewrite as the pages above.
+[[redirects]]
+  from = "/jam8kAuHyMDar5HkbgidFg"
+  to = "/jam8kAuHyMDar5HkbgidFg/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/jam8kAuHyMDar5HkbgidFg/"
+  to = "/jam8kAuHyMDar5HkbgidFg/index.html"
+  status = 200
+
+[[headers]]
+  for = "/jam8kAuHyMDar5HkbgidFg"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/jam8kAuHyMDar5HkbgidFg/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"

@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#07130F">
+<title>3DPrintDash · Pitch Deck</title>
+<link rel="icon" type="image/svg+xml" href="/jam8kAuHyMDar5HkbgidFg/a/icon.svg">
+<link rel="apple-touch-icon" href="/jam8kAuHyMDar5HkbgidFg/a/apple-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--stage:#07130F;--bar:#0A1A15;--line:rgba(159,196,181,.16);--ink:#E6F2EB;--muted:#8FB3A4;--accent:#7FD9B0;--bar-h:60px}
+html,body{height:100%;margin:0}
+body{display:flex;flex-direction:column;overflow:hidden;background:var(--stage);color:var(--ink);font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+@supports (height:100dvh){body{height:100dvh}}
+button{font:inherit;color:inherit}
+
+/* ── stage ─────────────────────────────────────────────── */
+#stage{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:pan-y pinch-zoom}
+#track{position:absolute;inset:0;transition:opacity .3s ease}
+body.loading #track{opacity:0}
+.item{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .24s ease,visibility 0s linear .24s}
+.item.on{opacity:1;visibility:visible;transition:opacity .24s ease}
+.num{display:none}
+.frame{position:relative;flex:none;overflow:hidden;border-radius:8px;box-shadow:0 30px 90px rgba(0,0,0,.5),0 0 0 1px rgba(159,196,181,.07)}
+.frame>section{position:absolute;left:0;top:0;transform-origin:0 0}
+
+body.overview #stage{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+body.overview #track{position:static;display:flex;flex-direction:column;align-items:center;gap:40px;padding:36px 16px 64px}
+body.overview .item{position:static;inset:auto;flex-direction:column;align-items:flex-start;gap:10px;opacity:1;visibility:visible;transition:none}
+body.overview .num{display:block;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.16em;color:var(--muted)}
+body.overview .frame{cursor:zoom-in;transition:box-shadow .15s ease}
+body.overview .frame:hover{box-shadow:0 0 0 2px var(--accent),0 30px 90px rgba(0,0,0,.5)}
+
+/* ── controls ──────────────────────────────────────────── */
+#bar{position:relative;flex:none;height:var(--bar-h);padding:0 16px env(safe-area-inset-bottom);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:var(--bar);border-top:1px solid var(--line)}
+#progress{position:absolute;left:0;right:0;top:-1px;height:2px;background:transparent}
+#progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .24s ease}
+.brand{display:flex;align-items:center;gap:10px;font:600 15px/1 'Space Grotesk',system-ui,sans-serif;letter-spacing:-.01em;white-space:nowrap}
+.brand svg{width:22px;height:22px;flex:none}
+.pager{display:flex;align-items:center;gap:6px}
+#count{min-width:84px;text-align:center;font:500 15px/1 'Space Grotesk',system-ui,sans-serif;font-variant-numeric:tabular-nums;color:var(--muted)}
+#count b{font-weight:600;color:var(--ink)}
+.tools{justify-self:end;display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;min-width:38px;padding:0 10px;border-radius:9px;border:1px solid var(--line);background:transparent;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s ease,border-color .15s ease}
+.btn:hover{background:rgba(127,217,176,.08);border-color:rgba(127,217,176,.38)}
+.btn:disabled{opacity:.32;cursor:default;background:transparent;border-color:var(--line)}
+.btn:focus-visible,.play:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn svg{width:18px;height:18px;flex:none}
+.pager .btn{border-color:transparent}
+body.overview .pager .btn{display:none}
+@media (max-width:640px){.brand span,.btn .lbl{display:none}#bar{padding-left:12px;padding-right:12px}}
+
+/* ── the slide format (1920×1080 canvas) ───────────────── */
+#track section{position:relative;width:1920px;height:1080px;overflow:hidden;box-sizing:border-box;font-size:32px;line-height:1.4;overflow-wrap:break-word}
+#track section:not([style*="display"]){display:flex;flex-direction:column}
+#track section *{box-sizing:border-box;margin:0}
+#track section>:not([style*="position:absolute"]):not([style*="position: absolute"]){position:relative}
+#track section div:not([style*="display"]){display:flex;flex-direction:column}
+#track h1{font-size:96px;font-weight:600;line-height:1.1}
+#track h2{font-size:64px;font-weight:600;line-height:1.15}
+#track h3{font-size:44px;font-weight:600;line-height:1.2}
+#track img,#track svg{display:block}
+#track table{border-collapse:collapse;width:100%}
+#track th,#track td{padding:.35em .6em;border-bottom:1px solid rgba(20,36,32,.12);vertical-align:middle;line-height:1.4;text-align:left}
+#track th{font-weight:600}
+#track x-icon{display:inline-flex;flex:none}
+#track x-icon svg{width:100%;height:100%}
+#track x-shape{display:block;flex:none}
+#track x-shape[kind="arrow-right"]{clip-path:polygon(0 30%,60% 30%,60% 0,100% 50%,60% 100%,60% 70%,0 70%)}
+#track x-shape[kind="arrow-left"]{clip-path:polygon(100% 30%,40% 30%,40% 0,0 50%,40% 100%,40% 70%,100% 70%)}
+#track x-shape[kind="arrow-down"]{clip-path:polygon(30% 0,70% 0,70% 60%,100% 60%,50% 100%,0 60%,30% 60%)}
+#track x-shape[kind="arrow-up"]{clip-path:polygon(30% 100%,70% 100%,70% 40%,100% 40%,50% 0,0 40%,30% 40%)}
+#track x-shape[kind="diamond"]{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+#track x-shape[kind="ellipse"]{border-radius:50%}
+.play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:124px;height:124px;border-radius:50%;border:3px solid rgba(251,251,248,.9);background:rgba(7,19,15,.6);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.play svg{width:48px;height:48px;margin-left:8px}
+.play:hover{background:rgba(28,122,84,.85)}
+
+@media (prefers-reduced-motion:reduce){#track,.item,.item.on,#progress i{transition:none}}
+</style>
+</head>
+<body class="loading">
+<div id="stage">
+<main id="track" aria-roledescription="carousel" aria-label="3DPrintDash pitch deck">
+<!--SLIDES:START-->
+<section id="cover" data-transition="fade" style="background:#0E2F27; color:#FBFBF8; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px; display:flex; flex-direction:column; justify-content:space-between">
+  <svg viewBox="0 0 820 820" style="position:absolute; left:1220px; top:70px; width:820px; height:820px" aria-label="">
+    <g stroke="#3E8A6B" fill="none" stroke-width="1.5">
+      <rect x="360" y="360" width="100" height="100" transform="rotate(45 410 410)" opacity="0.55"></rect>
+      <rect x="320" y="320" width="180" height="180" transform="rotate(45 410 410)" opacity="0.5"></rect>
+      <rect x="280" y="280" width="260" height="260" transform="rotate(45 410 410)" opacity="0.45"></rect>
+      <rect x="240" y="240" width="340" height="340" transform="rotate(45 410 410)" opacity="0.4"></rect>
+      <rect x="200" y="200" width="420" height="420" transform="rotate(45 410 410)" opacity="0.35"></rect>
+      <rect x="160" y="160" width="500" height="500" transform="rotate(45 410 410)" opacity="0.3"></rect>
+      <rect x="120" y="120" width="580" height="580" transform="rotate(45 410 410)" opacity="0.25"></rect>
+      <rect x="80" y="80" width="660" height="660" transform="rotate(45 410 410)" opacity="0.2"></rect>
+      <rect x="40" y="40" width="740" height="740" transform="rotate(45 410 410)" opacity="0.15"></rect>
+    </g>
+  </svg>
+  <div style="display:flex; flex-direction:column; gap:22px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#7FD9B0">Pre-Seed Pitch Deck</p>
+    <h1 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:172px; font-weight:600; line-height:1; color:#FBFBF8">3DPrintDash</h1>
+    <p style="font-size:40px; font-weight:400; color:#DCEEE4; line-height:1.25; width:1150px">Type an idea. Hold it in your hands.</p>
+    <p style="font-size:28px; font-weight:400; color:#9FC4B5; line-height:1.4; width:1000px">A marketplace connecting custom ideas with independent 3D printing capacity.</p>
+  </div>
+  <div style="display:flex; align-items:flex-end; justify-content:space-between">
+    <div style="display:flex; flex-direction:column; gap:8px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:104px; font-weight:600; line-height:1; color:#FBFBF8">$150,000</p>
+      <p style="font-size:24px; font-weight:500; letter-spacing:1px; color:#9FC4B5">INITIAL PRE-SEED ROUND &nbsp;·&nbsp; $300,000 STAGED</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px">
+      <p style="font-size:28px; font-weight:600; color:#FBFBF8; text-align:right">Benyamin Louwrens</p>
+      <p style="font-size:24px; color:#9FC4B5; text-align:right">Founder · San Diego, California</p>
+      <p style="font-size:24px; color:#9FC4B5; text-align:right">3dprintdash.com</p>
+    </div>
+  </div>
+</section>
+<section id="problem" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">02 · The Problem</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">Idle printers, scattered demand</h2>
+  </div>
+  <div style="display:flex; gap:32px">
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:44px; display:flex; flex-direction:column; gap:18px">
+      <p style="font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5B6D64">For the customer</p>
+      <p style="font-size:30px; font-weight:400; line-height:1.4; color:#142420">Getting one custom object made means learning CAD, finding a manufacturer, and trusting a stranger online, so most people never start.</p>
+    </div>
+    <div style="flex:1; background:#0E2F27; padding:44px; display:flex; flex-direction:column; gap:18px">
+      <p style="font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#9FC4B5">For the printer owner</p>
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:38px; font-weight:600; line-height:1.25; color:#FBFBF8">"Where are the customers? Still waiting."</p>
+      <p style="font-size:24px; font-weight:400; color:#9FC4B5; line-height:1.4">Our own line, from 3DPrintDash's September 2026 operator-recruitment ad.</p>
+    </div>
+  </div>
+  <p style="font-size:32px; font-weight:400; line-height:1.4; color:#142420; width:1500px">The result: a printer sits idle while the person with an idea gives up and buys something generic instead.</p>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">02 / 15</p>
+</section>
+<section id="solution" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:44px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">03 · The Solution</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">One flow, idea to doorstep</h2>
+  </div>
+  <div style="display:flex; align-items:center; gap:20px">
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:40px; display:flex; flex-direction:column; gap:18px">
+      <div style="width:64px; height:64px; border-radius:50%; background:#0E2F27; display:flex; align-items:center; justify-content:center">
+        <x-icon name="Lightbulb" style="color:#7FD9B0; width:32px; height:32px"></x-icon>
+      </div>
+      <h3 style="font-size:30px; font-weight:600; color:#142420">Create, upload, or ask for help</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Describe an idea, upload a model, or request a brief with dimensions.</p>
+    </div>
+    <x-shape kind="arrow-right" style="background:#1C7A54; width:56px; height:28px"></x-shape>
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:40px; display:flex; flex-direction:column; gap:18px">
+      <div style="width:64px; height:64px; border-radius:50%; background:#0E2F27; display:flex; align-items:center; justify-content:center">
+        <x-icon name="Check" style="color:#7FD9B0; width:32px; height:32px"></x-icon>
+      </div>
+      <h3 style="font-size:30px; font-weight:600; color:#142420">Review the model, see the price, pay</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">The quoting engine prices material, time, and quality before checkout.</p>
+    </div>
+    <x-shape kind="arrow-right" style="background:#1C7A54; width:56px; height:28px"></x-shape>
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:40px; display:flex; flex-direction:column; gap:18px">
+      <div style="width:64px; height:64px; border-radius:50%; background:#0E2F27; display:flex; align-items:center; justify-content:center">
+        <x-icon name="Tool" style="color:#7FD9B0; width:32px; height:32px"></x-icon>
+      </div>
+      <h3 style="font-size:30px; font-weight:600; color:#142420">A qualified operator prints and ships</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Operators see the payout before they accept, then produce and ship.</p>
+    </div>
+  </div>
+  <p style="font-size:30px; color:#142420; line-height:1.4; width:1500px">Customers finish entirely on a phone. Operators accept, produce, and ship from theirs.</p>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">03 / 15</p>
+</section>
+<section id="product" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">04 · Product</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">Live today, not a concept</h2>
+    <p style="font-size:30px; font-weight:400; color:#5B6D64; line-height:1.4; width:1400px">These are screenshots of the app running at 3dprintdash.com, not renderings.</p>
+  </div>
+  <div style="display:flex; gap:32px">
+    <div style="flex:1; display:flex; flex-direction:column; gap:16px">
+      <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:16px; display:flex; align-items:center; justify-content:center; height:420px">
+        <img src="/jam8kAuHyMDar5HkbgidFg/a/create.png" alt="3DPrintDash Create screen: describe an idea to get an AI concept and a printable 3D model" style="width:100%; height:100%; object-fit:contain">
+      </div>
+      <p style="font-size:24px; font-weight:600; color:#142420">Create with AI</p>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:16px">
+      <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:16px; display:flex; align-items:center; justify-content:center; height:420px">
+        <img src="/jam8kAuHyMDar5HkbgidFg/a/checkout.png" alt="3DPrintDash upload and checkout screen with size, print-quality tiers, and live price" style="width:100%; height:100%; object-fit:contain">
+      </div>
+      <p style="font-size:24px; font-weight:600; color:#142420">Price & checkout</p>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:16px">
+      <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:16px; display:flex; align-items:center; justify-content:center; height:420px">
+        <img src="/jam8kAuHyMDar5HkbgidFg/a/library.png" alt="3DPrintDash library of paid and free designs, ready to print" style="width:100%; height:100%; object-fit:contain">
+      </div>
+      <p style="font-size:24px; font-weight:600; color:#142420">Browse the marketplace</p>
+    </div>
+  </div>
+  <p style="font-size:28px; font-style:italic; color:#5B6D64; line-height:1.4">Payment flows tested. Service connectivity checked. Commercial validation begins at launch.</p>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">04 / 15</p>
+</section>
+<section id="traction" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">05 · Traction</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">Recruiting is already underway</h2>
+  </div>
+  <div style="display:flex; gap:48px; align-items:flex-start">
+    <div style="flex:1; display:flex; flex-direction:column; gap:28px">
+      <div style="display:flex; gap:20px; align-items:flex-start">
+        <x-icon name="PaperPlane" style="width:32px; height:32px; color:#1C7A54"></x-icon>
+        <p style="font-size:28px; color:#142420; line-height:1.4; flex:1">A live operator application funnel is already running at 3dprintdash.com/operator/apply.</p>
+      </div>
+      <div style="display:flex; gap:20px; align-items:flex-start">
+        <x-icon name="Play" style="width:32px; height:32px; color:#1C7A54"></x-icon>
+        <p style="font-size:28px; color:#142420; line-height:1.4; flex:1">The recruitment creative (hook, product demo, and call to action) was written, filmed, and edited in-house.</p>
+      </div>
+      <div style="display:flex; gap:20px; align-items:flex-start">
+        <x-icon name="Users" style="width:32px; height:32px; color:#1C7A54"></x-icon>
+        <p style="font-size:28px; color:#142420; line-height:1.4; flex:1">Targeting a founding cohort of 100 operators, balanced across Low, Medium, and High print capability.</p>
+      </div>
+      <div style="display:flex; gap:20px; align-items:flex-start">
+        <x-icon name="Verified" style="width:32px; height:32px; color:#1C7A54"></x-icon>
+        <p style="font-size:28px; color:#142420; line-height:1.4; flex:1">Legal groundwork is done ahead of the raise: DMCA agent registered, CA sales tax set up, copyright filed, contractor law reviewed.</p>
+      </div>
+    </div>
+    <div style="width:293px; display:flex; flex-direction:column; gap:16px; align-items:center">
+      <div style="width:293px; height:520px; background:#0E2F27; border-radius:34px; padding:12px; display:flex; align-items:center; justify-content:center">
+        <img src="/jam8kAuHyMDar5HkbgidFg/a/rec-poster.jpg" data-video="/jam8kAuHyMDar5HkbgidFg/a/rec.mp4" alt="3DPrintDash operator-recruitment video, driving to the live application page" style="width:269px; height:496px; object-fit:cover; border-radius:22px">
+      </div>
+      <p style="font-size:24px; color:#5B6D64; text-align:center">Actual in-market creative</p>
+    </div>
+  </div>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">05 / 15</p>
+</section>
+<section id="market" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:32px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">06 · Market</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">A $24 billion market, wide open</h2>
+  </div>
+  <div style="display:flex; gap:32px">
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:36px; display:flex; flex-direction:column; gap:8px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:92px; font-weight:600; color:#1C7A54; line-height:1">$24.2bn</p>
+      <p style="font-size:24px; color:#5B6D64">Global additive-manufacturing revenue, 2025</p>
+    </div>
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:36px; display:flex; flex-direction:column; gap:8px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:92px; font-weight:600; color:#1C7A54; line-height:1">$11.6bn</p>
+      <p style="font-size:24px; color:#5B6D64">Implied global printing-services revenue</p>
+    </div>
+  </div>
+  <p style="font-size:24px; color:#5B6D64; line-height:1.4; width:1600px">Wohlers reports printing services were 48% of additive-manufacturing revenue in 2025 and grew 15.5% that year; the services figure is 48% of $24.2bn. Global totals, for context, not a serviceable-market estimate.</p>
+  <table style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#142420">
+    <tr style="background:#123C31">
+      <th style="width:26%; color:#FBFBF8; text-align:left">Customer group</th>
+      <th style="width:37%; color:#FBFBF8; text-align:left">First jobs</th>
+      <th style="width:37%; color:#FBFBF8; text-align:left">Reason to return</th>
+    </tr>
+    <tr>
+      <td>Inventors and student teams</td>
+      <td>Prototype housings, models, and simple fixtures</td>
+      <td>Revisions, iterations, and new projects</td>
+    </tr>
+    <tr style="background:#F3F7F4">
+      <td>Hobby and creator communities</td>
+      <td>Tabletop accessories, cosplay components, and hobby parts</td>
+      <td>New builds, collections, and customization</td>
+    </tr>
+    <tr>
+      <td>Consumers and small businesses</td>
+      <td>Organizers, mounts, adapters, and replacement parts</td>
+      <td>Additional needs and small repeat batches</td>
+    </tr>
+  </table>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">Source: Wohlers Report 2026</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">06 / 15</p>
+</section>
+<section id="model" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:32px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">07 · Business Model</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">How 3DPrintDash earns</h2>
+    <p style="font-size:30px; font-weight:400; color:#5B6D64; line-height:1.4; width:1500px">Operators supply the equipment. 3DPrintDash prices, collects payment, and coordinates the job.</p>
+  </div>
+  <table style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#142420">
+    <tr style="background:#123C31">
+      <th style="width:24%; color:#FBFBF8; text-align:left">Revenue stream</th>
+      <th style="width:46%; color:#FBFBF8; text-align:left">Pricing today</th>
+      <th style="width:30%; color:#FBFBF8; text-align:left">Role</th>
+    </tr>
+    <tr>
+      <td>Print service fees</td>
+      <td>24–38% of operator payout by tier, plus a $2 flat charge</td>
+      <td>Primary transaction revenue</td>
+    </tr>
+    <tr style="background:#F3F7F4">
+      <td>AI generation credits</td>
+      <td>$15 for 3 creations · $30 for 8 · $60 for 20</td>
+      <td>Paid creation beyond free credits</td>
+    </tr>
+    <tr>
+      <td>Digital files</td>
+      <td>$10 for a generated file with no physical print</td>
+      <td>Serves design-only customers</td>
+    </tr>
+    <tr style="background:#F3F7F4">
+      <td>Design services</td>
+      <td>28% fee on the designer's payout, plus a dispute reserve</td>
+      <td>~20% modeled contribution after costs</td>
+    </tr>
+    <tr>
+      <td>Color requests</td>
+      <td>Greater of $3 or 5% of order value, split with the operator</td>
+      <td>Covers added production cost</td>
+    </tr>
+  </table>
+  <div style="background:#E7F3EC; padding:28px 36px">
+    <p style="font-size:28px; color:#123C31; line-height:1.3">Both sides see the number before committing: the operator's payout, and the customer's price.</p>
+  </div>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">07 / 15</p>
+</section>
+<section id="economics" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:28px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">08 · Order Economics</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">What an order is worth</h2>
+    <p style="font-size:30px; font-weight:400; color:#5B6D64; line-height:1.4; width:1500px">Contribution scales with job size, after an 8% reprint reserve and illustrative card fees.</p>
+  </div>
+  <table style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#142420">
+    <tr style="background:#123C31">
+      <th style="width:34%; color:#FBFBF8; text-align:left">Order component</th>
+      <th style="width:16.5%; color:#FBFBF8; text-align:right">Small</th>
+      <th style="width:16.5%; color:#FBFBF8; text-align:right">Mid</th>
+      <th style="width:16.5%; color:#FBFBF8; text-align:right">Larger</th>
+      <th style="width:16.5%; color:#FBFBF8; text-align:right">High</th>
+    </tr>
+    <tr>
+      <td>Operator payout</td>
+      <td style="text-align:right">$10.00</td>
+      <td style="text-align:right">$30.00</td>
+      <td style="text-align:right">$100.00</td>
+      <td style="text-align:right">$250.00</td>
+    </tr>
+    <tr style="background:#F3F7F4">
+      <td>Platform fee, incl. $2</td>
+      <td style="text-align:right">$4.40</td>
+      <td style="text-align:right">$11.00</td>
+      <td style="text-align:right">$36.00</td>
+      <td style="text-align:right">$97.00</td>
+    </tr>
+    <tr>
+      <td>Production quote</td>
+      <td style="text-align:right">$14.40</td>
+      <td style="text-align:right">$41.00</td>
+      <td style="text-align:right">$136.00</td>
+      <td style="text-align:right">$347.00</td>
+    </tr>
+    <tr style="background:#F3F7F4">
+      <td>Reprint allocation (8%)</td>
+      <td style="text-align:right">($1.15)</td>
+      <td style="text-align:right">($3.28)</td>
+      <td style="text-align:right">($10.88)</td>
+      <td style="text-align:right">($27.76)</td>
+    </tr>
+    <tr>
+      <td>Card processing (illustrative)</td>
+      <td style="text-align:right">($0.72)</td>
+      <td style="text-align:right">($1.49)</td>
+      <td style="text-align:right">($4.24)</td>
+      <td style="text-align:right">($10.36)</td>
+    </tr>
+    <tr style="background:#E7F3EC">
+      <td>Modeled contribution</td>
+      <td style="text-align:right">$2.53</td>
+      <td style="text-align:right">$6.23</td>
+      <td style="text-align:right">$20.88</td>
+      <td style="text-align:right">$58.88</td>
+    </tr>
+  </table>
+  <div style="display:flex; gap:32px">
+    <div style="flex:1; display:flex; flex-direction:column; gap:6px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:68px; font-weight:600; color:#142420; line-height:1">$138.80</p>
+      <p style="font-size:24px; color:#5B6D64">Design-service example: customer price</p>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:6px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:68px; font-weight:600; color:#142420; line-height:1">$100.00</p>
+      <p style="font-size:24px; color:#5B6D64">Designer payout</p>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:6px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:68px; font-weight:600; color:#1C7A54; line-height:1">$28.07</p>
+      <p style="font-size:24px; color:#5B6D64">Modeled platform contribution (~20.2%)</p>
+    </div>
+  </div>
+  <p style="position:absolute; left:128px; bottom:64px; width:900px; font-size:24px; font-weight:500; color:#5B6D64">Illustrative pricing sensitivities, not historical averages</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">08 / 15</p>
+</section>
+<section id="competition" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:32px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">09 · Competition</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">A friendlier front door</h2>
+    <p style="font-size:30px; font-weight:400; color:#5B6D64; line-height:1.4; width:1600px">3DPrintDash competes on the experience around manufacturing, not on production depth.</p>
+  </div>
+  <table style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#142420">
+    <tr style="background:#123C31">
+      <th style="width:20%; color:#FBFBF8; text-align:left">Alternative</th>
+      <th style="width:40%; color:#FBFBF8; text-align:left">What they offer</th>
+      <th style="width:40%; color:#FBFBF8; text-align:left">3DPrintDash's edge</th>
+    </tr>
+    <tr>
+      <td>Protolabs</td>
+      <td>CAD upload, part configuration, and manufacturing analysis for production requirements</td>
+      <td>A guided entry from an idea, image, or model: the full purchase journey on a phone</td>
+    </tr>
+    <tr style="background:#F3F7F4">
+      <td>Xometry</td>
+      <td>Instant quoting on uploaded CAD, with broad industrial materials and processes</td>
+      <td>Makes small custom jobs accessible alongside design creation and independent capacity</td>
+    </tr>
+    <tr>
+      <td>Craftcloud</td>
+      <td>Price comparison across vetted manufacturing partners</td>
+      <td>Creation, quoting, operator acceptance, and delivery in one experience</td>
+    </tr>
+    <tr style="background:#F3F7F4">
+      <td>Treatstock</td>
+      <td>A marketplace for printing, design, and manufacturing services</td>
+      <td>One consistent mobile journey and a simple operator workflow</td>
+    </tr>
+    <tr>
+      <td>AI design tools</td>
+      <td>Text-to-3D and image-to-3D generation tools and APIs</td>
+      <td>Connects creation to a fulfilled physical order</td>
+    </tr>
+  </table>
+  <p style="font-size:28px; color:#142420; line-height:1.4; width:1600px">The experience is the differentiator today; reliable fulfillment compounds it over time.</p>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">09 / 15</p>
+</section>
+<section id="gtm" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:28px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">10 · Go-To-Market</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">Prove it small, then scale</h2>
+    <p style="font-size:30px; font-weight:400; color:#5B6D64; line-height:1.4; width:1600px">Stage 1 runs a capped pilot to prove payback. Stage 2 adds a marketer and an agency once it does.</p>
+  </div>
+  <div style="display:flex; gap:24px">
+    <div style="flex:1; background:#0E2F27; padding:32px; display:flex; flex-direction:column; gap:6px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:60px; font-weight:600; color:#FBFBF8; line-height:1">$3,000</p>
+      <p style="font-size:24px; color:#9FC4B5">Meta · first media tranche</p>
+    </div>
+    <div style="flex:1; background:#0E2F27; padding:32px; display:flex; flex-direction:column; gap:6px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:60px; font-weight:600; color:#FBFBF8; line-height:1">$2,000</p>
+      <p style="font-size:24px; color:#9FC4B5">Search · first media tranche</p>
+    </div>
+    <div style="flex:1; background:#0E2F27; padding:32px; display:flex; flex-direction:column; gap:6px">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:60px; font-weight:600; color:#FBFBF8; line-height:1">$1,000</p>
+      <p style="font-size:24px; color:#9FC4B5">TikTok · first tranche, up to</p>
+    </div>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:24px">
+    <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:10px">
+      <h3 style="font-size:28px; font-weight:600; color:#142420">Meta / Instagram</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Show practical use cases; test the mobile path from video to quote.</p>
+    </div>
+    <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:10px">
+      <h3 style="font-size:28px; font-weight:600; color:#142420">Google Search</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Reach people already searching for a specific print service or part.</p>
+    </div>
+    <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:10px">
+      <h3 style="font-size:28px; font-weight:600; color:#142420">TikTok / YouTube Shorts</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Reuse strong demonstration footage; test paid distribution in stages.</p>
+    </div>
+    <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:10px">
+      <h3 style="font-size:28px; font-weight:600; color:#142420">Campus, communities, referrals</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Recruit early buyers and suitable operators; collect feedback.</p>
+    </div>
+  </div>
+  <p style="font-size:24px; color:#5B6D64; line-height:1.4">The reusable creative library already includes the operator-recruitment spot from the previous page.</p>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">10 / 15</p>
+</section>
+<section id="ask" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:28px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">11 · The Ask</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">$150,000 to start, $300,000 staged</h2>
+    <p style="font-size:30px; font-weight:400; color:#5B6D64; line-height:1.4; width:1600px">The initial tranche funds legal groundwork, a fully deployed app, and a capped growth pilot built to prove payback.</p>
+  </div>
+  <div style="display:flex; gap:4px; height:64px">
+    <div style="width:165px; height:64px; background:#123C31"></div>
+    <div style="width:220px; height:64px; background:#1C7A54"></div>
+    <div style="width:330px; height:64px; background:#6FA98C"></div>
+    <div style="width:937px; height:64px; background:#C98A4B"></div>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:24px">
+    <div style="display:flex; flex-direction:column; gap:6px">
+      <div style="display:flex; align-items:center; gap:10px">
+        <div style="width:16px; height:16px; background:#123C31"></div>
+        <p style="font-size:24px; color:#5B6D64">Legal & IP</p>
+      </div>
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:40px; font-weight:600; color:#142420">$15,000</p>
+      <p style="font-size:24px; color:#5B6D64">10% of tranche</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px">
+      <div style="display:flex; align-items:center; gap:10px">
+        <div style="width:16px; height:16px; background:#1C7A54"></div>
+        <p style="font-size:24px; color:#5B6D64">App & tech deployment</p>
+      </div>
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:40px; font-weight:600; color:#142420">$20,000</p>
+      <p style="font-size:24px; color:#5B6D64">13% of tranche</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px">
+      <div style="display:flex; align-items:center; gap:10px">
+        <div style="width:16px; height:16px; background:#6FA98C"></div>
+        <p style="font-size:24px; color:#5B6D64">Growth & marketing pilots</p>
+      </div>
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:40px; font-weight:600; color:#142420">$30,000</p>
+      <p style="font-size:24px; color:#5B6D64">20% of tranche</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px">
+      <div style="display:flex; align-items:center; gap:10px">
+        <div style="width:16px; height:16px; background:#C98A4B"></div>
+        <p style="font-size:24px; color:#5B6D64">Operations & reprint buffer</p>
+      </div>
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:40px; font-weight:600; color:#142420">$85,000</p>
+      <p style="font-size:24px; color:#5B6D64">57% of tranche</p>
+    </div>
+  </div>
+  <div style="background:#E7F3EC; padding:28px 36px">
+    <p style="font-size:28px; color:#123C31; line-height:1.3">$150,000 more follows in Stage 2, released once the pilot proves payback, not on a calendar date.</p>
+  </div>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">11 / 15</p>
+</section>
+<section id="milestones" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:28px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">12 · Milestones</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">Two stages, two sets of proof</h2>
+    <p style="font-size:30px; font-weight:400; color:#5B6D64; line-height:1.4; width:1600px">Stage 2 is not a calendar date. It is released when Stage 1 proves the model works.</p>
+  </div>
+  <div style="display:flex; gap:24px">
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:36px; display:flex; flex-direction:column; gap:20px">
+      <div style="display:flex; flex-direction:column; gap:4px">
+        <p style="font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#1C7A54">Stage 1 · this round</p>
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:56px; font-weight:600; color:#142420; line-height:1">$150,000</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px">
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <div style="width:4px; height:28px; background:#1C7A54"></div>
+          <p style="font-size:24px; color:#142420; line-height:1.4">Deploy and operate the full app in market</p>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <div style="width:4px; height:28px; background:#1C7A54"></div>
+          <p style="font-size:24px; color:#142420; line-height:1.4">Onboard the founding 100-operator cohort</p>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <div style="width:4px; height:28px; background:#1C7A54"></div>
+          <p style="font-size:24px; color:#142420; line-height:1.4">Run capped paid pilots on Meta, Search, and TikTok</p>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <div style="width:4px; height:28px; background:#1C7A54"></div>
+          <p style="font-size:24px; color:#142420; line-height:1.4">Prove payback and validate order economics</p>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1; background:#0E2F27; padding:36px; display:flex; flex-direction:column; gap:20px">
+      <div style="display:flex; flex-direction:column; gap:4px">
+        <p style="font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#7FD9B0">Stage 2 · on proof</p>
+        <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:56px; font-weight:600; color:#FBFBF8; line-height:1">$150,000</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px">
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <div style="width:4px; height:28px; background:#7FD9B0"></div>
+          <p style="font-size:24px; color:#9FC4B5; line-height:1.4">Released once Stage 1 shows payback and stable unit economics</p>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <div style="width:4px; height:28px; background:#7FD9B0"></div>
+          <p style="font-size:24px; color:#9FC4B5; line-height:1.4">Hire a dedicated marketer and an outside growth agency</p>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <div style="width:4px; height:28px; background:#7FD9B0"></div>
+          <p style="font-size:24px; color:#9FC4B5; line-height:1.4">Scale paid growth past the capped pilot budgets</p>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <div style="width:4px; height:28px; background:#7FD9B0"></div>
+          <p style="font-size:24px; color:#9FC4B5; line-height:1.4">Expand the operator network beyond the founding cohort</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">12 / 15</p>
+</section>
+<section id="roadmap" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:32px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">13 · Roadmap</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">The next eighteen months</h2>
+  </div>
+  <div style="display:flex; gap:20px">
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#1C7A54">Now</p>
+      <h3 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:28px; font-weight:600; color:#142420; line-height:1.2">Close Stage 1</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Finish legal groundwork and deploy the app fully</p>
+    </div>
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#1C7A54">0–3 mo</p>
+      <h3 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:28px; font-weight:600; color:#142420; line-height:1.2">Recruit & pilot</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Onboard the founding operator cohort, launch capped pilots</p>
+    </div>
+    <div style="flex:1; background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#1C7A54">3–9 mo</p>
+      <h3 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:28px; font-weight:600; color:#142420; line-height:1.2">Prove payback</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Scale pilots until unit economics clear the Stage 2 bar</p>
+    </div>
+    <div style="flex:1; background:#0E2F27; padding:28px; display:flex; flex-direction:column; gap:12px">
+      <p style="font-size:24px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#7FD9B0">9–18 mo</p>
+      <h3 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:28px; font-weight:600; color:#FBFBF8; line-height:1.2">Scale, Stage 2</h3>
+      <p style="font-size:24px; color:#9FC4B5; line-height:1.4">Add a marketer and agency; expand the operator network</p>
+    </div>
+  </div>
+  <p style="font-size:28px; color:#142420; line-height:1.4; width:1600px">Every phase after Stage 1 depends on the one before it clearing its bar, not the calendar.</p>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">13 / 15</p>
+</section>
+<section id="team" data-transition="fade" style="background:#FBFBF8; color:#142420; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:32px">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#1C7A54">14 · Team</p>
+    <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; color:#142420">Built by one founder, moving fast</h2>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:6px">
+    <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:48px; font-weight:600; color:#142420">Benyamin Louwrens</p>
+    <p style="font-size:28px; color:#5B6D64">Founder · San Diego, California</p>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:24px">
+    <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:10px">
+      <h3 style="font-size:26px; font-weight:600; color:#142420; line-height:1.3">Product</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Built and shipped the live app end to end</p>
+    </div>
+    <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:10px">
+      <h3 style="font-size:26px; font-weight:600; color:#142420; line-height:1.3">Growth creative</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Wrote, shot, and cut the operator-recruitment ad in-house</p>
+    </div>
+    <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:10px">
+      <h3 style="font-size:26px; font-weight:600; color:#142420; line-height:1.3">Legal & compliance</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Handled DMCA, CA sales tax, copyright, and contractor groundwork</p>
+    </div>
+    <div style="background:#FFFFFF; border:1px solid #DCE6E0; padding:28px; display:flex; flex-direction:column; gap:10px">
+      <h3 style="font-size:26px; font-weight:600; color:#142420; line-height:1.3">Operations</h3>
+      <p style="font-size:24px; color:#5B6D64; line-height:1.4">Runs the live operator-application funnel today</p>
+    </div>
+  </div>
+  <p style="font-size:28px; color:#142420; line-height:1.4; width:1600px">This raise funds the people and tools to do less of this alone.</p>
+  <p style="position:absolute; left:128px; bottom:64px; width:700px; font-size:24px; font-weight:500; color:#5B6D64">3DPrintDash · Confidential</p>
+  <p style="position:absolute; right:128px; bottom:64px; width:200px; font-size:24px; font-weight:500; color:#5B6D64; text-align:right">14 / 15</p>
+</section>
+<section id="close" data-transition="fade" style="background:#0E2F27; color:#FBFBF8; font-family:'IBM Plex Sans', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
+  <p style="font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#7FD9B0">15 · Thank You</p>
+  <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:96px; font-weight:600; line-height:1.1; color:#FBFBF8; width:1500px">Type an idea. Hold it in your hands.</h2>
+  <p style="font-size:32px; color:#9FC4B5; line-height:1.4; width:1400px">$150,000 to prove it. $300,000 to build it. One founder who already has.</p>
+  <div style="display:flex; gap:64px">
+    <div style="display:flex; flex-direction:column; gap:4px">
+      <p style="font-size:24px; color:#7FD9B0; letter-spacing:2px; text-transform:uppercase">Founder</p>
+      <p style="font-size:28px; color:#FBFBF8">Benyamin Louwrens</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:4px">
+      <p style="font-size:24px; color:#7FD9B0; letter-spacing:2px; text-transform:uppercase">Web</p>
+      <p style="font-size:28px; color:#FBFBF8">3dprintdash.com</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:4px">
+      <p style="font-size:24px; color:#7FD9B0; letter-spacing:2px; text-transform:uppercase">Location</p>
+      <p style="font-size:28px; color:#FBFBF8">San Diego, California</p>
+    </div>
+  </div>
+</section>
+<!--SLIDES:END-->
+</main>
+</div>
+<nav id="bar" aria-label="Slide controls">
+  <div id="progress" aria-hidden="true"><i></i></div>
+  <div class="brand">
+    <svg viewBox="0 0 1024 1024" aria-hidden="true"><rect width="1024" height="1024" rx="236" fill="#0D0D0F"/><g transform="translate(215 409.0895) scale(2.97)"><rect x="30.2" width="169.8" height="27.3" rx="13.7" fill="#fff"/><rect y="42.9" width="109.3" height="26.3" rx="13.2" fill="#fff"/></g></svg>
+    <span>3DPrintDash</span>
+  </div>
+  <div class="pager">
+    <button class="btn" id="prev" type="button" aria-label="Previous slide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+    <span id="count" aria-live="polite"></span>
+    <button class="btn" id="next" type="button" aria-label="Next slide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+  </div>
+  <div class="tools">
+    <button class="btn" id="mode" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="7" rx="1.5"/><rect x="3" y="14" width="18" height="7" rx="1.5"/></svg><span class="lbl">All slides</span></button>
+    <button class="btn" id="fs" type="button" aria-label="Full screen" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+  </div>
+</nav>
+<script>
+(function(){
+  var ICONS={
+    Lightbulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+    Check:'<path d="M20 6 9 17l-5-5"/>',
+    Tool:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+    PaperPlane:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+    Play:'<polygon points="6 3 20 12 6 21 6 3"/>',
+    Users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    Verified:'<path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/>'
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('x-icon'),function(el){
+    el.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[el.getAttribute('name')]||'<circle cx="12" cy="12" r="4"/>')+'</svg>';
+  });
+
+  var body=document.body, stage=document.getElementById('stage'), track=document.getElementById('track');
+  var sections=Array.prototype.slice.call(track.querySelectorAll(':scope > section'));
+  var n=sections.length, pad2=function(k){return (k<10?'0':'')+k;};
+  var items=sections.map(function(sec,k){
+    var item=document.createElement('div'); item.className='item';
+    item.setAttribute('role','group'); item.setAttribute('aria-roledescription','slide'); item.setAttribute('aria-label',(k+1)+' of '+n);
+    var num=document.createElement('div'); num.className='num'; num.textContent=pad2(k+1);
+    var frame=document.createElement('div'); frame.className='frame';
+    sec.parentNode.insertBefore(item,sec); frame.appendChild(sec); item.appendChild(num); item.appendChild(frame);
+    frame.addEventListener('click',function(e){ if(body.classList.contains('overview')){ e.stopPropagation(); setMode(false); go(k); } });
+    return {item:item,frame:frame,sec:sec};
+  });
+
+  // The recruitment spot: poster first, the real video only once someone presses play.
+  Array.prototype.forEach.call(track.querySelectorAll('img[data-video]'),function(img){
+    var host=img.parentElement; host.style.position='relative';
+    var b=document.createElement('button'); b.type='button'; b.className='play'; b.setAttribute('aria-label','Play video');
+    b.innerHTML='<svg viewBox="0 0 24 24" fill="#FBFBF8" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
+    b.addEventListener('click',function(e){
+      e.stopPropagation();
+      var v=document.createElement('video');
+      v.src=img.getAttribute('data-video'); v.poster=img.src; v.controls=true; v.playsInline=true; v.setAttribute('playsinline','');
+      v.style.cssText=img.style.cssText; v.addEventListener('click',function(ev){ev.stopPropagation();});
+      img.replaceWith(v); b.remove(); var p=v.play(); if(p&&p.catch)p.catch(function(){});
+    });
+    host.appendChild(b);
+  });
+
+  var i=0, overview=false;
+  var prev=document.getElementById('prev'), next=document.getElementById('next'), count=document.getElementById('count');
+  var bar=document.querySelector('#progress i'), modeBtn=document.getElementById('mode'), fsBtn=document.getElementById('fs');
+
+  function layout(){
+    var w=stage.clientWidth, h=stage.clientHeight, s;
+    if(overview){ s=Math.min(w-32,1200)/1920; }
+    else { var p=w<700?10:28; s=Math.min((w-2*p)/1920,(h-2*p)/1080); }
+    s=Math.max(s,0.05);
+    items.forEach(function(it){
+      it.frame.style.width=(1920*s)+'px'; it.frame.style.height=(1080*s)+'px';
+      it.sec.style.transform='scale('+s+')';
+    });
+  }
+  function render(){
+    items.forEach(function(it,k){
+      var on=k===i; it.item.classList.toggle('on',on);
+      if(overview) it.item.removeAttribute('aria-hidden'); else it.item.setAttribute('aria-hidden',on?'false':'true');
+      if(!on&&!overview) Array.prototype.forEach.call(it.sec.querySelectorAll('video'),function(v){v.pause();});
+    });
+    count.innerHTML=overview?(n+' slides'):('<b>'+pad2(i+1)+'</b> / '+pad2(n));
+    prev.disabled=i===0; next.disabled=i===n-1;
+    bar.style.width=(overview?100:((i+1)/n*100))+'%';
+    try{ history.replaceState(null,'','#'+(i+1)); }catch(e){}
+  }
+  function go(k){ i=Math.max(0,Math.min(n-1,k)); render(); }
+  function setMode(ov){
+    overview=ov; body.classList.toggle('overview',ov);
+    modeBtn.setAttribute('aria-pressed',String(ov));
+    modeBtn.querySelector('.lbl').textContent=ov?'Present':'All slides';
+    layout(); render();
+    if(ov){ stage.scrollTop=0; items[i].item.scrollIntoView({block:'center'}); }
+  }
+
+  prev.addEventListener('click',function(){go(i-1);});
+  next.addEventListener('click',function(){go(i+1);});
+  modeBtn.addEventListener('click',function(){setMode(!overview);});
+
+  if(document.fullscreenEnabled){
+    fsBtn.hidden=false;
+    fsBtn.addEventListener('click',function(){
+      if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(function(){});
+    });
+  }
+
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    var t=e.target; if(t&&(t.tagName==='VIDEO'||t.tagName==='INPUT')) return;
+    var k=e.key;
+    if(!overview&&(k==='ArrowRight'||k==='PageDown'||(k===' '&&!e.shiftKey))){ e.preventDefault(); go(i+1); }
+    else if(!overview&&(k==='ArrowLeft'||k==='PageUp'||(k===' '&&e.shiftKey))){ e.preventDefault(); go(i-1); }
+    else if(!overview&&k==='Home'){ e.preventDefault(); go(0); }
+    else if(!overview&&k==='End'){ e.preventDefault(); go(n-1); }
+    else if(k==='g'||k==='G'){ setMode(!overview); }
+    else if(k==='Escape'&&overview){ setMode(false); }
+    else if((k==='f'||k==='F')&&!fsBtn.hidden){ fsBtn.click(); }
+  });
+
+  // Present mode: tap/click the right side to advance, the left third to go back; swipe on touch.
+  var sx=null, sy=null, swiped=false;
+  stage.addEventListener('pointerdown',function(e){ sx=e.clientX; sy=e.clientY; swiped=false; });
+  stage.addEventListener('pointerup',function(e){
+    if(overview||sx===null) return;
+    var dx=e.clientX-sx, dy=e.clientY-sy; sx=null;
+    if(e.pointerType!=='mouse'&&Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.2){ swiped=true; go(i+(dx<0?1:-1)); }
+  });
+  stage.addEventListener('click',function(e){
+    if(overview) return;
+    if(swiped){ swiped=false; return; }
+    if(e.target.closest&&e.target.closest('button,video,a')) return;
+    var r=stage.getBoundingClientRect();
+    go(e.clientX-r.left<r.width*0.3?i-1:i+1);
+  });
+
+  if(window.ResizeObserver) new ResizeObserver(layout).observe(stage); else window.addEventListener('resize',layout);
+
+  var fromHash=function(){ var k=parseInt((location.hash||'').slice(1),10); return k>=1&&k<=n?k-1:null; };
+  if(fromHash()!==null) i=fromHash();
+  window.addEventListener('hashchange',function(){ var k=fromHash(); if(k!==null&&k!==i){ if(overview) setMode(false); go(k); } });
+  setMode(window.matchMedia('(max-width: 760px)').matches);
+
+  var shown=false, reveal=function(){ if(shown) return; shown=true; body.classList.remove('loading'); layout(); };
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(reveal);
+  setTimeout(reveal,1800);
+})();
+</script>
+</body>
+</html>
