@@ -149,3 +149,28 @@
   for = "/jam8kAuHyMDar5HkbgidFg/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow, noarchive"
+
+# Combined sub-processors/status page for the sister sites (2026-09-18), same unlisted pattern
+# as jam8kAuHyMDar5HkbgidFg above: reachable only by its exact URL, absent from sitemap.xml and
+# robots.txt. 3D Print Dash keeps its own separate page at status.3dprintdash.com and is not
+# repeated here.
+[[redirects]]
+  from = "/1LhYKNpDUb9vRK95brXe"
+  to = "/1LhYKNpDUb9vRK95brXe/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/1LhYKNpDUb9vRK95brXe/"
+  to = "/1LhYKNpDUb9vRK95brXe/index.html"
+  status = 200
+
+[[headers]]
+  for = "/1LhYKNpDUb9vRK95brXe"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/1LhYKNpDUb9vRK95brXe/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"

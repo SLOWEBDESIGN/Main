@@ -182,7 +182,17 @@ export const Footer: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.1 }}
         >
           <p>
-            © {currentYear} SLO Web Design. All rights reserved. • Based in San Luis Obispo, California
+            © {currentYear} SLO Web Design. All rights reserved. • Based in San Luis Obispo, California{' '}
+            •{' '}
+            {/* Unlisted sub-processors/status page for this site and the other SLOWEBDESIGN
+                sites (not 3D Print Dash, which keeps its own page above). Not in the nav or
+                the sitemap on purpose — see netlify.toml. */}
+            <a
+              href="/1LhYKNpDUb9vRK95brXe"
+              className="text-secondary-300 hover:text-secondary-100 transition-colors"
+            >
+              Status
+            </a>
           </p>
           <div className="flex items-center gap-6 mt-4 md:mt-0">
             <p>
