@@ -67,11 +67,9 @@
     {
       name: "SLO Fulfillment",
       url: "https://slocalfulfillment.com",
-      note: "not live yet",
+      note: "a rebuild is pending cutover — this list is for the site live there today",
       deps: [
-        { name: "Supabase", desc: "Form submissions — shared", url: "https://status.supabase.com" },
-        { name: "Resend", desc: "Email", url: "https://resend-status.com" },
-        { name: "Netlify", desc: "Hosting", url: "https://www.netlifystatus.com" }
+        { name: "Netlify", desc: "Hosting & form handling", url: "https://www.netlifystatus.com" }
       ]
     },
     {
@@ -85,7 +83,8 @@
     },
     {
       name: "Sensorium Therapy",
-      url: "https://sensoriumtherapy.com",
+      url: null,
+      note: "domain not live — not pointed at the deployed site",
       deps: [
         { name: "Formspree", desc: "Contact form", url: "https://www.formspreestatus.com" },
         { name: "Google Fonts", desc: "Web fonts", url: "https://status.cloud.google.com" }
