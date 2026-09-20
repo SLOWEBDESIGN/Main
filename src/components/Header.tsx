@@ -2,8 +2,11 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import type { BrandVariant } from '@/src/lib/schema';
+import { getBrandCopy } from '@/src/lib/schema';
 
-export const Header: React.FC = () => {
+export const Header: React.FC<{ variant?: BrandVariant }> = ({ variant = 'slowebdesign' }) => {
+  const copy = getBrandCopy(variant);
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: 'smooth' });
@@ -18,7 +21,7 @@ export const Header: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          SLO Web Design
+          {copy.siteName}
         </motion.div>
         
         <div className="flex gap-8 items-center">

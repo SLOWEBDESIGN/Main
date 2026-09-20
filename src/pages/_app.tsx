@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import * as gtag from '@/src/lib/analytics';
 import '@/src/styles/globals.css';
+import '@/src/styles/redesign.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();

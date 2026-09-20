@@ -3,9 +3,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Github, Instagram } from 'lucide-react';
+import type { BrandVariant } from '@/src/lib/schema';
+import { getBrandCopy } from '@/src/lib/schema';
 
-export const Footer: React.FC = () => {
+export const Footer: React.FC<{ variant?: BrandVariant }> = ({ variant = 'slowebdesign' }) => {
   const currentYear = new Date().getFullYear();
+  const copy = getBrandCopy(variant);
 
   return (
     <footer className="bg-primary-700 text-secondary-100 py-16 px-6">
@@ -20,10 +23,10 @@ export const Footer: React.FC = () => {
           {/* Brand */}
           <div>
             <div className="logo text-2xl mb-4 text-secondary-100">
-              SLO Web Design
+              {copy.siteName}
             </div>
             <p className="text-secondary-200 text-sm leading-relaxed">
-              Premium web design agency in San Luis Obispo, California.
+              {copy.footerCopy}
             </p>
           </div>
 
@@ -125,7 +128,7 @@ export const Footer: React.FC = () => {
               </a>
               <div className="flex items-center gap-2 text-secondary-200">
                 <MapPin size={16} />
-                San Luis Obispo, CA
+                {copy.city}, CA
               </div>
             </div>
           </div>
@@ -182,7 +185,7 @@ export const Footer: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.1 }}
         >
           <p>
-            © {currentYear} SLO Web Design. All rights reserved. • Based in San Luis Obispo, California{' '}
+            © {currentYear} Domain owner. No rights reserved. • {copy.city}, California{' '}
             •{' '}
             {/* Unlisted sub-processors/status page for this site and the other SLOWEBDESIGN
                 sites (not 3D Print Dash, which keeps its own page above). Not in the nav or
@@ -196,13 +199,7 @@ export const Footer: React.FC = () => {
           </p>
           <div className="flex items-center gap-6 mt-4 md:mt-0">
             <p>
-              Designed by{' '}
-              <a
-                href="https://slowebdesign.com"
-                className="font-medium text-secondary-100 hover:text-white underline-offset-2 hover:underline transition-colors"
-              >
-                SLO Web Design
-              </a>
+              Temporary project name; domain operated by the site owner.
             </p>
             <a
               href="https://www.instagram.com/slowebdesign/"

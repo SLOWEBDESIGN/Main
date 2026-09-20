@@ -3,8 +3,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import type { BrandVariant } from '@/src/lib/schema';
+import { getBrandCopy } from '@/src/lib/schema';
 
-export const Hero: React.FC = () => {
+export const Hero: React.FC<{ variant?: BrandVariant }> = ({ variant = 'slowebdesign' }) => {
+  const copy = getBrandCopy(variant);
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: 'smooth' });
@@ -19,7 +22,12 @@ export const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          Modern Websites for<br />San Luis Obispo Businesses
+          {copy.heroTitle.split('\n').map((line, index) => (
+            <React.Fragment key={line + index}>
+              {index > 0 && <br />}
+              {line}
+            </React.Fragment>
+          ))}
         </motion.h1>
 
         <motion.p
@@ -28,7 +36,7 @@ export const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
         >
-          We modernize outdated websites and build beautiful, high-performing websites from scratch. Local service with personalized attention.
+          {copy.heroText}
         </motion.p>
 
         <motion.div
@@ -58,7 +66,7 @@ export const Hero: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          San Luis Obispo, California • 530-215-5987
+          {copy.locationLine}
         </motion.p>
       </div>
     </section>
