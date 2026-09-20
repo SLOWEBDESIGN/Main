@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowDownRight, ArrowUpRight, Check, MoveUpRight, X } from 'lucide-react';
 import { ContactForm } from '@/src/components/ContactForm';
 import { BookingScheduler } from '@/src/components/BookingScheduler';
+import { ThemeToggle } from '@/src/components/ThemeToggle';
 import type { BrandVariant } from '@/src/lib/schema';
 import { getBrandCopy } from '@/src/lib/schema';
 
@@ -78,6 +79,8 @@ export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) =
         </nav>
         <div className="redesign-nav-actions">
           <a className="redesign-text-link" href="/legacy">Original site <ArrowUpRight size={15} /></a>
+          <a className="redesign-text-link" href="/projects">Fun projects <ArrowUpRight size={15} /></a>
+          <ThemeToggle />
           <a className="redesign-dark-button" href="#contact">Start a project <ArrowUpRight size={15} /></a>
         </div>
       </header>
@@ -199,7 +202,7 @@ export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) =
 
       <footer className="redesign-footer">
         <div className="redesign-footer-main"><a href="#top" className="redesign-wordmark"><span className="redesign-mark">S</span><span>{copy.siteName}</span></a><p>Independent web design for {location} and everywhere a good idea needs a home.</p><a className="redesign-dark-button" href="#top">Back to top <ArrowUpRight size={15} /></a></div>
-        <div className="redesign-footer-bottom"><span>© {new Date().getFullYear()} Domain owner. No rights reserved.</span><span>Temporary project name; domain operated by the site owner.</span><span><a href="/1LhYKNpDUb9vRK95brXe/index.html">All site statuses</a> · <a href="/legacy">Original site</a></span></div>
+        <div className="redesign-footer-bottom"><span>© {new Date().getFullYear()} Domain owner. No rights reserved.</span><span>Temporary project name; domain operated by the site owner.</span><span><a href="/projects">Fun projects</a> · <a href="/1LhYKNpDUb9vRK95brXe/index.html">All site statuses</a> · <a href="/legacy">Original site</a></span></div>
       </footer>
 
       {modal && (

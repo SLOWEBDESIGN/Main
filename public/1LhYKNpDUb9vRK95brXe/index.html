@@ -18,7 +18,7 @@
         <span class="brand-word">SLOWEBDESIGN</span>
       </span>
     </a>
-    <a class="home" href="/">slowebdesign.com →</a>
+    <div class="status-actions"><a class="home" href="/">slowebdesign.com →</a><button id="theme-toggle" type="button" aria-label="Switch theme">Dark mode</button></div>
   </div>
 </header>
 
@@ -47,6 +47,20 @@
 </footer>
 
 <script>
+  (function () {
+    var saved = localStorage.getItem('slo-theme');
+    var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    var button = document.getElementById('theme-toggle');
+    button.textContent = dark ? 'Light mode' : 'Dark mode';
+    button.addEventListener('click', function () {
+      dark = !dark;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      localStorage.setItem('slo-theme', dark ? 'dark' : 'light');
+      button.textContent = dark ? 'Light mode' : 'Dark mode';
+    });
+  }());
+
   /* ── EDIT HERE when a site's dependency list changes ─────────────────────────
      One entry per site. Each dependency links to that vendor's own public status
      page — this page does not attempt to track live uptime itself, it points at

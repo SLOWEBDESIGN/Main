@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 :root { --ink:#111; --paper:#f5f4f0; --muted:#77766f; --line:#d8d7d1; --red:#bd5b52; --lime:#d9ff48; }
+:root[data-theme='dark'] { --ink:#f3f1eb; --paper:#171817; --muted:#aaa9a1; --line:#3b3c38; --red:#d4776e; --lime:#d9ff48; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body { margin:0; background:var(--paper); color:var(--ink); font-family:'Space Grotesk','Helvetica Neue',sans-serif; }
@@ -11,6 +12,7 @@ a { color:inherit; }
 .brand::before { content:'S'; display:grid; place-items:center; width:25px; height:25px; border-radius:50%; background:var(--ink); color:var(--paper); font-size:13px; }
 .brand-text { display:block !important; }.brand-word { font-size:inherit; }
 .home { border-bottom:1px solid var(--ink); font:10px 'DM Mono',monospace; letter-spacing:.04em; text-decoration:none; padding-bottom:4px; text-transform:uppercase; }
+.status-actions { display:flex; align-items:center; gap:20px; }.status-actions button { border:1px solid var(--line); border-radius:999px; background:transparent; color:var(--ink); padding:8px 11px; cursor:pointer; font:10px 'DM Mono',monospace; text-transform:uppercase; }.status-actions button:hover { background:var(--line); }
 main.wrap { padding:100px 0 120px; }
 .overall { position:relative; display:grid; grid-template-columns:1.2fr .8fr; gap:80px; align-items:end; padding-bottom:70px; }
 h1 { max-width:860px; margin:20px 0 0; font-size:clamp(3.5rem,8vw,8.5rem); line-height:.87; letter-spacing:-.09em; font-weight:500; }

@@ -196,6 +196,13 @@ export const Footer: React.FC<{ variant?: BrandVariant }> = ({ variant = 'sloweb
             >
               Status
             </a>
+            {' • '}
+            <a
+              href="/projects"
+              className="text-secondary-300 hover:text-secondary-100 transition-colors"
+            >
+              Fun projects
+            </a>
           </p>
           <div className="flex items-center gap-6 mt-4 md:mt-0">
             <p>
