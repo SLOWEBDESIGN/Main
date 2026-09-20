@@ -49,7 +49,7 @@ export default function Projects({ variant }: InferGetServerSidePropsType<typeof
   return (
     <>
       <Head>
-        <title>Fun projects | {copy.siteName}</title>
+        <title>{'Fun projects | ' + copy.siteName}</title>
         <meta name="description" content="A living notebook of websites, tools, and experiments from the SLOWEBDESIGN studio." />
         <link rel="canonical" href={`${copy.canonical}/projects`} />
       </Head>

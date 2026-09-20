@@ -5,6 +5,8 @@ import { ArrowDownRight, ArrowUpRight, Check, MoveUpRight, X } from 'lucide-reac
 import { ContactForm } from '@/src/components/ContactForm';
 import { BookingScheduler } from '@/src/components/BookingScheduler';
 import { ThemeToggle } from '@/src/components/ThemeToggle';
+import { GrowthStudio } from '@/src/components/GrowthStudio';
+import { CapabilityEcosystem } from '@/src/components/CapabilityEcosystem';
 import type { BrandVariant } from '@/src/lib/schema';
 import { getBrandCopy } from '@/src/lib/schema';
 
@@ -121,6 +123,9 @@ export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) =
             ))}
           </div>
         </section>
+
+        <GrowthStudio />
+        <CapabilityEcosystem />
 
         <section className="redesign-comparison" aria-labelledby="comparison-title">
           <div className="redesign-section-heading"><p className="redesign-kicker">A before / after you can inspect</p><span>Choose a version</span></div>
