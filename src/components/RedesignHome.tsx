@@ -199,7 +199,7 @@ export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) =
 
       <footer className="redesign-footer">
         <div className="redesign-footer-main"><a href="#top" className="redesign-wordmark"><span className="redesign-mark">S</span><span>{copy.siteName}</span></a><p>Independent web design for {location} and everywhere a good idea needs a home.</p><a className="redesign-dark-button" href="#top">Back to top <ArrowUpRight size={15} /></a></div>
-        <div className="redesign-footer-bottom"><span>© {new Date().getFullYear()} Domain owner. No rights reserved.</span><span>Temporary project name; domain operated by the site owner.</span><span><a href="/1LhYKNpDUb9vRK95brXe">Status</a> · <a href="/legacy">Original site</a></span></div>
+        <div className="redesign-footer-bottom"><span>© {new Date().getFullYear()} Domain owner. No rights reserved.</span><span>Temporary project name; domain operated by the site owner.</span><span><a href="/1LhYKNpDUb9vRK95brXe/index.html">All site statuses</a> · <a href="/legacy">Original site</a></span></div>
       </footer>
 
       {modal && (

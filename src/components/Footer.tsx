@@ -191,7 +191,7 @@ export const Footer: React.FC<{ variant?: BrandVariant }> = ({ variant = 'sloweb
                 sites (not 3D Print Dash, which keeps its own page above). Not in the nav or
                 the sitemap on purpose — see netlify.toml. */}
             <a
-              href="/1LhYKNpDUb9vRK95brXe"
+              href="/1LhYKNpDUb9vRK95brXe/index.html"
               className="text-secondary-300 hover:text-secondary-100 transition-colors"
             >
               Status

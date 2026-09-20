@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Sub-processors & status — SLOWEBDESIGN sites</title>
 <meta name="description" content="Third-party services used by SLOWEBDESIGN's sites, and where to check each one's live status." />
-<meta name="theme-color" content="#0A0A0B" />
-<link rel="icon" href="/3dprintdash/assets/favicon.svg" />
-<link rel="stylesheet" href="/3dprintdash/assets/site.css" />
+<meta name="theme-color" content="#f5f4f0" />
+<link rel="icon" type="image/svg+xml" href="/favicon-animated.svg" />
+<link rel="stylesheet" href="/1LhYKNpDUb9vRK95brXe/status.css" />
 </head>
 <body>
 
@@ -56,6 +56,18 @@
     {
       name: "SLO Web Design",
       url: "https://slowebdesign.com",
+      deps: [
+        { name: "Supabase", desc: "Sign-in & data — shared", url: "https://status.supabase.com" },
+        { name: "Resend", desc: "Email", url: "https://resend-status.com" },
+        { name: "Netlify", desc: "Hosting", url: "https://www.netlifystatus.com" },
+        { name: "Google Analytics", desc: "Site analytics", url: "https://status.cloud.google.com" },
+        { name: "Stripe", desc: "Payment links (Essential/Growth/Priority plans)", url: "https://status.stripe.com" }
+      ]
+    },
+    {
+      name: "San Diego Web Design",
+      url: "https://sdwebdesign.tech",
+      note: "the San Diego host-aware version of this site",
       deps: [
         { name: "Supabase", desc: "Sign-in & data — shared", url: "https://status.supabase.com" },
         { name: "Resend", desc: "Email", url: "https://resend-status.com" },
