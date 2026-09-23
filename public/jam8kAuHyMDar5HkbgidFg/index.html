@@ -6,6 +6,13 @@
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#07130F">
+<script>
+(function(){try{
+  var f=/[?#&]k=[^&#]+/.test(location.search+location.hash);
+  if(!f){ f=!!sessionStorage.getItem('deck-k')||sessionStorage.getItem('deck-open')==='1'; }
+  if(f) document.documentElement.className+=' pre-unlocked';
+}catch(e){}})();
+</script>
 <title>3DPrintDash · Pitch Deck</title>
 <link rel="icon" type="image/svg+xml" href="/jam8kAuHyMDar5HkbgidFg/a/icon.svg">
 <link rel="apple-touch-icon" href="/jam8kAuHyMDar5HkbgidFg/a/apple-icon.png">
@@ -17,6 +24,7 @@
 html,body{height:100%;margin:0}
 body{display:flex;flex-direction:column;overflow:hidden;background:var(--stage);color:var(--ink);font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 @supports (height:100dvh){body{height:100dvh}}
+[hidden]{display:none!important}
 button{font:inherit;color:inherit}
 
 /* ── stage ─────────────────────────────────────────────── */
@@ -30,11 +38,16 @@ body.loading #track{opacity:0}
 .frame>section{position:absolute;left:0;top:0;transform-origin:0 0}
 
 body.overview #stage{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-body.overview #track{position:static;display:flex;flex-direction:column;align-items:center;gap:40px;padding:36px 16px 64px}
-body.overview .item{position:static;inset:auto;flex-direction:column;align-items:flex-start;gap:10px;opacity:1;visibility:visible;transition:none}
-body.overview .num{display:block;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.16em;color:var(--muted)}
-body.overview .frame{cursor:zoom-in;transition:box-shadow .15s ease}
-body.overview .frame:hover{box-shadow:0 0 0 2px var(--accent),0 30px 90px rgba(0,0,0,.5)}
+body.overview #track{position:static;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:34px 26px;align-items:start;max-width:1500px;margin:0 auto;padding:32px 28px 72px;box-sizing:border-box}
+body.overview .item{position:static;inset:auto;min-width:0;flex-direction:column;align-items:flex-start;gap:10px;opacity:1;visibility:visible;transition:none}
+body.overview .num{display:flex;align-items:baseline;gap:10px;max-width:100%;font:500 13px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:var(--muted)}
+body.overview .num b{flex:none;font:600 12px/1 'Space Grotesk',system-ui,sans-serif;letter-spacing:.14em;color:var(--accent)}
+body.overview .num span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.overview .frame{cursor:pointer;transition:box-shadow .15s ease}
+body.overview .frame:hover,body.overview .frame:focus-visible{box-shadow:0 0 0 2px var(--accent),0 20px 60px rgba(0,0,0,.5);outline:none}
+body.overview .item.on .frame{box-shadow:0 0 0 2px rgba(127,217,176,.55),0 20px 60px rgba(0,0,0,.45)}
+body.overview .play{pointer-events:none}
+@media (max-width:760px){body.overview #track{grid-template-columns:minmax(0,1fr);gap:30px;padding:24px 14px 64px}}
 
 /* ── controls ──────────────────────────────────────────── */
 #bar{position:relative;flex:none;height:var(--bar-h);padding:0 16px env(safe-area-inset-bottom);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:var(--bar);border-top:1px solid var(--line)}
@@ -81,7 +94,32 @@ body.overview .pager .btn{display:none}
 .play svg{width:48px;height:48px;margin-left:8px}
 .play:hover{background:rgba(28,122,84,.85)}
 
-@media (prefers-reduced-motion:reduce){#track,.item,.item.on,#progress i{transition:none}}
+.play.busy svg{opacity:.3}
+
+/* ── code gate ─────────────────────────────────────────── */
+#gate{position:fixed;inset:0;z-index:50;display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:max(7vh,28px) 20px 40px;background:radial-gradient(1100px 620px at 50% -8%,rgba(28,122,84,.28),transparent 62%),var(--stage);opacity:1;transition:opacity .28s ease}
+#gate.out{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s ease,visibility 0s linear .28s}
+.pre-unlocked #gate{display:none}
+.gate-card{width:100%;max-width:380px;margin:auto 0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.gate-mark{width:44px;height:44px;margin-bottom:22px}
+.gate-eyebrow{margin-bottom:14px;font:600 12px/1 'IBM Plex Sans',system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.gate-card h1{margin:0 0 10px;font:600 30px/1.15 'Space Grotesk',system-ui,sans-serif;letter-spacing:-.02em;color:var(--ink)}
+.gate-card .sub{margin:0 0 26px;max-width:32ch;font-size:15px;line-height:1.5;color:var(--muted)}
+.pin{display:flex;gap:12px;justify-content:center}
+.pin input{width:58px;height:70px;padding:0;border-radius:12px;border:1px solid var(--line);background:rgba(159,196,181,.06);color:var(--ink);font:600 30px/1 'Space Grotesk',system-ui,sans-serif;text-align:center;caret-color:var(--accent);-webkit-appearance:none;appearance:none;outline:none;transition:border-color .15s,background .15s,box-shadow .15s}
+.pin input:focus{border-color:var(--accent);background:rgba(127,217,176,.09);box-shadow:0 0 0 3px rgba(127,217,176,.18)}
+.pin input:disabled{opacity:.6}
+.pin.bad input{border-color:#E58A7B;box-shadow:0 0 0 3px rgba(229,138,123,.16)}
+.pin.shake{animation:shake .38s ease}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.gate-msg{min-height:22px;margin:14px 0 0;font-size:14px;line-height:1.4;color:var(--muted)}
+.gate-msg.err{color:#F0A99C}
+.gate-skip{height:46px;margin-top:20px;padding:0 20px;border-radius:11px;border:1px solid var(--line);background:transparent;font:500 15px/1 'IBM Plex Sans',system-ui,sans-serif;color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+.gate-skip:hover{background:rgba(127,217,176,.08);border-color:rgba(127,217,176,.38)}
+.gate-skip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gate-note{max-width:34ch;margin:12px 0 0;font-size:13px;line-height:1.45;color:var(--muted)}
+
+@media (prefers-reduced-motion:reduce){#track,.item,.item.on,#progress i,#gate,#gate.out{transition:none}.pin.shake{animation:none}}
 </style>
 </head>
 <body class="loading">
@@ -689,9 +727,27 @@ body.overview .pager .btn{display:none}
   </div>
   <div class="tools">
     <button class="btn" id="mode" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="7" rx="1.5"/><rect x="3" y="14" width="18" height="7" rx="1.5"/></svg><span class="lbl">All slides</span></button>
+    <button class="btn" id="sound" type="button" hidden title="Enter the code to turn on sound" aria-label="Sound is off. Enter the code to turn it on."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="lbl">Sound off</span></button>
     <button class="btn" id="fs" type="button" aria-label="Full screen" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
   </div>
 </nav>
+<div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="gate-card">
+    <svg class="gate-mark" viewBox="0 0 1024 1024" aria-hidden="true"><rect width="1024" height="1024" rx="236" fill="#0D0D0F"/><g transform="translate(215 409.0895) scale(2.97)"><rect x="30.2" width="169.8" height="27.3" rx="13.7" fill="#fff"/><rect y="42.9" width="109.3" height="26.3" rx="13.2" fill="#fff"/></g></svg>
+    <div class="gate-eyebrow">3DPrintDash &middot; Pitch deck</div>
+    <h1 id="gate-title">Enter the 4-digit code</h1>
+    <p class="sub">The code turns on the sound in the video on slide 5.</p>
+    <div class="pin" role="group" aria-label="4-digit code">
+      <input inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Digit 1 of 4">
+      <input inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Digit 2 of 4">
+      <input inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Digit 3 of 4">
+      <input inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Digit 4 of 4">
+    </div>
+    <p class="gate-msg" id="gate-msg" role="status" aria-live="polite"></p>
+    <button type="button" class="gate-skip" id="gate-skip">View without a code</button>
+    <p class="gate-note">You&rsquo;ll see the whole deck. The video just plays without sound.</p>
+  </div>
+</div>
 <script>
 (function(){
   var ICONS={
@@ -713,27 +769,156 @@ body.overview .pager .btn{display:none}
   var items=sections.map(function(sec,k){
     var item=document.createElement('div'); item.className='item';
     item.setAttribute('role','group'); item.setAttribute('aria-roledescription','slide'); item.setAttribute('aria-label',(k+1)+' of '+n);
-    var num=document.createElement('div'); num.className='num'; num.textContent=pad2(k+1);
+    var hd=sec.querySelector('h2,h1'), ttl=hd?hd.textContent.replace(/\s+/g,' ').trim():'';
+    var num=document.createElement('div'); num.className='num'; num.innerHTML='<b>'+pad2(k+1)+'</b><span></span>'; num.lastChild.textContent=ttl;
     var frame=document.createElement('div'); frame.className='frame';
     sec.parentNode.insertBefore(item,sec); frame.appendChild(sec); item.appendChild(num); item.appendChild(frame);
     frame.addEventListener('click',function(e){ if(body.classList.contains('overview')){ e.stopPropagation(); setMode(false); go(k); } });
-    return {item:item,frame:frame,sec:sec};
+    frame.addEventListener('keydown',function(e){ if(body.classList.contains('overview')&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); e.stopPropagation(); setMode(false); go(k); } });
+    return {item:item,frame:frame,sec:sec,title:ttl};
   });
 
-  // The recruitment spot: poster first, the real video only once someone presses play.
+  // ── Sound lock ─────────────────────────────────────────────────────────────────────────────
+  // The public video (a/rec.mp4) has no audio track. The with-audio version is a/rec.bin, encrypted;
+  // the key is wrapped under the 4-digit code and under the share-link token (a/k.json). Everything
+  // below runs in the browser: the code is never sent anywhere and appears nowhere in the site.
+  var BAD={bad:1}, noop=function(){}, enc=new TextEncoder();
+  var sound={key:null,url:null,pending:null,manifest:null}, vids=[], dir='';
+  var gate=document.getElementById('gate'), pinBox=gate.querySelector('.pin'), pinIn=[].slice.call(gate.querySelectorAll('.pin input'));
+  var gateMsg=document.getElementById('gate-msg'), gateSkip=document.getElementById('gate-skip'), soundBtn=document.getElementById('sound');
+  var gateOpen=!document.documentElement.classList.contains('pre-unlocked'), entered=!gateOpen, busy=false;
+  var b64=function(t){ var bin=atob(t), u=new Uint8Array(bin.length); for(var q=0;q<bin.length;q++) u[q]=bin.charCodeAt(q); return u; };
+  var toB64=function(buf){ var u=new Uint8Array(buf), t=''; for(var q=0;q<u.length;q++) t+=String.fromCharCode(u[q]); return btoa(t); };
+  var subtle=function(){ if(!(window.crypto&&crypto.subtle)) throw new Error('no-crypto'); return crypto.subtle; };
+
+  // A share link (?k=TOKEN) carries the key so the PIN screen never shows. Read it before anything
+  // rewrites the address bar, then take it out of the URL.
+  function takeToken(){
+    var m=/[?#&]k=([^&#]+)/.exec(location.search+location.hash); if(!m) return null;
+    var hm=/^#(\d+)/.exec(location.hash);
+    try{ history.replaceState(null,'',location.pathname+(hm?'#'+hm[1]:'')); }catch(e){}
+    try{ return decodeURIComponent(m[1]); }catch(e){ return m[1]; }
+  }
+  var startToken=takeToken();
+
   Array.prototype.forEach.call(track.querySelectorAll('img[data-video]'),function(img){
     var host=img.parentElement; host.style.position='relative';
-    var b=document.createElement('button'); b.type='button'; b.className='play'; b.setAttribute('aria-label','Play video');
-    b.innerHTML='<svg viewBox="0 0 24 24" fill="#FBFBF8" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
-    b.addEventListener('click',function(e){
-      e.stopPropagation();
-      var v=document.createElement('video');
-      v.src=img.getAttribute('data-video'); v.poster=img.src; v.controls=true; v.playsInline=true; v.setAttribute('playsinline','');
-      v.style.cssText=img.style.cssText; v.addEventListener('click',function(ev){ev.stopPropagation();});
-      img.replaceWith(v); b.remove(); var p=v.play(); if(p&&p.catch)p.catch(function(){});
-    });
-    host.appendChild(b);
+    var silent=img.getAttribute('data-video'); if(!dir) dir=silent.slice(0,silent.lastIndexOf('/')+1);
+    var btn=document.createElement('button'); btn.type='button'; btn.className='play'; btn.setAttribute('aria-label','Play video');
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="#FBFBF8" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
+    var rec={img:img,btn:btn,host:host,silent:silent,video:null};
+    vids.push(rec);
+    btn.addEventListener('click',function(e){ e.stopPropagation(); startVideo(rec); });
+    host.appendChild(btn);
   });
+  function resetVideos(){
+    vids.forEach(function(r){
+      if(r.video){ r.video.pause(); r.video.replaceWith(r.img); r.video=null; }
+      if(!r.btn.isConnected) r.host.appendChild(r.btn);
+      r.btn.disabled=false; r.btn.classList.remove('busy');
+    });
+  }
+  function startVideo(r){
+    var v=document.createElement('video'), withSound=false;
+    v.poster=r.img.src; v.controls=true; v.playsInline=true; v.setAttribute('playsinline',''); v.style.cssText=r.img.style.cssText;
+    v.addEventListener('click',function(ev){ ev.stopPropagation(); });
+    // If the with-sound file ever fails to play (an odd browser), fall back to the silent one rather than a dead player.
+    v.addEventListener('error',function(){ if(withSound){ withSound=false; v.muted=true; v.src=r.silent; var p=v.play(); if(p&&p.catch) p.catch(noop); } });
+    function run(src,snd){ withSound=snd; v.muted=!snd; v.src=src; r.img.replaceWith(v); r.video=v; r.btn.remove(); var p=v.play(); if(p&&p.catch) p.catch(noop); }
+    if(!sound.key){ run(r.silent,false); return; }
+    if(sound.url){ run(sound.url,true); return; }
+    r.btn.disabled=true; r.btn.classList.add('busy');
+    soundVideo().then(function(u){ r.btn.disabled=false; r.btn.classList.remove('busy'); run(u,true); },
+                      function(){ r.btn.disabled=false; r.btn.classList.remove('busy'); run(r.silent,false); });
+  }
+
+  function loadManifest(){
+    if(!sound.manifest) sound.manifest=fetch(dir+'k.json',{cache:'no-cache'}).then(function(r){ if(!r.ok) throw new Error('manifest'); return r.json(); }).catch(function(e){ sound.manifest=null; throw e; });
+    return sound.manifest;
+  }
+  function unwrap(kek,w){
+    return subtle().decrypt({name:'AES-GCM',iv:b64(w.iv)},kek,b64(w.wrap)).catch(function(e){ throw (e&&e.name==='OperationError')?BAD:e; });
+  }
+  function tryPin(pin){
+    return loadManifest().then(function(m){
+      return subtle().importKey('raw',enc.encode(pin),'PBKDF2',false,['deriveKey']).then(function(base){
+        return subtle().deriveKey({name:'PBKDF2',hash:'SHA-256',salt:b64(m.pin.salt),iterations:m.pin.iter},base,{name:'AES-GCM',length:256},false,['decrypt']);
+      }).then(function(kek){ return unwrap(kek,m.pin); });
+    });
+  }
+  function tryToken(tok){
+    return loadManifest().then(function(m){
+      return subtle().digest('SHA-256',enc.encode(tok)).then(function(h){ return subtle().importKey('raw',h,'AES-GCM',false,['decrypt']); }).then(function(kek){ return unwrap(kek,m.tok); });
+    });
+  }
+  function soundVideo(){
+    if(sound.url) return Promise.resolve(sound.url);
+    if(sound.pending) return sound.pending;
+    sound.pending=Promise.all([loadManifest(),fetch(dir+'rec.bin')]).then(function(x){
+      if(!x[1].ok) throw new Error('bin');
+      return x[1].arrayBuffer().then(function(buf){ return subtle().decrypt({name:'AES-GCM',iv:b64(x[0].video.iv)},sound.key,buf); }).then(function(plain){
+        sound.url=URL.createObjectURL(new Blob([plain],{type:x[0].video.type||'video/mp4'}));
+        return sound.url;
+      });
+    }).catch(function(e){ sound.pending=null; throw e; });
+    return sound.pending;
+  }
+  function unlockWith(raw){
+    return subtle().importKey('raw',raw,'AES-GCM',false,['decrypt']).then(function(k){
+      sound.key=k;
+      try{ sessionStorage.setItem('deck-k',toB64(raw)); }catch(e){}
+      soundBtn.hidden=true; resetVideos(); soundVideo().catch(noop);
+    });
+  }
+
+  function say(t,err){ gateMsg.textContent=t||''; gateMsg.className='gate-msg'+(err?' err':''); }
+  function setInert(on){ [stage,document.getElementById('bar')].forEach(function(el){ if(on) el.setAttribute('inert',''); else el.removeAttribute('inert'); }); }
+  function pinValue(){ return pinIn.map(function(x){ return x.value; }).join(''); }
+  function clearPin(){ pinIn.forEach(function(x){ x.value=''; x.disabled=false; }); pinBox.classList.remove('bad','shake'); }
+  function openGate(){
+    gateOpen=true; document.documentElement.classList.remove('pre-unlocked'); gate.classList.remove('out');
+    setInert(true); clearPin(); say('');
+    if(!window.matchMedia('(pointer:coarse)').matches) pinIn[0].focus();
+  }
+  function closeGate(){
+    gateOpen=false; entered=true; gate.classList.add('out'); setInert(false);
+    soundBtn.hidden=!!sound.key;
+  }
+  function submitPin(){
+    if(busy) return; busy=true;
+    var pin=pinValue(); pinIn.forEach(function(x){ x.disabled=true; }); pinBox.classList.remove('bad'); say('Checking…');
+    tryPin(pin).then(unlockWith).then(function(){ busy=false; say(''); closeGate(); },function(e){
+      busy=false; pinIn.forEach(function(x){ x.disabled=false; });
+      if(e===BAD){
+        pinIn.forEach(function(x){ x.value=''; }); pinBox.classList.add('bad','shake'); pinIn[0].focus();
+        setTimeout(function(){ pinBox.classList.remove('shake'); },450); say('That code didn’t work. Try again.',true);
+      } else say('Couldn’t check the code just now. Check your connection, or view without a code.',true);
+    });
+  }
+  function spread(from,digits){
+    for(var q=0;q<digits.length&&from+q<4;q++) pinIn[from+q].value=digits[q];
+    pinIn[Math.min(from+digits.length,3)].focus(); if(pinValue().length===4) submitPin();
+  }
+  pinIn.forEach(function(inp,idx){
+    inp.addEventListener('input',function(){
+      pinBox.classList.remove('bad'); if(gateMsg.className.indexOf('err')>-1) say('');
+      var d=inp.value.replace(/\D/g,''); if(d.length>1){ spread(idx,d); return; }
+      inp.value=d; if(d&&idx<3) pinIn[idx+1].focus(); if(pinValue().length===4) submitPin();
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!inp.value&&idx>0){ e.preventDefault(); pinIn[idx-1].value=''; pinIn[idx-1].focus(); }
+      else if(e.key==='ArrowLeft'&&idx>0){ e.preventDefault(); pinIn[idx-1].focus(); }
+      else if(e.key==='ArrowRight'&&idx<3){ e.preventDefault(); pinIn[idx+1].focus(); }
+      else if(e.key==='Enter'&&pinValue().length===4){ e.preventDefault(); submitPin(); }
+    });
+    inp.addEventListener('focus',function(){ try{ inp.select(); }catch(e){} });
+    inp.addEventListener('paste',function(e){
+      var t=((e.clipboardData||window.clipboardData).getData('text')||'').replace(/\D/g,''); if(t){ e.preventDefault(); spread(0,t); }
+    });
+  });
+  gateSkip.addEventListener('click',function(){ try{ sessionStorage.setItem('deck-open','1'); }catch(e){} closeGate(); });
+  soundBtn.addEventListener('click',openGate);
+  gate.addEventListener('keydown',function(e){ if(e.key==='Escape'&&entered&&!busy){ e.preventDefault(); closeGate(); } });
 
   var i=0, overview=false;
   var prev=document.getElementById('prev'), next=document.getElementById('next'), count=document.getElementById('count');
@@ -741,7 +926,7 @@ body.overview .pager .btn{display:none}
 
   function layout(){
     var w=stage.clientWidth, h=stage.clientHeight, s;
-    if(overview){ s=Math.min(w-32,1200)/1920; }
+    if(overview){ var cw=parseFloat(getComputedStyle(track).gridTemplateColumns.split(' ')[0]); s=(cw>0?cw:Math.min(w-32,1200))/1920; }
     else { var p=w<700?10:28; s=Math.min((w-2*p)/1920,(h-2*p)/1080); }
     s=Math.max(s,0.05);
     items.forEach(function(it){
@@ -758,11 +943,16 @@ body.overview .pager .btn{display:none}
     count.innerHTML=overview?(n+' slides'):('<b>'+pad2(i+1)+'</b> / '+pad2(n));
     prev.disabled=i===0; next.disabled=i===n-1;
     bar.style.width=(overview?100:((i+1)/n*100))+'%';
-    try{ history.replaceState(null,'','#'+(i+1)); }catch(e){}
+    try{ history.replaceState(null,'',location.pathname+'#'+(i+1)); }catch(e){}
   }
   function go(k){ i=Math.max(0,Math.min(n-1,k)); render(); }
   function setMode(ov){
     overview=ov; body.classList.toggle('overview',ov);
+    items.forEach(function(it,k){
+      if(ov){ it.frame.tabIndex=0; it.frame.setAttribute('role','button'); it.frame.setAttribute('aria-label','Open slide '+(k+1)+(it.title?': '+it.title:'')); }
+      else { it.frame.removeAttribute('tabindex'); it.frame.removeAttribute('role'); it.frame.removeAttribute('aria-label'); }
+    });
+    if(ov) Array.prototype.forEach.call(track.querySelectorAll('video'),function(v){ v.pause(); });
     modeBtn.setAttribute('aria-pressed',String(ov));
     modeBtn.querySelector('.lbl').textContent=ov?'Present':'All slides';
     layout(); render();
@@ -781,7 +971,7 @@ body.overview .pager .btn{display:none}
   }
 
   document.addEventListener('keydown',function(e){
-    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    if(gateOpen||e.metaKey||e.ctrlKey||e.altKey) return;
     var t=e.target; if(t&&(t.tagName==='VIDEO'||t.tagName==='INPUT')) return;
     var k=e.key;
     if(!overview&&(k==='ArrowRight'||k==='PageDown'||(k===' '&&!e.shiftKey))){ e.preventDefault(); go(i+1); }
@@ -815,6 +1005,16 @@ body.overview .pager .btn{display:none}
   if(fromHash()!==null) i=fromHash();
   window.addEventListener('hashchange',function(){ var k=fromHash(); if(k!==null&&k!==i){ if(overview) setMode(false); go(k); } });
   setMode(window.matchMedia('(max-width: 760px)').matches);
+
+  loadManifest().catch(noop);
+  var savedKey=null, wasOpen=false;
+  try{ savedKey=sessionStorage.getItem('deck-k'); wasOpen=sessionStorage.getItem('deck-open')==='1'; }catch(e){}
+  if(startToken){
+    tryToken(startToken).then(unlockWith).then(function(){ entered=true; },function(){ openGate(); say('This link\u2019s code isn\u2019t valid any more. Enter the 4-digit code, or view without one.',true); });
+  } else if(savedKey){
+    subtle().importKey('raw',b64(savedKey),'AES-GCM',false,['decrypt']).then(function(k){ sound.key=k; soundVideo().catch(noop); },function(){ try{ sessionStorage.removeItem('deck-k'); }catch(e){} openGate(); });
+  } else if(wasOpen){ soundBtn.hidden=false; }
+  if(gateOpen) openGate();
 
   var shown=false, reveal=function(){ if(shown) return; shown=true; body.classList.remove('loading'); layout(); };
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(reveal);
