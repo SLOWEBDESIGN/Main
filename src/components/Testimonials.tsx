@@ -2,86 +2,58 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Quote, Star } from 'lucide-react';
 import { testimonials } from '@/src/data/testimonials';
 
 export const Testimonials: React.FC = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
+  // No verified testimonials on file yet: render nothing rather than
+  // presenting unverified quotes as social proof.
+  if (testimonials.length === 0) return null;
 
   return (
-    <section id="testimonials" className="py-20 px-6 bg-white">
+    <section className="py-20 px-6 bg-secondary-100">
       <div className="max-w-6xl mx-auto">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-14 max-w-2xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
+          <p className="text-sm font-semibold uppercase tracking-wider text-primary-500 mb-3">
+            Testimonials
+          </p>
           <h2 className="text-4xl md:text-5xl font-bold text-primary-700 mb-4">
             What Our Clients Say
           </h2>
-          <p className="text-xl text-accent-slate">
-            Real feedback from real businesses
-          </p>
         </motion.div>
 
-        <motion.div
-          className="grid md:grid-cols-3 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {testimonials.map((testimonial) => (
+        <div className="grid md:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, i) => (
             <motion.div
               key={testimonial.id}
-              className="p-8 border border-secondary-200 rounded-lg bg-secondary-100 hover:shadow-lg transition-shadow"
-              variants={itemVariants}
+              className="p-6 rounded-xl bg-white border border-secondary-200"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.06 }}
             >
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <svg
-                    key={i}
-                    className="w-5 h-5 text-primary-700 fill-current"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                  </svg>
-                ))}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex gap-1" aria-label="5 out of 5 stars">
+                  {[0, 1, 2, 3, 4].map((s) => (
+                    <Star key={s} size={16} className="fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <Quote size={20} className="text-primary-300" />
               </div>
-              
-              <p className="text-accent-slate mb-6 leading-relaxed italic">
-                "{testimonial.text}"
+              <p className="text-accent-slate text-sm leading-relaxed mb-4">
+                &ldquo;{testimonial.text}&rdquo;
               </p>
-
-              <div>
-                <p className="font-semibold text-primary-700">
-                  {testimonial.name}
-                </p>
-                <p className="text-sm text-accent-slate">
-                  {testimonial.business}
-                </p>
-              </div>
+              <p className="font-semibold text-primary-700 text-sm">{testimonial.name}</p>
+              <p className="text-xs text-accent-slate">{testimonial.business}</p>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

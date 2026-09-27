@@ -2,360 +2,278 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send } from 'lucide-react';
+
+const SERVICE_OPTIONS = [
+  'Website',
+  'App or browser extension',
+  'Platform / business system',
+  'AI workflow / private tool',
+  'Content / reels',
+  'SEO / ongoing help',
+];
+
+const BUSINESS_TYPES = [
+  'New business',
+  'Local service business',
+  'E-commerce / retail',
+  'Restaurant / hospitality',
+  'Professional services',
+  'Nonprofit / community',
+  'Creative / portfolio',
+  'Other',
+];
+
+const BUDGETS = [
+  '$200 - $499',
+  '$500 - $999',
+  '$1,000 - $2,499',
+  '$2,500 - $9,999',
+  '$10,000+',
+  'Not sure yet',
+];
+
+const CONTACT_METHODS = ['Email', 'Phone'];
+
+const EMPTY_FORM = {
+  name: '',
+  business: '',
+  email: '',
+  phone: '',
+  website: '',
+  businessType: '',
+  budget: '',
+  description: '',
+  contactMethod: 'Email',
+};
+
+const inputCls =
+  'w-full px-4 py-3 border border-secondary-300 rounded-lg bg-white text-primary-700 placeholder:text-accent-slate/50 focus:outline-none focus:ring-2 focus:ring-primary-500';
+const labelCls = 'block text-sm font-medium text-primary-700 mb-2';
 
 export const ContactForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    business: '',
-    email: '',
-    phone: '',
-    website: '',
-    businessType: '',
-    budget: '',
-    services: '',
-    description: '',
-    contactMethod: 'email',
-  });
-
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [formData, setFormData] = useState(EMPTY_FORM);
+  const [services, setServices] = useState<string[]>([]);
   const [botField, setBotField] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const toggleService = (option: string) => {
+    setServices((prev) =>
+      prev.includes(option) ? prev.filter((s) => s !== option) : [...prev, option]
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitStatus('loading');
+    if (services.length === 0) {
+      setErrorMsg('Please choose at least one thing you need help with.');
+      setStatus('error');
+      return;
+    }
+    setStatus('loading');
+    setErrorMsg('');
 
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, botField }),
+        body: JSON.stringify({ ...formData, services: services.join(', '), botField }),
       });
 
       if (response.ok) {
-        setSubmitStatus('success');
-        setFormData({
-          name: '',
-          business: '',
-          email: '',
-          phone: '',
-          website: '',
-          businessType: '',
-          budget: '',
-          services: '',
-          description: '',
-          contactMethod: 'email',
-        });
+        setStatus('success');
+        setFormData(EMPTY_FORM);
+        setServices([]);
         setBotField('');
-        setTimeout(() => setSubmitStatus('idle'), 5000);
+        setTimeout(() => setStatus('idle'), 8000);
+      } else if (response.status === 429) {
+        setStatus('error');
+        setErrorMsg('Too many attempts. Please wait a little while and try again.');
       } else {
-        setSubmitStatus('error');
+        setStatus('error');
+        setErrorMsg(
+          'Something went wrong. Please try again or email contact@slowebdesign.com.'
+        );
       }
     } catch {
-      // Network error or submission failed
-      setSubmitStatus('error');
+      setStatus('error');
+      setErrorMsg(
+        'Something went wrong. Please try again or email contact@slowebdesign.com.'
+      );
     }
   };
 
   return (
-    <section id="contact" className="py-20 px-6 bg-secondary-100">
-      <div className="max-w-3xl mx-auto">
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+    <div id="contact">
+      <h2 className="text-4xl font-bold text-primary-700 mb-3">Tell us what you need.</h2>
+      <p className="text-accent-slate mb-8 max-w-xl">
+        Describe your project in plain language. We read every inquiry and reply
+        personally.
+      </p>
+
+      <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
+        {/* Honeypot: invisible to people, left for bots */}
+        <div
+          aria-hidden="true"
+          style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, overflow: 'hidden' }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-primary-700 mb-4">
-            Get in Touch
-          </h2>
-          <p className="text-xl text-accent-slate">
-            Tell us about your project and we'll respond within 24 hours.
-          </p>
-        </motion.div>
+          <label htmlFor="botField">Don&rsquo;t fill this out:</label>
+          <input
+            type="text"
+            id="botField"
+            name="botField"
+            tabIndex={-1}
+            autoComplete="off"
+            value={botField}
+            onChange={(e) => setBotField(e.target.value)}
+          />
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-        >
-          <form name="contact" className="space-y-6" onSubmit={handleSubmit}>
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Honeypot: hidden from people, autofilled by bots; a value gets the
-                submission silently dropped server-side. A visible-to-DOM text input
-                catches far more bots than type="hidden" ever did. */}
-            <div className="hidden" aria-hidden="true">
-              <input
-                type="text"
-                name="botField"
-                tabIndex={-1}
-                autoComplete="off"
-                value={botField}
-                onChange={(e) => setBotField(e.target.value)}
-              />
-            </div>
-            
-            {/* Full Name */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-primary-700 mb-2">
-                Full Name *
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="Sarah Johnson"
-              />
-            </div>
+        <div>
+          <label htmlFor="name" className={labelCls}>Full Name *</label>
+          <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required maxLength={200} className={inputCls} placeholder="Jane Smith" />
+        </div>
 
-            {/* Business Name */}
-            <div>
-              <label htmlFor="business" className="block text-sm font-medium text-primary-700 mb-2">
-                Business Name *
-              </label>
-              <input
-                type="text"
-                id="business"
-                name="business"
-                value={formData.business}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="Your Business"
-              />
-            </div>
+        <div>
+          <label htmlFor="business" className={labelCls}>Business / Organization *</label>
+          <input type="text" id="business" name="business" value={formData.business} onChange={handleChange} required maxLength={200} className={inputCls} placeholder="Your business, or &ldquo;Self&rdquo;" />
+        </div>
 
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-primary-700 mb-2">
-                Email *
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="sarah@example.com"
-              />
-            </div>
+        <div>
+          <label htmlFor="email" className={labelCls}>Email Address *</label>
+          <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required maxLength={320} className={inputCls} placeholder="jane@yourbusiness.com" />
+        </div>
 
-            {/* Phone */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-primary-700 mb-2">
-                Phone Number *
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="(555) 123-4567"
-              />
-            </div>
+        <div>
+          <label htmlFor="phone" className={labelCls}>Phone Number *</label>
+          <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} required maxLength={50} className={inputCls} placeholder="(555) 000-0000" />
+        </div>
 
-            {/* Website */}
-            <div>
-              <label htmlFor="website" className="block text-sm font-medium text-primary-700 mb-2">
-                Existing Website URL (if any)
-              </label>
-              <input
-                type="url"
-                id="website"
-                name="website"
-                value={formData.website}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="https://example.com"
-              />
-            </div>
+        <div>
+          <label htmlFor="website" className={labelCls}>Current Website</label>
+          <input type="text" inputMode="url" id="website" name="website" value={formData.website} onChange={handleChange} maxLength={500} className={inputCls} placeholder="yourbusiness.com (optional)" />
+        </div>
 
-            {/* Business Type */}
-            <div>
-              <label htmlFor="businessType" className="block text-sm font-medium text-primary-700 mb-2">
-                Business Type *
-              </label>
-              <select
-                id="businessType"
-                name="businessType"
-                value={formData.businessType}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+        <div>
+          <label htmlFor="businessType" className={labelCls}>Business Type *</label>
+          <select id="businessType" name="businessType" value={formData.businessType} onChange={handleChange} required className={inputCls}>
+            <option value="" disabled>Select a type...</option>
+            {BUSINESS_TYPES.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="budget" className={labelCls}>Budget Range *</label>
+          <select id="budget" name="budget" value={formData.budget} onChange={handleChange} required className={inputCls}>
+            <option value="" disabled>Select a range...</option>
+            {BUDGETS.map((b) => (
+              <option key={b} value={b}>{b}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="md:col-span-2">
+          <span className={labelCls} id="services-label">What do you need? *</span>
+          <div className="grid sm:grid-cols-2 gap-3" role="group" aria-labelledby="services-label">
+            {SERVICE_OPTIONS.map((option) => (
+              <label
+                key={option}
+                className={`flex items-center gap-3 px-4 py-3 border rounded-lg cursor-pointer transition-colors ${
+                  services.includes(option)
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-secondary-300 bg-white hover:border-primary-300'
+                }`}
               >
-                <option value="">Select a type</option>
-                <option value="retail">Retail</option>
-                <option value="service">Service</option>
-                <option value="professional">Professional Services</option>
-                <option value="ecommerce">E-commerce</option>
-                <option value="nonprofit">Non-profit</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            {/* Budget */}
-            <div>
-              <label htmlFor="budget" className="block text-sm font-medium text-primary-700 mb-2">
-                Budget Range *
+                <input
+                  type="checkbox"
+                  checked={services.includes(option)}
+                  onChange={() => toggleService(option)}
+                  className="w-4 h-4 accent-[#3d5e3f]"
+                />
+                <span className="text-sm text-primary-700">{option}</span>
               </label>
-              <select
-                id="budget"
-                name="budget"
-                value={formData.budget}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="">Select a range</option>
-                <option value="under-1500">Under $1,500</option>
-                <option value="1500-2500">$1,500 - $2,500</option>
-                <option value="2500-5000">$2,500 - $5,000</option>
-                <option value="5000-10000">$5,000 - $10,000</option>
-                <option value="10000-plus">$10,000+</option>
-              </select>
-            </div>
-
-            {/* Services Needed */}
-            <div className="md:col-span-2">
-              <label htmlFor="services" className="block text-sm font-medium text-primary-700 mb-2">
-                Services Needed *
-              </label>
-              <select
-                id="services"
-                name="services"
-                value={formData.services}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="">Select services</option>
-                <option value="modernization">Website Modernization</option>
-                <option value="custom">Custom Website Development</option>
-                <option value="landing">Landing Page</option>
-                <option value="maintenance">Website Maintenance</option>
-                <option value="multiple">Multiple Services</option>
-                <option value="unsure">Not Sure Yet</option>
-              </select>
-            </div>
+            ))}
           </div>
+        </div>
 
-          {/* Project Description */}
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-primary-700 mb-2">
-              Tell Us About Your Project *
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-              rows={6}
-              className="w-full px-4 py-3 border border-secondary-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
-              placeholder="Describe your project, goals, and any specific requirements..."
-            />
-          </div>
+        <div className="md:col-span-2">
+          <label htmlFor="description" className={labelCls}>
+            What do you want people, or your team, to be able to do? *
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+            rows={5}
+            maxLength={5000}
+            className={`${inputCls} resize-none`}
+            placeholder="Tell us about the project in your own words: what it is, who it is for, and what a good outcome looks like."
+          />
+        </div>
 
-          {/* Contact Method */}
-          <div>
-            <label className="block text-sm font-medium text-primary-700 mb-3">
-              Preferred Contact Method *
-            </label>
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2 cursor-pointer">
+        <div className="md:col-span-2">
+          <span className={labelCls} id="contact-method-label">Preferred Contact *</span>
+          <div className="flex gap-8" role="radiogroup" aria-labelledby="contact-method-label">
+            {CONTACT_METHODS.map((method) => (
+              <label key={method} className="flex items-center gap-2 cursor-pointer text-primary-700">
                 <input
                   type="radio"
                   name="contactMethod"
-                  value="email"
-                  checked={formData.contactMethod === 'email'}
+                  value={method}
+                  checked={formData.contactMethod === method}
                   onChange={handleChange}
-                  className="w-4 h-4"
+                  className="w-4 h-4 accent-[#3d5e3f]"
                 />
-                <span className="text-accent-slate">Email</span>
+                <span className="text-sm">{method}</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="contactMethod"
-                  value="phone"
-                  checked={formData.contactMethod === 'phone'}
-                  onChange={handleChange}
-                  className="w-4 h-4"
-                />
-                <span className="text-accent-slate">Phone</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="contactMethod"
-                  value="both"
-                  checked={formData.contactMethod === 'both'}
-                  onChange={handleChange}
-                  className="w-4 h-4"
-                />
-                <span className="text-accent-slate">Both</span>
-              </label>
-            </div>
+            ))}
           </div>
+        </div>
 
-          {/* Status Messages */}
-          {submitStatus === 'success' && (
-            <motion.div
-              className="p-4 bg-primary-50 border border-primary-200 rounded-lg text-primary-700"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              ✓ Thank you! We've received your message and will respond within 24 hours.
-            </motion.div>
-          )}
+        {status === 'success' && (
+          <motion.div
+            className="md:col-span-2 p-4 bg-primary-50 border border-primary-500/30 rounded-lg text-primary-700"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            Thank you. We have received your inquiry and will be in touch soon.
+          </motion.div>
+        )}
 
-          {submitStatus === 'error' && (
-            <motion.div
-              className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              Something went wrong. Please try again or call us at 530-215-5987.
-            </motion.div>
-          )}
+        {status === 'error' && (
+          <motion.div
+            className="md:col-span-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            {errorMsg}
+          </motion.div>
+        )}
 
-          {/* Submit Button */}
+        <div className="md:col-span-2">
           <button
             type="submit"
-            disabled={submitStatus === 'loading'}
-            className="btn btn-primary w-full py-3 text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={status === 'loading'}
+            className="btn btn-primary w-full py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Send size={20} />
-            {submitStatus === 'loading' ? 'Sending...' : 'Send Message'}
+            {status === 'loading' ? 'Sending...' : 'Send Inquiry'}
           </button>
-
-          <p className="text-center text-sm text-accent-slate">
-            We respect your privacy. Your information will never be shared.
+          <p className="mt-4 text-sm text-accent-slate">
+            Your inquiry is for the studio only.
           </p>
-          </form>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </form>
+    </div>
   );
 };

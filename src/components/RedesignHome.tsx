@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, Check, MoveUpRight, X } from 'lucide-react';
+import { ArrowUpRight, Check, X } from 'lucide-react';
 import { ContactForm } from '@/src/components/ContactForm';
 import { BookingScheduler } from '@/src/components/BookingScheduler';
 import { ThemeToggle } from '@/src/components/ThemeToggle';
 import { GrowthStudio } from '@/src/components/GrowthStudio';
 import { CapabilityEcosystem } from '@/src/components/CapabilityEcosystem';
+import { HorizontalOpening, ScenePoster } from '@/src/components/HorizontalOpening';
+import { getOpeningProject, openingProjects, openingScenes } from '@/src/data/opening';
 import type { BrandVariant } from '@/src/lib/schema';
 import { getBrandCopy } from '@/src/lib/schema';
 
@@ -16,6 +18,7 @@ const tickerItems = [
   { name: 'Claude', slug: 'claude' },
   { name: 'OpenAI', slug: 'openai' },
   { name: 'Anthropic', slug: 'anthropic' },
+  { name: 'Adobe', slug: 'adobe' },
   { name: 'Gemini', slug: 'googlegemini' },
   { name: 'Perplexity', slug: 'perplexity' },
   { name: 'Supabase', slug: 'supabase' },
@@ -29,14 +32,8 @@ const tickerItems = [
   { name: 'Analytics', slug: 'googleanalytics' },
 ];
 
-const projects = [
-  { name: '3D Print Dash', description: 'Quotes, uploads, pricing, and operations for 3D printing.', href: 'https://www.3dprintdash.com' },
-  { name: 'SLO Fulfillment', description: 'A fulfillment project currently staged for its next build.', href: 'https://slocalfulfillment.com' },
-  { name: 'Waylight', description: 'A visual reading aid for webpages, PDFs, and AI output.', href: 'https://waylight.netlify.app' },
-  { name: 'Sensorium Therapy', description: 'A future project currently listed in the private status index.', href: null },
-  { name: 'Avila Cake Design', description: 'A future commerce project currently in preparation.', href: null },
-  { name: '3D Print Lessons', description: 'A future learning project currently in preparation.', href: null },
-];
+// Display order for the "other work" cards; records live in src/data/opening.ts.
+const builtOrder = ['3dprintdash', 'slocal-fulfillment', 'waylight'];
 
 const capabilities = [
   ['01', 'Strategy', 'Positioning, offers, and a clear plan for what the site should make easier.'],
@@ -56,15 +53,52 @@ const work = [
 export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) => {
   const copy = getBrandCopy(variant);
   const location = variant === 'sdwebdesign' ? 'San Diego' : 'San Luis Obispo';
-  const [modal, setModal] = useState<'old' | 'new' | null>(null);
+  const [modal, setModal] = useState<'old' | 'new' | { project: string } | null>(null);
+  const projectModal = modal && typeof modal !== 'string' ? getOpeningProject(modal.project) : undefined;
+  const openerRef = React.useRef<HTMLElement | null>(null);
+  const dialogRef = React.useRef<HTMLDivElement | null>(null);
+
+  const openModal = (value: 'old' | 'new' | { project: string }) => {
+    openerRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setModal(value);
+  };
 
   useEffect(() => {
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setModal(null);
+    if (!modal) return;
+    // Move focus into the dialog, trap Tab inside it, and restore focus on close.
+    const dialog = dialogRef.current;
+    const initial =
+      dialog?.querySelector<HTMLElement>('[data-autofocus]') ?? dialog;
+    initial?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setModal(null);
+        return;
+      }
+      if (event.key !== 'Tab' || !dialog) return;
+      const focusables = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.offsetParent !== null);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
-    window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
-  }, []);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      openerRef.current?.focus();
+    };
+  }, [modal]);
 
   return (
     <div className="redesign-page">
@@ -88,30 +122,12 @@ export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) =
       </header>
 
       <main id="top">
-        <section className="redesign-hero">
-          <div className="redesign-hero-copy">
-            <p className="redesign-kicker">Independent web design / {location}, CA</p>
-            <h1>Good work deserves a <em>better</em> place to land.</h1>
-            <p className="redesign-intro">We make clear, memorable websites for people building something real. Strategy, design, code, and care, all in one thoughtful process.</p>
-            <div className="redesign-hero-actions">
-              <a className="redesign-dark-button redesign-large-button" href="#contact">Tell us what you are building <ArrowDownRight size={18} /></a>
-              <a className="redesign-outline-link" href="#work">See what we do <MoveUpRight size={16} /></a>
-            </div>
-          </div>
-          <div className="redesign-hero-art" aria-label="A preview of a modern website interface">
-            <div className="redesign-window-bar"><span /><span /><span /><b>{variant === 'sdwebdesign' ? 'sdwebdesign.tech' : 'slowebdesign.com'}</b></div>
-            <div className="redesign-art-grid">
-              <div className="redesign-art-sidebar"><i /><i /><i /><i /></div>
-              <div className="redesign-art-content">
-                <div className="redesign-art-eyebrow">A clearer way forward</div>
-                <div className="redesign-art-title">Make the complicated<br /><strong>feel possible.</strong></div>
-                <div className="redesign-art-line" />
-                <div className="redesign-art-cards"><span /><span /><span /></div>
-              </div>
-            </div>
-            <div className="redesign-art-foot"><span>Strategy</span><span>Design</span><span>Build</span><span>Care</span></div>
-          </div>
-        </section>
+        <HorizontalOpening
+          location={location}
+          scenes={openingScenes}
+          projects={openingProjects}
+          onOpenProject={(projectId) => openModal({ project: projectId })}
+        />
 
         <section className="redesign-ticker" aria-label="Tools and capabilities">
           <div className="redesign-ticker-track">
@@ -130,12 +146,12 @@ export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) =
         <section className="redesign-comparison" aria-labelledby="comparison-title">
           <div className="redesign-section-heading"><p className="redesign-kicker">A before / after you can inspect</p><span>Choose a version</span></div>
           <div className="redesign-comparison-grid">
-            <button type="button" className="redesign-comparison-card redesign-comparison-old" onClick={() => setModal('old')}>
+            <button type="button" className="redesign-comparison-card redesign-comparison-old" onClick={() => openModal('old')}>
               <span className="redesign-comparison-label">Old version of this website</span>
               <strong>See the original site</strong>
               <span className="redesign-comparison-action">Open view-only preview <ArrowUpRight size={17} /></span>
             </button>
-            <button type="button" className="redesign-comparison-card redesign-comparison-new" onClick={() => setModal('new')}>
+            <button type="button" className="redesign-comparison-card redesign-comparison-new" onClick={() => openModal('new')}>
               <span className="redesign-comparison-label">Version after a redesign</span>
               <strong id="comparison-title">See what the new direction changes</strong>
               <span className="redesign-comparison-action">Explore the redesign <ArrowUpRight size={17} /></span>
@@ -143,14 +159,18 @@ export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) =
           </div>
           <div className="redesign-built-heading"><p className="redesign-kicker">Other work</p><h3>Below are some other websites we&apos;ve built.</h3></div>
           <div className="redesign-built-grid">
-            {projects.filter((project) => project.href).slice(0, 3).map((project, index) => (
-              <a className="redesign-built-card" href={project.href ?? '#'} target="_blank" rel="noopener noreferrer" key={project.name}>
-                <span>0{index + 1}</span>
-                <strong>{project.name}</strong>
-                <small>{project.description}</small>
-                <ArrowUpRight size={18} />
-              </a>
-            ))}
+            {builtOrder.map((id, index) => {
+              const project = getOpeningProject(id);
+              if (!project?.href) return null;
+              return (
+                <a className="redesign-built-card" href={project.href} target="_blank" rel="noopener noreferrer" key={project.id}>
+                  <span>0{index + 1}</span>
+                  <strong>{project.name}</strong>
+                  <small>{project.summary}</small>
+                  <ArrowUpRight size={18} />
+                </a>
+              );
+            })}
           </div>
         </section>
 
@@ -210,15 +230,34 @@ export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) =
         <div className="redesign-footer-bottom"><span>© {new Date().getFullYear()} Domain owner. No rights reserved.</span><span>Temporary project name; domain operated by the site owner.</span><span><a href="/projects">Fun projects</a> · <a href="/1LhYKNpDUb9vRK95brXe/index.html">All site statuses</a> · <a href="/legacy">Original site</a></span></div>
       </footer>
 
-      {modal && (
+      {modal && typeof modal === 'string' && (
         <div className="redesign-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setModal(null); }}>
-          <div className="redesign-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-            <div className="redesign-modal-header"><div><p className="redesign-kicker">{modal === 'old' ? 'View-only archive' : 'Current direction'}</p><h2 id="modal-title">{modal === 'old' ? 'The original website' : <><span className="redesign-modal-highlight">This is the redesigned website</span> of our old website.</>}</h2></div><button type="button" className="redesign-modal-close" aria-label="Close preview" onClick={() => setModal(null)}><X size={21} /></button></div>
+          <div ref={dialogRef} tabIndex={-1} className="redesign-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div className="redesign-modal-header"><div><p className="redesign-kicker">{modal === 'old' ? 'View-only archive' : 'Current direction'}</p><h2 id="modal-title">{modal === 'old' ? 'The original website' : <><span className="redesign-modal-highlight">This is the redesigned website</span> of our old website.</>}</h2></div><button type="button" data-autofocus className="redesign-modal-close" aria-label="Close preview" onClick={() => setModal(null)}><X size={21} /></button></div>
             {modal === 'old' ? (
               <iframe className="redesign-legacy-frame" title="View-only original SLO Web Design website" src="/legacy" />
             ) : (
-              <div className="redesign-projects-modal"><p>Here are some more websites we&apos;ve built:</p><div className="redesign-project-list">{projects.map((project) => project.href ? <a key={project.name} href={project.href} target="_blank" rel="noopener noreferrer"><span><strong>{project.name}</strong><small>{project.description}</small></span><ArrowUpRight size={18} /></a> : <div className="redesign-project-disabled" key={project.name}><span><strong>{project.name}</strong><small>{project.description}</small></span><span className="redesign-project-status">In preparation</span></div>)}</div></div>
+              <div className="redesign-projects-modal"><p>Here are some more websites we&apos;ve built:</p><div className="redesign-project-list">{openingProjects.map((project) => project.href ? <a key={project.id} href={project.href} target="_blank" rel="noopener noreferrer"><span><strong>{project.name}</strong><small>{project.summary}</small></span><ArrowUpRight size={18} /></a> : <div className="redesign-project-disabled" key={project.id}><span><strong>{project.name}</strong><small>{project.summary}</small></span><span className="redesign-project-status">In preparation</span></div>)}</div></div>
             )}
+          </div>
+        </div>
+      )}
+
+      {projectModal && (
+        <div className="redesign-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setModal(null); }}>
+          <div ref={dialogRef} tabIndex={-1} className="redesign-modal" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
+            <div className="redesign-modal-header"><div><p className="redesign-kicker">Selected work — static preview</p><h2 id="project-modal-title">{projectModal.name}</h2></div><button type="button" data-autofocus className="redesign-modal-close" aria-label="Close preview" onClick={() => setModal(null)}><X size={21} /></button></div>
+            <div className="redesign-project-modal-body">
+              <p className="redesign-project-tagline">{projectModal.tagline}</p>
+              <ScenePoster project={projectModal} large />
+              <p>{projectModal.description}</p>
+              <p className="redesign-project-modal-capabilities">{projectModal.capabilities}</p>
+              <div className="redesign-project-modal-actions">
+                <a className="redesign-dark-button" href="#contact" onClick={() => setModal(null)}>Discuss a project like this <ArrowUpRight size={15} /></a>
+                <span className="redesign-demo-unavailable" aria-disabled="true">Interactive demo not available in this preview</span>
+              </div>
+              <p className="redesign-project-modal-note">This preview is static. Nothing here runs, submits, or plays audio. A live interactive demo would only ever use synthetic sample data — never real customer information.</p>
+            </div>
           </div>
         </div>
       )}
