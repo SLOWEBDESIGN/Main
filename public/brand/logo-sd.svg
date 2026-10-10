@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 84" role="img" aria-labelledby="title">
+  <title id="title">San Diego Web Design</title>
+  <g fill="#26323f">
+    <path d="M8 49h12v25H8zm18-19h12v44H26zM44 10h12v64H44z"/>
+    <text x="72" y="47" font-family="Arial,Helvetica,sans-serif" font-size="47" font-weight="700" letter-spacing="-2">SD</text>
+    <text x="74" y="69" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="700" letter-spacing="3">WEB DESIGN</text>
+  </g>
+</svg>

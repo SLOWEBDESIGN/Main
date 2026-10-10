@@ -1,0 +1,16 @@
+{
+  "sourceImage": "white-space-v1.png",
+  "sourceVideo": "white-space-motion-source.mp4",
+  "siteUsage": "Retained asset only. Hero video integration reverted at user request; original still image restored.",
+  "sourceDimensions": [1672, 941],
+  "method": "Image-to-video diffusion using the original background as the starting frame",
+  "model": "Wan2.2 I2V A14B with Lightning LoRA",
+  "service": "https://huggingface.co/spaces/zerogpu-aoti/wan2-2-fp8da-aoti-faster",
+  "billing": "Anonymous free ZeroGPU allowance. No paid account, subscription, trial, or billing credentials used.",
+  "seed": 48127,
+  "steps": 4,
+  "sourceClip": {"width":832,"height":480,"fps":16,"frames":81},
+  "processing": "One-second tail-to-head dissolve for a cyclic four-second loop. Motion-interpolated to 32 fps. H264 CRF18, faststart, no audio. Native resolution retained; not HD upscaling.",
+  "prompt": "Locked-off camera. The white and silver nebula in this image comes alive. Broad clouds visibly roll and curl in slow continuous currents, delicate wisps unfurl and dissipate while denser cloud banks billow in depth. The upper left and lower right formations develop organic internal motion. Fine cosmic dust gently drifts between them. Preserve the luminous ivory white space, pale silver tones, open center, detailed celestial atmosphere and original composition. The camera stays completely still. Elegant cinematic ambient motion, clearly visible within the first second, fluid and calm, one uninterrupted shot.",
+  "negativePrompt": "camera movement, zoom, pan, tilt, frozen clouds, still image, slideshow, rubbery warping, rippling paper, dark space, saturated colors, green, buildings, ground, people, staircase, text, logos, flicker, flashing, sudden cuts, low quality, blurry"
+}

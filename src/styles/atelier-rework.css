@@ -1,0 +1,1983 @@
+/* Atelier rework, October 2026: stair-step buttons, label-and-statement rows, the
+   roll-back work grid, the application, About, and the stacked service panels.
+   Loaded after atelier.css; selectors start at .atelier to win over its resets. */
+
+/* ---- Stair-step buttons: a slanted tread on a riser ---- */
+.atelier .atelier-step {
+  --step-face: var(--ink);
+  --step-text: var(--paper);
+  --step-riser: color-mix(in srgb, var(--ink) 42%, #0b0f14);
+  --step-depth: 6px;
+  --step-slant: 12px;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  margin-bottom: var(--step-depth);
+  padding: 0 calc(18px + var(--step-slant)) 0 calc(16px + var(--step-slant));
+  border: 0;
+  background: none;
+  color: var(--step-text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.atelier .atelier-step::before,
+.atelier .atelier-step::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  pointer-events: none;
+}
+/* The tread: the top face of the step. */
+.atelier .atelier-step::before {
+  inset: 0;
+  z-index: -1;
+  background: var(--step-face);
+  clip-path: polygon(
+    var(--step-slant) 0,
+    100% 0,
+    calc(100% - var(--step-slant)) 100%,
+    0 100%
+  );
+}
+/* The riser: the face under the tread. It grows as the step lifts. */
+.atelier .atelier-step::after {
+  top: 100%;
+  right: var(--step-slant);
+  height: var(--step-depth);
+  z-index: -2;
+  background: var(--step-riser);
+  transition: height 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.atelier .atelier-step:hover {
+  color: var(--step-text);
+  transform: translateY(-3px);
+}
+.atelier .atelier-step:hover::after {
+  height: calc(var(--step-depth) + 3px);
+}
+.atelier .atelier-step:active {
+  transform: translateY(calc(var(--step-depth) - 1px));
+}
+.atelier .atelier-step:active::after {
+  height: 1px;
+}
+.atelier .atelier-step:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+.atelier .atelier-step:disabled {
+  cursor: progress;
+  opacity: 0.75;
+  transform: none;
+}
+.atelier-step-glyph {
+  width: 18px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-dasharray: 34;
+}
+.atelier .atelier-step:hover .atelier-step-glyph {
+  animation: atelier-climb 0.6s ease both;
+}
+@keyframes atelier-climb {
+  from {
+    stroke-dashoffset: 34;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.atelier .atelier-step.is-quiet {
+  --step-face: var(--panel-2);
+  --step-text: var(--ink);
+  --step-riser: color-mix(in srgb, var(--panel-2) 52%, #0b0f14);
+}
+.atelier .atelier-step.is-large {
+  --step-depth: 8px;
+  --step-slant: 16px;
+  min-height: 58px;
+  padding: 0 calc(24px + var(--step-slant)) 0 calc(22px + var(--step-slant));
+  font-size: 16px;
+}
+
+/* ---- Label and statement rows ---- */
+.atelier .atelier-overview {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.9fr) 3fr;
+  gap: 18px 6%;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.atelier .atelier-overview + .atelier-overview {
+  margin-top: 64px;
+}
+.atelier-overview-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.atelier .atelier-overview-body > * + * {
+  margin-top: 20px;
+}
+.atelier .atelier-overview-body > .atelier-statement + .atelier-statement-sm {
+  margin-top: 26px;
+}
+.atelier .atelier-overview-body > p {
+  max-width: 560px;
+  font-size: 16px;
+  color: var(--muted);
+}
+.atelier .atelier-statement {
+  max-width: 17ch;
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(34px, 4.6vw, 68px);
+  font-weight: 560;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.atelier .atelier-overview-body > .atelier-statement-sm,
+.atelier .atelier-statement-sm {
+  max-width: 30ch;
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.atelier .atelier-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 18px;
+  margin-top: 30px;
+}
+.atelier .atelier-footnote {
+  margin-top: 26px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* The intro is one label-and-statement row now. */
+.atelier .atelier-intro {
+  display: block;
+  padding-top: 110px;
+  padding-bottom: 30px;
+}
+.atelier .atelier-intro > .atelier-overview {
+  max-width: none;
+  align-self: auto;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* ---- Work: rows that roll back into the distance ---- */
+.atelier .atelier-work.atelier-section {
+  padding-top: 70px;
+}
+.atelier-depth {
+  display: grid;
+  gap: 64px;
+  margin-top: 64px;
+}
+.atelier-depth-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: end;
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
+    .atelier-work:not(.is-still) .atelier-depth-row {
+      animation: atelier-roll-back linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+/* Keep these numbers in step with rollAt() in WorkGrid.tsx. */
+@keyframes atelier-roll-back {
+  0% {
+    transform-origin: 50% 0%;
+    opacity: 0.55;
+    transform: perspective(1400px) translateY(40px) translateZ(0)
+      rotateX(-14deg) scale(0.96);
+  }
+  30% {
+    transform-origin: 50% 0%;
+    opacity: 1;
+    transform: perspective(1400px) translateY(0) translateZ(0) rotateX(0deg)
+      scale(1);
+  }
+  62% {
+    transform-origin: 50% 100%;
+    opacity: 1;
+    transform: perspective(1400px) translateY(0) translateZ(0) rotateX(0deg)
+      scale(1);
+  }
+  100% {
+    transform-origin: 50% 100%;
+    opacity: 0.15;
+    transform: perspective(1400px) translateY(-12%) translateZ(-240px)
+      rotateX(48deg) scale(0.9);
+  }
+}
+.atelier-scene-text {
+  padding-bottom: 54px;
+}
+.atelier-track-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.atelier .atelier-scene-text :is(h2, h3) {
+  max-width: 13ch;
+  margin-top: 14px;
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(30px, 3.2vw, 48px);
+  font-weight: 560;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+.atelier .atelier-scene-text p {
+  max-width: 34ch;
+  margin-top: 16px;
+  font-size: 16px;
+  color: var(--muted);
+}
+.atelier .atelier-scene-text .atelier-step {
+  margin-top: 26px;
+}
+.atelier-card {
+  display: grid;
+  gap: 16px;
+}
+.atelier-card-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #1b2028;
+  box-shadow: 0 24px 50px rgba(8, 12, 18, 0.35);
+  cursor: pointer;
+}
+.atelier-card-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 10px;
+  background: #e5e6de;
+}
+.atelier-card-bar i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #929a8d;
+}
+.atelier-card-media video,
+.atelier-card-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.atelier-card-media:hover video,
+.atelier-card-media:hover img {
+  transform: scale(1.025);
+}
+.atelier-card-caption {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.atelier .atelier-card-caption h3 {
+  font-family: "Archivo Variable", sans-serif;
+  font-size: 22px;
+  font-weight: 560;
+  letter-spacing: -0.03em;
+}
+.atelier .atelier-card-caption p {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.atelier .atelier-slot {
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  aspect-ratio: 16 / 10;
+  border: 1.5px dashed var(--line);
+  border-radius: 10px;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 14px,
+    color-mix(in srgb, var(--line) 22%, transparent) 14px 15px
+  );
+  color: var(--ink);
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+.atelier .atelier-slot:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.atelier-slot span {
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(26px, 2.6vw, 38px);
+  letter-spacing: -0.04em;
+}
+.atelier-slot small {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---- Overlay: the device preview and the live Waylight ---- */
+.atelier-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 3vh 3vw;
+  background: rgba(8, 11, 16, 0.74);
+  backdrop-filter: blur(6px);
+}
+.atelier-overlay-panel {
+  width: min(1180px, 100%);
+  max-height: 94vh;
+  overflow: auto;
+  border-radius: 14px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.45);
+}
+.atelier-overlay-panel:focus {
+  outline: none;
+}
+.atelier-overlay-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 26px 18px;
+}
+.atelier-overlay-head span {
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--muted);
+}
+.atelier .atelier-overlay-head h2 {
+  margin-top: 4px;
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+}
+.atelier .atelier-overlay-close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  transition: transform 0.3s ease, color 0.2s ease;
+}
+.atelier .atelier-overlay-close:hover {
+  color: var(--accent);
+  transform: rotate(90deg);
+}
+.atelier .atelier-overlay-close:focus-visible {
+  outline: 2px solid var(--accent);
+}
+.atelier-overlay-stage {
+  min-height: 0;
+}
+.atelier-overlay-copy {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  padding: 28px 26px 30px;
+}
+.atelier .atelier-overlay-copy h3 {
+  max-width: 18ch;
+  font-family: "Archivo Variable", sans-serif;
+  font-size: 28px;
+  font-weight: 560;
+  letter-spacing: -0.035em;
+}
+.atelier .atelier-overlay-copy p {
+  font-size: 15px;
+  color: var(--muted);
+}
+.atelier .atelier-overlay-copy .atelier-step {
+  margin-top: 22px;
+}
+.atelier .atelier-overlay-note {
+  margin-top: 18px;
+  font-size: 13px;
+}
+.atelier-waylight-frame {
+  display: block;
+  width: 100%;
+  height: min(68vh, 660px);
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #1b2028;
+}
+
+/* ---- Reels and the whole suite ---- */
+.atelier .atelier-reel-sub {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.atelier .atelier-content-depth.atelier-section {
+  padding-top: 40px;
+  padding-bottom: 0;
+}
+.atelier-formats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 24px 36px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.atelier-formats li {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+.atelier-frame {
+  display: block;
+  height: 96px;
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--panel-2) 40%, transparent);
+}
+.atelier-formats strong {
+  font-size: 15px;
+}
+.atelier-formats small {
+  max-width: 18ch;
+  font-size: 12px;
+  color: var(--muted);
+}
+.atelier-workflow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 0;
+  margin: 0;
+  padding: 6px 0 0;
+  list-style: none;
+  counter-reset: atelier-workflow;
+}
+.atelier-workflow li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  counter-increment: atelier-workflow;
+}
+.atelier-workflow li::before {
+  content: counter(atelier-workflow);
+  font-size: 12px;
+  color: var(--accent);
+}
+.atelier-workflow li:not(:last-child)::after {
+  content: "";
+  width: 26px;
+  height: 1px;
+  margin: 0 14px;
+  background: var(--line);
+}
+.atelier-bins {
+  display: grid;
+}
+.atelier-bins details {
+  border-bottom: 1px solid var(--line);
+}
+.atelier-bins details:first-child {
+  border-top: 1px solid var(--line);
+}
+.atelier-bins summary {
+  display: grid;
+  grid-template-columns: 1fr auto 18px;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 0;
+  list-style: none;
+  cursor: pointer;
+}
+.atelier-bins summary::-webkit-details-marker {
+  display: none;
+}
+.atelier-bins summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.atelier-bins summary strong {
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+}
+.atelier-bins summary span {
+  font-size: 13px;
+  color: var(--muted);
+}
+.atelier-bins summary i {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+.atelier-bins summary i::before,
+.atelier-bins summary i::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 0.3s ease;
+}
+.atelier-bins summary i::after {
+  transform: rotate(90deg);
+}
+.atelier-bins details[open] summary i::after {
+  transform: rotate(0deg);
+}
+.atelier-bins details > div {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 30px;
+  padding: 4px 0 26px;
+}
+.atelier-bin-apps {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 10px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.atelier-bin-apps li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+}
+.atelier-bin-apps b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 4px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 11px;
+  font-weight: 700;
+}
+.atelier-bin-make {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 2;
+  column-gap: 28px;
+}
+.atelier-bin-make li {
+  padding: 7px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 50%, transparent);
+  font-size: 14px;
+  color: var(--muted);
+  break-inside: avoid;
+}
+.atelier .atelier-bins > .atelier-step {
+  justify-self: start;
+  margin-top: 30px;
+}
+
+/* ---- The project queue and the application ---- */
+.atelier .atelier-queue-intro h2 {
+  margin-top: 18px;
+}
+.atelier-queue-steps {
+  max-width: 430px;
+  margin: 30px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: atelier-queue;
+}
+.atelier-queue-steps li {
+  position: relative;
+  padding: 14px 0 14px 36px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--muted);
+  counter-increment: atelier-queue;
+}
+.atelier-queue-steps li::before {
+  content: counter(atelier-queue, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 16px;
+  font-size: 12px;
+  color: var(--accent);
+}
+.atelier-queue-steps strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+.atelier .atelier-queue-alt {
+  margin-top: 26px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.atelier .atelier-queue-alt a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.atelier .atelier-queue {
+  /* The form's glow spills sideways; it must never widen the page. */
+  overflow-x: clip;
+}
+/* An inquiry sheet: quiet structure, generous fields, and one clear action. */
+.atelier-inquiry {
+  position: relative;
+  align-self: start;
+  display: grid;
+  gap: 26px;
+  padding: clamp(26px, 3vw, 42px);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--panel);
+  box-shadow: 0 16px 38px #0a14221a;
+}
+.atelier-inquiry-head {
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.atelier .atelier-inquiry h3 {
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(25px, 2.5vw, 34px);
+  font-weight: 560;
+  line-height: 1.14;
+  letter-spacing: -0.035em;
+}
+.atelier .atelier-inquiry-head p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.atelier .atelier-inquiry-fields {
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+.atelier-inquiry-field {
+  display: grid;
+  gap: 9px;
+}
+.atelier .atelier-inquiry-field label,
+.atelier .atelier-inquiry-types legend {
+  font-size: 14px;
+  font-weight: 600;
+}
+.atelier .atelier-inquiry-field label small {
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.atelier .atelier-inquiry-field input,
+.atelier .atelier-inquiry-field textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 14px 15px;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--paper) 75%, var(--panel));
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+.atelier .atelier-inquiry-field textarea {
+  min-height: 128px;
+  resize: vertical;
+}
+.atelier .atelier-inquiry-field input::placeholder,
+.atelier .atelier-inquiry-field textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.85;
+}
+.atelier .atelier-inquiry-field input:focus,
+.atelier .atelier-inquiry-field textarea:focus {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-color: var(--ink);
+  box-shadow: none;
+}
+.atelier-inquiry-details {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.atelier-inquiry-details summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  font-size: 13px;
+  cursor: pointer;
+  list-style: none;
+}
+.atelier-inquiry-details summary::-webkit-details-marker { display: none; }
+.atelier-inquiry-details summary > span {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+.atelier-inquiry-details[open] summary > svg { transform: rotate(45deg); }
+.atelier .atelier-inquiry-types {
+  margin: 12px 0 22px;
+  padding: 0;
+  border: 0;
+}
+.atelier-inquiry-types > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.atelier-inquiry-types label {
+  position: relative;
+  cursor: pointer;
+}
+.atelier-inquiry-types input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+}
+.atelier-inquiry-types span {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 13px;
+}
+.atelier-inquiry-types input:checked + span {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+.atelier-inquiry-types input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.atelier-inquiry-details > .atelier-inquiry-field { margin-bottom: 22px; }
+.atelier-inquiry-foot { display: grid; gap: 13px; }
+.atelier .atelier-inquiry-submit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  min-height: 58px;
+  padding: 16px 20px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 180ms ease, color 180ms ease;
+}
+.atelier .atelier-inquiry-submit:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+.atelier .atelier-inquiry-foot p {
+  color: var(--muted);
+  font-size: 12px;
+}
+.atelier .atelier-inquiry-error {
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+  font-size: 14px;
+}
+.atelier-inquiry-check { color: var(--ink); }
+.atelier .atelier-inquiry.is-sent p { color: var(--muted); }
+.atelier .atelier-inquiry-reset {
+  justify-self: start;
+  min-height: 44px;
+  border: 0;
+  padding: 10px 0;
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.atelier-inquiry-next {
+  max-width: 40ch;
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.atelier .atelier-inquiry-next h3 { font-size: 16px; font-weight: 600; }
+.atelier .atelier-inquiry-next p { margin-top: 10px; color: var(--muted); font-size: 15px; }
+.atelier-inquiry-next > span { display: block; margin-top: 16px; font-size: 13px; }
+.atelier-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.is-spinning { animation: inquiry-spin 1s linear infinite; }
+@keyframes inquiry-spin { to { transform: rotate(360deg); } }
+@media (max-width: 700px) {
+  .atelier-inquiry { gap: 22px; padding: 24px 20px; }
+  .atelier .atelier-inquiry h3 { font-size: 27px; }
+  .atelier-inquiry-next { margin-top: 24px; }
+  .atelier-inquiry-types > div { grid-template-columns: 1fr; }
+}
+
+/* ---- About ---- */
+.atelier .atelier-about.atelier-section {
+  padding-top: 60px;
+}
+.atelier-bring {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+}
+.atelier-bring > div {
+  padding: 18px 22px 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+.atelier-bring > div:not(:nth-child(3n + 1)) {
+  padding-left: 22px;
+  border-left: 1px solid var(--line);
+}
+.atelier-bring dt {
+  font-family: "Archivo Variable", sans-serif;
+  font-size: 20px;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+.atelier-bring dd {
+  max-width: 32ch;
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.atelier-manifesto {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  align-items: end;
+  gap: 30px 6%;
+  margin: 90px 0 0;
+  padding: 56px 6%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+}
+.atelier-manifesto blockquote {
+  max-width: 16ch;
+  margin: 0;
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(32px, 4.2vw, 62px);
+  font-weight: 560;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+.atelier-manifesto figcaption {
+  max-width: 40ch;
+  font-size: 15px;
+  color: var(--muted);
+}
+.atelier-manifesto-links {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 18px;
+}
+/* The manifesto stands on its own just before the closing line. */
+.atelier .atelier-manifesto-section {
+  padding-top: 40px;
+  padding-bottom: 0;
+}
+.atelier .atelier-manifesto-section .atelier-manifesto {
+  margin-top: 0;
+}
+
+/* ---- Services: panels that stack as you scroll ---- */
+.atelier-stack {
+  position: relative;
+  display: grid;
+  gap: 22px;
+  margin-top: 56px;
+}
+.atelier-stack-panel {
+  position: sticky;
+  top: calc(96px + var(--i, 0) * 22px);
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  grid-template-rows: auto 1fr;
+  gap: 30px 6%;
+  min-height: min(470px, 72vh);
+  padding: 36px 40px 40px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 -20px 50px rgba(8, 12, 18, 0.28);
+}
+.atelier .atelier-stack-panel header h3 {
+  max-width: 14ch;
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 560;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+.atelier .atelier-stack-panel header p {
+  margin-top: 12px;
+  font-size: 15px;
+  color: var(--accent);
+}
+.atelier .atelier-stack-panel .atelier-service-art {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  margin: 0;
+}
+.atelier-stack-body {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+}
+.atelier .atelier-stack-body > p {
+  max-width: 46ch;
+  font-size: 15px;
+  color: var(--muted);
+}
+.atelier-stack-body ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 2;
+  column-gap: 26px;
+}
+.atelier-stack-body li {
+  padding: 8px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
+  font-size: 14px;
+  break-inside: avoid;
+}
+.atelier .atelier-stack-body .atelier-step {
+  justify-self: start;
+  margin-top: 8px;
+}
+.atelier .atelier-presence {
+  margin-top: 90px;
+}
+.atelier .atelier-presence-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 26px;
+  margin-top: 28px;
+}
+.atelier .atelier-presence-grid h4 {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+  font-weight: 600;
+}
+.atelier-presence-grid ul {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.atelier-presence-grid li {
+  padding: 3px 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---- Toolkit: the logo ribbon in the atelier palette ---- */
+.atelier .atelier-toolkit {
+  display: block;
+  padding-bottom: 60px;
+}
+.atelier .atelier-toolkit .atelier-statement {
+  margin-top: 0;
+}
+.atelier .studio-ribbon {
+  --st-line: var(--line);
+  --st-panel: transparent;
+  --st-dim: var(--muted);
+  margin-top: 48px;
+}
+.atelier-motion-paused .studio-ribbon-track {
+  animation-play-state: paused;
+}
+
+/* ---- Approach and the closing line ---- */
+.atelier .atelier-approach .atelier-overview {
+  margin-bottom: 50px;
+}
+.atelier .atelier-revision-preview .atelier-step {
+  margin-top: 22px;
+}
+.atelier .atelier-closing {
+  display: grid;
+  justify-items: start;
+  gap: 24px;
+  padding-top: 120px;
+  padding-bottom: 150px;
+}
+.atelier .atelier-closing h2 {
+  max-width: 13ch;
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(44px, 7vw, 112px);
+  font-weight: 560;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+}
+.atelier .atelier-footer-line {
+  max-width: 52ch;
+  margin: 18px 0 30px;
+  font-size: 14px;
+  color: #b0beac;
+}
+.atelier .atelier-footer-bottom > div {
+  flex-wrap: wrap;
+}
+
+/* ---- "See more" and "Expand" steps sit on a divider line ---- */
+.atelier .atelier-more {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.atelier .atelier-more::before,
+.atelier .atelier-more::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+/* The folded work rows join the grid as if the wrapper weren't there. */
+.atelier-depth-more {
+  display: contents;
+}
+.atelier .atelier-content-options > .atelier-overview:first-child {
+  margin-top: 56px;
+}
+
+/* ---- The open slot, after how the work gets made ---- */
+.atelier .atelier-next.atelier-section {
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+
+/* ---- About: one compact row of portrait, words, and photos ---- */
+.atelier .atelier-about-card {
+  display: grid;
+  grid-template-columns: minmax(170px, 230px) minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "portrait head photos"
+    "portrait text photos";
+  gap: 18px 4%;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.atelier-about-portrait {
+  grid-area: portrait;
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 20px 44px rgba(8, 12, 18, 0.3);
+}
+.atelier-about-head {
+  grid-area: head;
+}
+.atelier .atelier-about-head h2 {
+  margin-top: 10px;
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(36px, 3.8vw, 56px);
+  font-weight: 560;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.atelier .atelier-about-head .atelier-statement-sm {
+  max-width: 24ch;
+  margin-top: 12px;
+}
+.atelier-about-text {
+  grid-area: text;
+}
+.atelier .atelier-about-text p {
+  max-width: 46ch;
+  font-size: 15px;
+  color: var(--muted);
+}
+.atelier .atelier-about-text p + p {
+  margin-top: 12px;
+}
+.atelier .atelier-about-photos {
+  grid-area: photos;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.atelier-about-photos li {
+  overflow: hidden;
+  border-radius: 8px;
+}
+.atelier-about-photos img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.atelier-about-photos li:hover img {
+  transform: scale(1.04);
+}
+.atelier .atelier-about-photos li:first-child {
+  grid-column: 1 / -1;
+}
+.atelier .atelier-about-photos li:first-child img {
+  aspect-ratio: 16 / 9;
+}
+.atelier .atelier-about-card + .atelier-overview {
+  margin-top: 56px;
+}
+
+/* ---- The corner button: where a chat launcher would be, it shows how the work gets made ---- */
+.atelier-howto {
+  position: fixed;
+  right: max(22px, env(safe-area-inset-right));
+  bottom: max(22px, calc(env(safe-area-inset-bottom) + 12px));
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+}
+.atelier-howto.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
+}
+.atelier .atelier-howto .atelier-step {
+  filter: drop-shadow(0 16px 26px rgba(8, 12, 18, 0.4));
+}
+
+/* ---- Reels as a deck: three cards show, the front one plays, a click deals the next ---- */
+.atelier .atelier-deck {
+  position: relative;
+  width: min(100%, 315px);
+  aspect-ratio: 9 / 16;
+  margin: 26px auto 0;
+}
+.atelier .atelier-deck-card {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 14px;
+  background: #111;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.55s ease,
+    opacity 0.55s ease;
+}
+.atelier .atelier-deck-card[data-position="0"] {
+  z-index: 3;
+  transform: none;
+}
+.atelier .atelier-deck-card[data-position="1"] {
+  z-index: 2;
+  filter: brightness(0.7);
+  transform: translate(26px, -16px) rotate(5deg) scale(0.95);
+}
+.atelier .atelier-deck-card[data-position="2"] {
+  z-index: 1;
+  filter: brightness(0.5);
+  transform: translate(50px, -30px) rotate(10deg) scale(0.9);
+}
+/* Cards past the third wait here, unseen, and fade in at the back as the deck is dealt. */
+.atelier .atelier-deck-card[data-position="3"] {
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  filter: brightness(0.5);
+  transform: translate(50px, -30px) rotate(10deg) scale(0.9);
+}
+.atelier .atelier-deck-card[data-position="0"]:hover {
+  transform: translateY(-4px);
+}
+.atelier .atelier-deck-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.atelier .atelier-deck-card video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+  object-fit: cover;
+  box-shadow: none;
+}
+.atelier .atelier-reel-stage .atelier-reel-controls {
+  width: min(100%, 315px);
+  margin: 18px auto 0;
+}
+
+/* ---- The logo band, between the work and how it gets made ---- */
+.atelier .atelier-ribbon-band {
+  width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: 50px 6% 0;
+}
+.atelier .atelier-ribbon-band .studio-ribbon {
+  margin-top: 0;
+}
+.atelier .atelier-ribbon-band .atelier-footnote {
+  margin-top: 12px;
+}
+
+/* ---- The closing line, with the small print right under it ---- */
+.atelier .atelier-closing.atelier-section {
+  padding-bottom: 46px;
+}
+.atelier-fineprint {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 14px;
+  width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: 0 6% 44px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.atelier-fineprint > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px 30px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.atelier-fineprint nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+.atelier .atelier-fineprint a:hover {
+  color: var(--ink);
+}
+
+/* ---- Smaller screens ---- */
+@media (max-width: 900px) {
+  .atelier .atelier-about-card {
+    grid-template-columns: 120px minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+      "portrait head"
+      "text text"
+      "photos photos";
+  }
+  .atelier .atelier-about-photos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .atelier .atelier-about-photos li:first-child {
+    grid-column: auto;
+  }
+  .atelier .atelier-about-photos li:first-child img {
+    aspect-ratio: 4 / 3;
+  }
+  .atelier .atelier-overview {
+    grid-template-columns: 1fr;
+  }
+  .atelier-depth {
+    gap: 56px;
+  }
+  .atelier-depth-row {
+    grid-template-columns: 1fr;
+  }
+  .atelier-scene-text {
+    padding-bottom: 0;
+  }
+  .atelier-field-pair,
+  .atelier-overlay-copy,
+  .atelier-bins details > div,
+  .atelier-manifesto {
+    grid-template-columns: 1fr;
+  }
+  .atelier-bring {
+    grid-template-columns: 1fr 1fr;
+  }
+  .atelier-bring > div:not(:nth-child(3n + 1)) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .atelier-bring > div:nth-child(even) {
+    padding-left: 18px;
+    border-left: 1px solid var(--line);
+  }
+  .atelier-stack-panel {
+    position: relative;
+    top: auto;
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 28px 24px;
+  }
+  .atelier-stack-body {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .atelier .atelier-stack-panel .atelier-service-art {
+    display: none;
+  }
+  .atelier .atelier-presence-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .atelier-overlay {
+    padding: 0;
+  }
+  .atelier-overlay-panel {
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}
+@media (max-width: 560px) {
+  .atelier .atelier-deck {
+    width: min(78%, 280px);
+    margin-left: 0;
+  }
+  .atelier .atelier-deck-card[data-position="1"] {
+    transform: translate(18px, -12px) rotate(4deg) scale(0.95);
+  }
+  .atelier .atelier-deck-card[data-position="2"],
+  .atelier .atelier-deck-card[data-position="3"] {
+    transform: translate(34px, -22px) rotate(8deg) scale(0.9);
+  }
+  .atelier .atelier-reel-stage .atelier-reel-controls {
+    width: min(78%, 280px);
+    margin-left: 0;
+  }
+  .atelier .atelier-about-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+  .atelier .atelier-about-photos {
+    grid-template-columns: 1fr 1fr;
+  }
+  .atelier .atelier-howto .atelier-step.is-large {
+    --step-slant: 12px;
+    min-height: 48px;
+    font-size: 14px;
+  }
+  .atelier-bring,
+  .atelier .atelier-presence-grid {
+    grid-template-columns: 1fr;
+  }
+  .atelier-bring > div:nth-child(even) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .atelier-bin-make,
+  .atelier-stack-body ul {
+    columns: 1;
+  }
+  .atelier-application {
+    padding: 22px 18px 24px;
+  }
+  .atelier-frame {
+    height: 72px;
+  }
+  .atelier-workflow li:not(:last-child)::after {
+    width: 14px;
+    margin: 0 8px;
+  }
+}
+
+/* ---- Phones get the short version; the desktop keeps everything ----
+   Anything marked .atelier-desktop-only stays off small screens: the extra work,
+   the logo band, the revision explorer, the content options, the manifesto, and
+   the corner button. The service panels shrink to their titles. */
+@media (max-width: 700px) {
+  .atelier .atelier-desktop-only {
+    display: none !important;
+  }
+  .atelier .atelier-stack {
+    gap: 10px;
+    margin-top: 32px;
+  }
+  .atelier .atelier-stack-panel {
+    position: sticky;
+    top: calc(74px + var(--i, 0) * 12px);
+    padding: 20px 20px 22px;
+  }
+  .atelier .atelier-scene {
+    pointer-events: none;
+  }
+  .atelier .atelier-stack-body,
+  .atelier .atelier-stack-panel .atelier-service-art {
+    display: none;
+  }
+  .atelier .atelier-about-photos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .atelier .atelier-about-photos li:first-child {
+    grid-column: auto;
+  }
+  .atelier .atelier-about-photos li:first-child img {
+    aspect-ratio: 4 / 3;
+  }
+  .atelier .atelier-approach .atelier-overview {
+    margin-bottom: 28px;
+  }
+}
+
+/* Hero sculpture: the stones answer the pointer directly, so the hint only names the gesture. */
+.atelier-cosmic-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 450ms ease;
+}
+.atelier[data-hero-phase="waiting"] .atelier-cosmic-backdrop {
+  opacity: 0;
+}
+.atelier-cosmic-backdrop > img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* ---- WEB over DESIGN, set like a star atlas; a hidden sky that shows under the pointer ---- */
+.atelier-constellation-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.atelier-design-constellation {
+  position: absolute;
+  left: 6%;
+  top: max(462px, 52%);
+  display: block;
+  width: clamp(260px, min(32vw, 46vh), 500px);
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+}
+.atelier-design-constellation .c-line {
+  stroke: #1d2632;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-opacity: calc(0.62 + var(--near, 0) * 0.3);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.32s cubic-bezier(0.45, 0, 0.2, 1) var(--d),
+    stroke-opacity 0.35s ease 0s;
+}
+.atelier-design-constellation .c-star {
+  opacity: 0;
+  transition: opacity 0.25s ease var(--d);
+}
+.atelier-design-constellation .c-dot {
+  fill: #1d2632;
+  stroke: #ffffff;
+  stroke-width: 1.3;
+  paint-order: stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(calc(1 + var(--near, 0) * 0.35));
+  transition: transform 0.3s ease;
+}
+.atelier-design-constellation .c-cross {
+  stroke: #1d2632;
+  stroke-width: 0.8;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.atelier:not([data-hero-phase="waiting"])
+  .atelier-design-constellation
+  .c-line {
+  stroke-dashoffset: 0;
+}
+.atelier:not([data-hero-phase="waiting"])
+  .atelier-design-constellation
+  .c-star {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .atelier-design-constellation .c-line,
+  .atelier-design-constellation .c-star {
+    transition: none;
+  }
+}
+@media (max-width: 700px) {
+  /* Small, in the gap between the headline and the staircase. */
+  .atelier-design-constellation {
+    top: 32%;
+    width: min(38vw, 150px);
+  }
+}
+.atelier .atelier-hero,
+.atelier .atelier-nav {
+  --hero-ink: #25303d;
+  --hero-muted: #4b596b;
+  color: var(--hero-ink);
+}
+.atelier[data-theme] .atelier-frost-backdrop {
+  filter: none;
+  object-position: center;
+}
+.atelier[data-theme] .atelier-hero-shade {
+  background: none;
+}
+.atelier .atelier-hero-bottom,
+.atelier[data-theme="light"] .atelier-hero-bottom,
+.atelier[data-theme="light"] .atelier-sculpture-control {
+  --hero-ink: #25303d;
+  --hero-muted: #4b596b;
+  color: var(--hero-ink);
+  text-shadow: none;
+  border-color: #25303d30;
+}
+.atelier .atelier-motion-toggle {
+  color: var(--hero-muted);
+}
+.atelier .atelier-scene-hud {
+  pointer-events: none;
+}
+.atelier .atelier-sculpture-hint {
+  display: grid;
+  grid-template-columns: 22px auto;
+  align-items: center;
+  column-gap: 11px;
+  margin: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  text-align: left;
+  color: var(--hero-ink);
+}
+.atelier .atelier-sculpture-hint > span[aria-hidden] {
+  grid-row: span 2;
+  font: 300 27px/1 ui-monospace, "SF Mono", Menlo, monospace;
+  text-align: center;
+}
+.atelier .atelier-hero-title .atelier-kicker {
+  font-size: 14px;
+  letter-spacing: -0.015em;
+  text-transform: none;
+}
+.atelier .atelier-hero-title h1 {
+  font-size: clamp(48px, 4.5vw, 76px);
+  margin-top: 0;
+  line-height: 0.98;
+}
+@media (max-width: 700px) {
+  .atelier .atelier-hero-title h1 {
+    font-size: clamp(42px, 11.5vw, 62px);
+  }
+}
+.atelier .atelier-sculpture-name {
+  margin: 0 0 -9px;
+  font-size: 12px;
+  color: var(--hero-muted);
+}
+.atelier[data-theme="light"] .atelier-sculpture-control {
+  --hero-ink: #25303d;
+  --hero-muted: #4b596b;
+  color: var(--hero-ink);
+  text-shadow: none;
+}
+.atelier .atelier-explore {
+  gap: 20px;
+  min-height: 56px;
+  padding: 10px 0;
+  text-decoration: none;
+}
+.atelier .atelier-explore strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.atelier .atelier-explore small {
+  display: block;
+  margin-top: 7px;
+  font-size: 10px;
+  color: var(--hero-muted);
+}
+.atelier .atelier-explore > svg {
+  flex-shrink: 0;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.atelier .atelier-explore:hover > svg {
+  transform: translateY(4px);
+}
+.atelier .atelier-sculpture-hint small {
+  grid-column: 2;
+}
+.atelier .atelier-hint-touch {
+  display: none;
+}
+@media (hover: none) {
+  .atelier .atelier-hint-hover {
+    display: none;
+  }
+  .atelier .atelier-hint-touch {
+    display: inline;
+  }
+}
+@media (max-width: 700px) {
+  .atelier .atelier-hero-title .atelier-kicker {
+    font-size: 12px;
+  }
+  .atelier .atelier-explore {
+    gap: 10px;
+  }
+  .atelier .atelier-explore strong {
+    font-size: 13px;
+  }
+  .atelier .atelier-explore small {
+    font-size: 9px;
+    max-width: 130px;
+    line-height: 1.4;
+  }
+  .atelier .atelier-sculpture-name {
+    font-size: 10px;
+  }
+  .atelier .atelier-sculpture-hint {
+    font-size: 13px;
+    grid-template-columns: 18px auto;
+  }
+  .atelier .atelier-sculpture-hint > span[aria-hidden] {
+    font-size: 22px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atelier .atelier-explore > svg {
+    transition: none;
+  }
+  .atelier .atelier-explore:hover > svg {
+    transform: none;
+  }
+}
+
+/* The hint sits over the lower stones. It is only text, so the pointer passes through to them. */
+.atelier .atelier-sculpture-control,
+.atelier .atelier-sculpture-control * {
+  pointer-events: none;
+}
+
+/* ---- The way in: an application button in the hero ---- */
+.atelier .atelier-hero-cta {
+  margin-top: 30px;
+  pointer-events: auto;
+}
+.atelier-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 30px;
+  pointer-events: auto;
+}
+.atelier .atelier-hero-actions .atelier-hero-cta {
+  margin: 0;
+}
+.atelier .atelier-mobile-only {
+  display: none;
+}
+@media (max-height: 780px) and (min-width: 701px) {
+  .atelier-design-constellation {
+    width: clamp(240px, 40vh, 420px);
+  }
+}
+@media (max-width: 700px) {
+  .atelier .atelier-hero-bottom .atelier-explore {
+    display: none;
+  }
+  .atelier .atelier-hero-bottom .atelier-mobile-only {
+    display: inline-flex;
+    justify-self: end;
+    align-self: end;
+    margin: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atelier-application::before,
+  .atelier-application::after,
+  .atelier-application-status i {
+    animation: none;
+  }
+}
+@media (max-width: 560px) {
+  .atelier-application::before,
+  .atelier-application::after {
+    width: 34%;
+  }
+  .atelier-application::before {
+    left: -17%;
+  }
+  .atelier-application::after {
+    right: -17%;
+  }
+}
+
+/* ---- The site's own history as a stack: each revision waits as a sliver, then slides over ---- */
+.atelier-revision-stack {
+  --sliver: 58px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(250px, 1fr);
+  margin-top: 46px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.atelier-revision-stage {
+  position: relative;
+  aspect-ratio: 1440 / 1000;
+  overflow: hidden;
+  background: #0f141b;
+}
+.atelier-revision-base,
+.atelier-revision-scroll-page > img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+}
+.atelier .atelier-revision-card {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: #0f141b;
+  cursor: pointer;
+  box-shadow: -18px 0 36px rgba(6, 10, 16, 0.42), -1px 0 0 rgba(255, 255, 255, 0.18);
+  transform: translateX(0);
+  transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1);
+}
+/* Waiting: only its left edge shows, one sliver per revision along the right side. */
+.atelier .atelier-revision-card.is-waiting {
+  transform: translateX(calc(100% - var(--slot) * var(--sliver)));
+}
+.atelier .atelier-revision-card.is-waiting:hover,
+.atelier .atelier-revision-card.is-waiting:focus-visible {
+  transform: translateX(calc(100% - var(--slot) * var(--sliver) - 20px));
+}
+.atelier .atelier-revision-card:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -4px;
+}
+.atelier-revision-card::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0 auto 0 0;
+  width: calc(var(--sliver) + 30px);
+  background: linear-gradient(90deg, rgba(14, 20, 29, 0.86), rgba(14, 20, 29, 0.55) 70%, transparent);
+  transition: opacity 0.5s ease;
+}
+.atelier-revision-tab {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sliver);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px 0;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 13px;
+  font-weight: 560;
+  letter-spacing: 0.01em;
+  color: #f2f5f9;
+  text-align: left;
+  transition: opacity 0.4s ease;
+}
+.atelier-revision-tab small {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(242, 245, 249, 0.68);
+}
+.atelier-revision-tab i {
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.atelier-revision-card:not(.is-waiting)::before,
+.atelier-revision-card:not(.is-waiting) .atelier-revision-tab {
+  opacity: 0;
+}
+.atelier-revision-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  padding: 34px 32px;
+  border-left: 1px solid var(--line);
+}
+.atelier .atelier-revision-caption h3 {
+  font-family: "Archivo Variable", sans-serif;
+  font-size: clamp(24px, 2.1vw, 32px);
+  font-weight: 560;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.atelier .atelier-revision-caption p {
+  max-width: 34ch;
+  font-size: 15px;
+  color: var(--muted);
+}
+.atelier-revision-progress {
+  display: flex;
+  gap: 6px;
+  margin: 6px 0 4px;
+  padding: 0;
+  list-style: none;
+}
+.atelier-revision-progress li {
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line);
+  transition: background 0.4s ease;
+}
+.atelier-revision-progress li.is-on {
+  background: var(--ink);
+}
+.atelier .atelier-revision-back {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  .atelier .atelier-revision-card {
+    transition: none;
+  }
+}
+/* The page moves behind a fixed viewport; no scaling or reverse drift. */
+.atelier-card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.atelier .atelier-card-live { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
+.atelier-revision-scroll {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.atelier-revision-scroll-page {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  transform-origin: top left;
+  will-change: transform;
+}
+.atelier .atelier-revision-scroll-page > img {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: fill;
+}
+.atelier-modern-revision {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.atelier .atelier-revision-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  color: var(--muted);
+}

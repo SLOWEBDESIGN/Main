@@ -65,17 +65,18 @@ export interface ContactSubmission {
 }
 
 export async function sendContactNotification(sub: ContactSubmission): Promise<void> {
-  const rows: [string, string][] = [
+  // Applications leave the older intake fields empty; only show what was given.
+  const rows = ([
     ['Name', sub.name],
     ['Business', sub.business],
     ['Email', sub.email],
     ['Phone', sub.phone],
-    ['Website', sub.website ?? '—'],
+    ['Link', sub.website ?? ''],
     ['Business type', sub.businessType],
     ['Budget', sub.budget],
-    ['Services', sub.services],
+    ['Project type', sub.services],
     ['Preferred contact', sub.contactMethod],
-  ];
+  ] as [string, string][]).filter(([, value]) => value.trim() !== '');
   const table = rows
     .map(
       ([label, value]) =>
@@ -86,9 +87,9 @@ export async function sendContactNotification(sub: ContactSubmission): Promise<v
   await send({
     to: ownerEmail(),
     replyTo: sub.email,
-    subject: `New inquiry from ${sub.name} — ${sub.business}`,
+    subject: sub.business ? `New application from ${sub.name} — ${sub.business}` : `New application from ${sub.name}`,
     html:
-      `<h2 style="margin:0 0 12px">New website inquiry</h2>` +
+      `<h2 style="margin:0 0 12px">New project application</h2>` +
       `<table style="border-collapse:collapse;font-size:14px">${table}</table>` +
       `<p style="margin:16px 0 4px;color:#555">Project description:</p>` +
       `<p style="white-space:pre-wrap;margin:0">${escapeHtml(sub.description)}</p>`,

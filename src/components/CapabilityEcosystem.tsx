@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, ChevronDown } from 'lucide-react';
 
-const groups = [
+export const groups = [
   { id: 'online', label: 'Get online', color: 'ecosystem-red', items: ['Website design', 'Development', 'Domains + DNS', 'Hosting + deployment', 'SSL + security'] },
   { id: 'found', label: 'Get found', color: 'ecosystem-blue', items: ['SEO foundations', 'Search indexing', 'Metadata + schema', 'Performance', 'Analytics'] },
   { id: 'brand', label: 'Build your brand', color: 'ecosystem-yellow', items: ['Visual identity', 'Digital assets', 'Content systems', 'Short-form video', 'Social presence'] },

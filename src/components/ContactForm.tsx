@@ -92,7 +92,6 @@ export const ContactForm: React.FC = () => {
         setFormData(EMPTY_FORM);
         setServices([]);
         setBotField('');
-        setTimeout(() => setStatus('idle'), 8000);
       } else if (response.status === 429) {
         setStatus('error');
         setErrorMsg('Too many attempts. Please wait a little while and try again.');
@@ -112,7 +111,7 @@ export const ContactForm: React.FC = () => {
 
   return (
     <div id="contact">
-      <h2 className="text-4xl font-bold text-primary-700 mb-3">Tell us what you need.</h2>
+      <h2 className="text-4xl font-bold text-primary-700 mb-3">Introduce your project.</h2>
       <p className="text-accent-slate mb-8 max-w-xl">
         Describe your project in plain language. We read every inquiry and reply
         personally.
@@ -242,7 +241,7 @@ export const ContactForm: React.FC = () => {
         </div>
 
         {status === 'success' && (
-          <motion.div
+          <motion.div role="status"
             className="md:col-span-2 p-4 bg-primary-50 border border-primary-500/30 rounded-lg text-primary-700"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -252,7 +251,7 @@ export const ContactForm: React.FC = () => {
         )}
 
         {status === 'error' && (
-          <motion.div
+          <motion.div role="alert"
             className="md:col-span-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -267,7 +266,7 @@ export const ContactForm: React.FC = () => {
             disabled={status === 'loading'}
             className="btn btn-primary w-full py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {status === 'loading' ? 'Sending...' : 'Send Inquiry'}
+            {status === 'loading' ? 'Sending...' : 'Send to the project queue ↗'}
           </button>
           <p className="mt-4 text-sm text-accent-slate">
             Your inquiry is for the studio only.

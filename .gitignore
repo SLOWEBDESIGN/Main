@@ -2,6 +2,10 @@
 node_modules/
 .env.local
 .env.local.backup
+.env
+.env.*
+!.env.example
+!.env.local.example
 .DS_Store
 *.log
 dist/
@@ -14,3 +18,7 @@ build/
 *.swo
 *~
 .cache/
+._*
+.atelier-evidence/
+.screenshots/
+tsconfig.tsbuildinfo

@@ -3,20 +3,26 @@ import Document, {
   Head,
   Main,
   NextScript,
-  DocumentProps,
+  type DocumentContext,
 } from 'next/document';
+import { getBrandCopy, getRequestBrandVariant, type BrandVariant } from '@/src/lib/schema';
 
-export default class MyDocument extends Document<DocumentProps> {
+export default class MyDocument extends Document<{ variant: BrandVariant }> {
+  static async getInitialProps(ctx: DocumentContext) {
+    const initial = await Document.getInitialProps(ctx);
+    return { ...initial, variant: getRequestBrandVariant(ctx.req?.headers ?? {}) };
+  }
+
   render() {
+    const copy = getBrandCopy(this.props.variant);
     return (
       <Html lang="en">
         <Head>
           {/* Favicon */}
-          <link rel="icon" type="image/svg+xml" href="/favicon-animated.svg" />
-          <link rel="alternate icon" href="/favicon.ico" />
+          <link id="studio-favicon" rel="icon" type="image/svg+xml" href={copy.favicon} />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#111111" />
-          <link rel="manifest" href="/site.webmanifest" />
+          <link rel="manifest" href="/brand.webmanifest" />
           <meta name="theme-color" content="#3d5e3f" />
 
           {/* Google Analytics */}
@@ -42,17 +48,6 @@ export default class MyDocument extends Document<DocumentProps> {
           {/* Meta */}
           <meta charSet="utf-8" />
           <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-          {/* Preconnect */}
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
-          {/* Fonts */}
-          <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Georgia:ital@0;1&display=swap"
-            rel="stylesheet"
-          />
         </Head>
         <body>
           <Main />

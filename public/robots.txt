@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /api/
-Disallow: /admin
-Disallow: /admin/
-
-Sitemap: https://slowebdesign.com/sitemap.xml
-Host: https://slowebdesign.com

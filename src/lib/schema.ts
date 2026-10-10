@@ -1,15 +1,39 @@
 export type BrandVariant = 'slowebdesign' | 'sdwebdesign';
 
+// The studio has two public names, but one inbox and one shared application.
+export const CONTACT_EMAIL = 'contact@slowebdesign.com';
+
+type HostHeaders = Record<string, string | string[] | undefined>;
+
+const hostname = (host?: string) => (host ?? '')
+  .split(',')[0].trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '').replace(/^www\./, '');
+
 export const getBrandVariant = (host?: string): BrandVariant => {
-  const value = (host ?? '').toLowerCase();
-  if (value.includes('sdwebdesign.tech')) return 'sdwebdesign';
-  return 'slowebdesign';
+  const value = hostname(host);
+  // A loopback-only preview address. Public branding still follows its domain.
+  const localSanDiego = process.env.NODE_ENV === 'development' && value === 'sdwebdesign.localhost';
+  return value === 'sdwebdesign.tech' || localSanDiego ? 'sdwebdesign' : 'slowebdesign';
+};
+
+export const getRequestBrandVariant = (headers: HostHeaders): BrandVariant => {
+  const forwarded = headers['x-forwarded-host'];
+  const publicHost = hostname(Array.isArray(forwarded) ? forwarded[0] : forwarded);
+  // Netlify may pass an internal Host. Only trust a known public forwarded domain.
+  if (publicHost === 'sdwebdesign.tech' || publicHost === 'slowebdesign.com') {
+    return getBrandVariant(publicHost);
+  }
+  const host = headers.host;
+  return getBrandVariant(Array.isArray(host) ? host[0] : host);
 };
 
 export const getBrandCopy = (variant: BrandVariant) => {
   const isSanDiego = variant === 'sdwebdesign';
   return {
     siteName: isSanDiego ? 'San Diego Web Design' : 'SLO Web Design',
+    shortName: isSanDiego ? 'SD' : 'SLO',
+    contactEmail: CONTACT_EMAIL,
+    logo: isSanDiego ? '/brand/logo-sd.svg' : '/brand/logo-slo.svg',
+    favicon: isSanDiego ? '/brand/favicon-sd.svg' : '/favicon-animated.svg',
     city: isSanDiego ? 'San Diego' : 'San Luis Obispo',
     state: 'CA',
     description: isSanDiego
@@ -40,11 +64,11 @@ export const generateLocalBusinessSchema = (variant: BrandVariant = 'slowebdesig
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     name: copy.siteName,
-    image: `${copy.canonical}/logo.png`,
+    image: `${copy.canonical}${copy.logo}`,
     description: copy.description,
     url: copy.canonical,
     telephone: '530-215-5987',
-    email: 'contact@slowebdesign.com',
+    email: CONTACT_EMAIL,
     address: {
       '@type': 'PostalAddress',
       addressLocality: copy.city,
@@ -55,7 +79,6 @@ export const generateLocalBusinessSchema = (variant: BrandVariant = 'slowebdesig
       '@type': 'State',
       name: 'California',
     },
-    priceRange: '$$',
     sameAs: [
       'https://github.com/SLOWEBDESIGN',
     ],
@@ -70,7 +93,7 @@ export const generateOrganizationSchema = (variant: BrandVariant = 'slowebdesign
     '@type': 'Organization',
     name: copy.siteName,
     url: copy.canonical,
-    logo: `${copy.canonical}/logo.png`,
+    logo: `${copy.canonical}${copy.logo}`,
     description: `Premium web design agency based in ${copy.city}`,
     sameAs: [
       'https://github.com/SLOWEBDESIGN',

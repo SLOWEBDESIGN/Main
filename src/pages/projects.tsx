@@ -3,7 +3,7 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import { ArrowUpRight, Lock, MapPin, Sparkles } from 'lucide-react';
 import { ThemeToggle } from '@/src/components/ThemeToggle';
-import { getBrandCopy, getBrandVariant, type BrandVariant } from '@/src/lib/schema';
+import { getBrandCopy, getRequestBrandVariant, type BrandVariant } from '@/src/lib/schema';
 
 const entries = [
   {
@@ -38,19 +38,18 @@ const entries = [
 ];
 
 export const getServerSideProps: GetServerSideProps<{ variant: BrandVariant }> = async ({ req }) => {
-  const host = Array.isArray(req.headers.host) ? req.headers.host[0] : req.headers.host ?? '';
-  return { props: { variant: getBrandVariant(host) } };
+  return { props: { variant: getRequestBrandVariant(req.headers) } };
 };
 
 export default function Projects({ variant }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const copy = getBrandCopy(variant);
-  const location = variant === 'sdwebdesign' ? 'San Diego' : 'San Luis Obispo';
+  const location = copy.city;
 
   return (
     <>
       <Head>
         <title>{'Fun projects | ' + copy.siteName}</title>
-        <meta name="description" content="A living notebook of websites, tools, and experiments from the SLOWEBDESIGN studio." />
+        <meta name="description" content={`A living notebook of websites, tools, and experiments from ${copy.siteName}.`} />
         <link rel="canonical" href={`${copy.canonical}/projects`} />
       </Head>
       <div className="projects-page">

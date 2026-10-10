@@ -5,42 +5,47 @@ import { Header } from '@/src/components/Header';
 import { Hero } from '@/src/components/Hero';
 import { Services } from '@/src/components/Services';
 import { WebsiteComparison } from '@/src/components/WebsiteComparison';
-import { Pricing } from '@/src/components/Pricing';
-import { MaintenancePlans } from '@/src/components/MaintenancePlans';
 import { Process } from '@/src/components/Process';
-import { Testimonials } from '@/src/components/Testimonials';
-import { ContactForm } from '@/src/components/ContactForm';
-import { BookingScheduler } from '@/src/components/BookingScheduler';
 import { Footer } from '@/src/components/Footer';
-import { getBrandCopy, getBrandVariant, type BrandVariant } from '@/src/lib/schema';
+import { getBrandCopy, getRequestBrandVariant, type BrandVariant } from '@/src/lib/schema';
 
 export const getServerSideProps: GetServerSideProps<{ variant: BrandVariant }> = async ({ req }) => {
-  const host = Array.isArray(req.headers.host) ? req.headers.host[0] : req.headers.host ?? '';
-  return { props: { variant: getBrandVariant(host) } };
+  return { props: { variant: getRequestBrandVariant(req.headers) } };
 };
 
+// `inert` makes the archive view-only: nothing inside can be clicked or focused,
+// so its old booking, pricing, and contact links are retired without editing the
+// original components. React 18 has no typing for the attribute yet.
+const viewOnly = { inert: '' } as Record<string, string>;
+
+/**
+ * The original website, kept as a view-only archive for the before-and-after.
+ * Pricing, maintenance plans, booking, and the old intake form were retired on
+ * purpose; inquiries now go through the application on the current site.
+ */
 export default function Legacy({ variant }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const copy = getBrandCopy(variant);
   return (
     <>
       <Head>
-        <title>{copy.siteName} | Original site</title>
+        <title>{copy.siteName} | Original site (archived)</title>
         <meta name="description" content={copy.description} />
+        <meta name="robots" content="noindex, follow" />
         <link rel="canonical" href={`${copy.canonical}/legacy`} />
       </Head>
-      <main>
+      <main {...viewOnly}>
         <Header variant={variant} />
         <Hero variant={variant} />
         <Services />
         <WebsiteComparison />
-        <Pricing />
-        <MaintenancePlans />
         <Process />
-        <Testimonials />
-        <ContactForm />
-        <BookingScheduler />
         <Footer variant={variant} />
       </main>
+      <aside className="fixed bottom-0 inset-x-0 z-50 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 bg-black px-4 py-3 text-sm text-white">
+        <span>This is the original site, archived as it was. It is view-only.</span>
+        <a href="/" target="_top" className="text-white underline underline-offset-4">Back to the current site</a>
+        <a href="/#queue" target="_top" className="text-white underline underline-offset-4">Apply for a slot</a>
+      </aside>
     </>
   );
 }

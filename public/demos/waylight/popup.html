@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Waylight popup</title>
+<script src="shim.js"></script>
+</head>
+<body>
+<script>
+// Load the extension's real popup markup unchanged, then its real script. This is
+// the same approach as Waylight's own playground/popup-host.html.
+fetch('ext/popup.html')
+  .then((response) => response.text())
+  .then((html) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    for (const attribute of doc.documentElement.attributes) {
+      document.documentElement.setAttribute(attribute.name, attribute.value);
+    }
+    document.head.insertAdjacentHTML('beforeend', doc.head.innerHTML);
+    document.body.className = doc.body.className;
+    document.body.innerHTML = doc.body.innerHTML.replace(/<script[^>]*><\/script>/g, '');
+    const script = document.createElement('script');
+    script.src = 'ext/popup.js';
+    document.body.appendChild(script);
+  });
+</script>
+</body>
+</html>

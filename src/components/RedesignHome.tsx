@@ -12,25 +12,79 @@ import { getOpeningProject, openingProjects, openingScenes } from '@/src/data/op
 import type { BrandVariant } from '@/src/lib/schema';
 import { getBrandCopy } from '@/src/lib/schema';
 
-const tickerItems = [
-  { name: 'VS Code', slug: 'visualstudiocode' },
-  { name: 'Codex', slug: null },
+// slug: a Simple Icons CDN logo. Brands Simple Icons removed (OpenAI, VS Code, every Adobe
+// app, Edge) use a short `mark` tile instead, and any logo that fails to load falls back too.
+type TickerItem = { name: string; slug: string | null; mark?: string };
+
+const tickerItems: TickerItem[] = [
+  { name: 'VS Code', slug: null, mark: 'VS' },
+  { name: 'Codex', slug: null, mark: 'Cx' },
   { name: 'Claude', slug: 'claude' },
-  { name: 'OpenAI', slug: 'openai' },
+  { name: 'OpenAI', slug: null, mark: 'OA' },
   { name: 'Anthropic', slug: 'anthropic' },
-  { name: 'Adobe', slug: 'adobe' },
   { name: 'Gemini', slug: 'googlegemini' },
   { name: 'Perplexity', slug: 'perplexity' },
+  { name: 'Adobe Creative Cloud', slug: null, mark: 'Cc' },
+  { name: 'Premiere Pro', slug: null, mark: 'Pr' },
+  { name: 'After Effects', slug: null, mark: 'Ae' },
+  { name: 'Photoshop', slug: null, mark: 'Ps' },
+  { name: 'Illustrator', slug: null, mark: 'Ai' },
+  { name: 'Audition', slug: null, mark: 'Au' },
+  { name: 'Lightroom', slug: null, mark: 'Lr' },
+  { name: 'InDesign', slug: null, mark: 'Id' },
+  { name: 'Media Encoder', slug: null, mark: 'Me' },
+  { name: 'Character Animator', slug: null, mark: 'Ch' },
+  { name: 'Animate', slug: null, mark: 'An' },
+  { name: 'Adobe Express', slug: null, mark: 'Ex' },
+  { name: 'Firefly', slug: null, mark: 'Ff' },
+  { name: 'Acrobat', slug: null, mark: 'Ac' },
+  { name: 'Substance 3D', slug: null, mark: '3D' },
+  { name: 'Frame.io', slug: null, mark: 'Fo' },
+  { name: 'DaVinci Resolve', slug: 'davinciresolve' },
+  { name: 'Figma', slug: 'figma' },
+  { name: 'Blender', slug: 'blender' },
+  { name: 'Apple', slug: 'apple' },
+  { name: 'App Store', slug: 'appstore' },
+  { name: 'Xcode', slug: 'xcode' },
+  { name: 'Android', slug: 'android' },
+  { name: 'Google Play', slug: 'googleplay' },
+  { name: 'Android Studio', slug: 'androidstudio' },
+  { name: 'Capacitor', slug: 'capacitor' },
+  { name: 'Electron', slug: 'electron' },
+  { name: 'Chrome', slug: 'googlechrome' },
+  { name: 'Safari', slug: 'safari' },
+  { name: 'Firefox', slug: 'firefoxbrowser' },
+  { name: 'Edge', slug: null, mark: 'Ed' },
+  { name: 'Brave', slug: 'brave' },
+  { name: 'Opera', slug: 'opera' },
+  { name: 'Chrome Web Store', slug: 'chromewebstore' },
   { name: 'Supabase', slug: 'supabase' },
   { name: 'Stripe', slug: 'stripe' },
   { name: 'Vercel', slug: 'vercel' },
   { name: 'Netlify', slug: 'netlify' },
   { name: 'Resend', slug: 'resend' },
   { name: 'Shippo', slug: null },
-  { name: 'Copyright', slug: null },
+  { name: 'Copyright', slug: null, mark: '©' },
   { name: 'SEO', slug: null },
   { name: 'Analytics', slug: 'googleanalytics' },
 ];
+
+/** Logo for the ticker, or a letter tile when there is no logo or it fails to load. */
+const TickerLogo: React.FC<{ item: TickerItem }> = ({ item }) => {
+  const [failed, setFailed] = useState(false);
+  const imgRef = React.useRef<HTMLImageElement | null>(null);
+  // An image that already failed before hydration never fires onError, so check on mount.
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) setFailed(true);
+  }, []);
+  if (!item.slug || failed) {
+    const mark = item.mark ?? item.name.slice(0, 1);
+    return <b className={`redesign-wordmark-mark${mark.length > 1 ? ' is-tile' : ''}`} aria-hidden="true">{mark}</b>;
+  }
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img ref={imgRef} src={`https://cdn.simpleicons.org/${item.slug}/686862`} alt="" aria-hidden="true" onError={() => setFailed(true)} />;
+};
 
 // Display order for the "other work" cards; records live in src/data/opening.ts.
 const builtOrder = ['3dprintdash', 'slocal-fulfillment', 'waylight'];
@@ -130,10 +184,11 @@ export const RedesignHome: React.FC<{ variant: BrandVariant }> = ({ variant }) =
         />
 
         <section className="redesign-ticker" aria-label="Tools and capabilities">
-          <div className="redesign-ticker-track">
+          {/* Two copies so the -50% marquee loops seamlessly; ~2s per item keeps the pace readable. */}
+          <div className="redesign-ticker-track" style={{ animationDuration: `${tickerItems.length * 2}s` }}>
             {[...tickerItems, ...tickerItems].map((item, index) => (
               <span key={`${item.name}-${index}`}>
-                {item.slug ? <img src={`https://cdn.simpleicons.org/${item.slug}/686862`} alt="" aria-hidden="true" /> : <b className="redesign-wordmark-mark">{item.name.slice(0, 1)}</b>}
+                <TickerLogo item={item} />
                 {item.name}
               </span>
             ))}

@@ -21,21 +21,21 @@ export default async function handler(
     return;
   }
 
+  // The application asks only for a name, an email, the kind of project, and a
+  // description. The table still has NOT NULL columns for the older intake
+  // fields, so anything not asked for is stored as an empty string.
   const name = requiredString(body.name, 200);
-  const business = requiredString(body.business, 200);
   const email = requiredString(body.email, 320);
-  const phone = requiredString(body.phone, 50);
-  const website = optionalString(body.website, 500);
-  const businessType = requiredString(body.businessType, 100);
-  const budget = requiredString(body.budget, 100);
-  const services = requiredString(body.services, 100);
+  const services = requiredString(body.services, 500);
   const description = requiredString(body.description, 5000);
-  const contactMethod = requiredString(body.contactMethod, 20);
+  const business = optionalString(body.business, 200) ?? '';
+  const phone = optionalString(body.phone, 50) ?? '';
+  const website = optionalString(body.website, 500);
+  const businessType = optionalString(body.businessType, 100) ?? '';
+  const budget = optionalString(body.budget, 100) ?? '';
+  const contactMethod = optionalString(body.contactMethod, 20) ?? 'email';
 
-  if (
-    !name || !business || !email || !phone || !businessType ||
-    !budget || !services || !description || !contactMethod
-  ) {
+  if (!name || !email || !services || !description) {
     res.status(400).json({ error: 'missing_fields' });
     return;
   }

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waylight, running live</title>
+<script src="hub.js"></script>
+<style>
+  :root { color-scheme: dark; }
+  html, body { height: 100%; margin: 0; }
+  body { background: #1b2028; font: 13px/1.4 system-ui, -apple-system, sans-serif; color: #dfe5ee; }
+  .browser { display: flex; flex-direction: column; height: 100%; }
+  .toolbar { display: flex; align-items: center; gap: 12px; height: 46px; padding: 0 12px 0 16px; background: #262d38; border-bottom: 1px solid #3a4352; }
+  .address { flex: 1; min-width: 0; padding: 6px 12px; border-radius: 6px; background: #1b2028; color: #aab4c3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ext { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }
+  .ext:hover, .ext[aria-expanded="true"] { background: #3a4352; }
+  .ext:focus-visible { outline: 2px solid #ffc295; outline-offset: 2px; }
+  .ext img { width: 18px; height: 18px; }
+  .viewport { position: relative; flex: 1; min-height: 0; }
+  #waylight-page { display: block; width: 100%; height: 100%; border: 0; background: #fbfaf7; }
+  /* Waylight's popup is designed at 390px wide and up to 640px tall. */
+  .popup { --scale: 1; position: absolute; top: 8px; right: 10px; width: calc(390px * var(--scale)); height: min(calc(640px * var(--scale)), calc(100% - 16px)); border-radius: 12px; overflow: hidden; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45); background: #11151b; }
+  .popup[hidden] { display: none; }
+  .popup iframe { display: block; width: 390px; height: calc(100% / var(--scale)); border: 0; transform: scale(var(--scale)); transform-origin: top left; }
+</style>
+</head>
+<body>
+<div class="browser">
+  <div class="toolbar">
+    <span class="address" id="address"></span>
+    <button class="ext" id="toggle" type="button" aria-controls="popup" title="Waylight">
+      <img src="ext/icons/icon-32.png" alt="Waylight">
+    </button>
+  </div>
+  <div class="viewport">
+    <iframe id="waylight-page" title="A web page with Waylight running" src="page.html"></iframe>
+    <div class="popup" id="popup">
+      <iframe title="The Waylight extension popup" src="popup.html"></iframe>
+    </div>
+  </div>
+</div>
+<script>
+  const popup = document.getElementById('popup');
+  const toggle = document.getElementById('toggle');
+  // Hostname and path, the way a browser shows a page on the default port.
+  document.getElementById('address').textContent = location.hostname + location.pathname.replace(/index\.html$/, '') + 'page.html';
+  const setOpen = (open) => {
+    popup.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+  };
+  // On narrow screens the popup is scaled down whole rather than cropped.
+  const fit = () => popup.style.setProperty('--scale', String(Math.min(1, (window.innerWidth - 20) / 390)));
+  fit();
+  window.addEventListener('resize', fit);
+  // Open like a freshly clicked toolbar button; on a phone the page needs the room.
+  setOpen(window.innerWidth > 640);
+  toggle.addEventListener('click', () => setOpen(popup.hidden));
+</script>
+</body>
+</html>

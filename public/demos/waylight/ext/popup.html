@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="dark">
+<title>Waylight</title>
+<style>
+  :root{--void:#070908;--panel:#111517;--panel2:#171c1f;--ink:#f4f2eb;--muted:#8c959a;--rule:#30383f;--lime:#d8ff36;--blue:#574bff;--danger:#ff7a73}
+  *{box-sizing:border-box}
+  body{margin:0;width:360px;max-height:600px;overflow:auto;background:var(--void);color:var(--ink);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+  button,input,select{font:inherit}button{color:inherit}
+  header{display:flex;align-items:center;gap:10px;padding:14px 15px;border-bottom:1px solid var(--rule);background:linear-gradient(120deg,#12171a,#090b0c)}
+  .mark{width:23px;height:23px;border:2px solid var(--ink);position:relative}.mark:before,.mark:after{content:"";position:absolute;background:var(--void)}.mark:before{width:11px;height:27px;left:4px;top:-4px}.mark:after{height:11px;width:27px;top:4px;left:-4px}
+  .brand{font-size:14px;font-weight:800;letter-spacing:.12em}.tagline{margin-left:auto;color:var(--muted);font-size:8px;letter-spacing:.08em;text-align:right}
+  #note{display:none;margin:0;padding:9px 15px;background:#2a1717;color:var(--danger);border-bottom:1px solid #5b2929;line-height:1.45}
+  section{padding:13px 15px;border-bottom:1px solid var(--rule)}
+  .eyebrow{margin:0 0 9px;color:var(--muted);font-size:9px;letter-spacing:.14em;text-transform:uppercase}
+  .site-row{display:flex;gap:10px;align-items:center}.site-copy{min-width:0;flex:1}.site-copy b{display:block;font-size:13px}.host{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .switch{position:relative;width:44px;height:24px;flex:none}.switch input{position:absolute;inset:0;opacity:0;z-index:2;cursor:pointer}.switch i{position:absolute;inset:0;border:1px solid var(--rule);background:#20262a}.switch i:after{content:"";position:absolute;width:16px;height:16px;top:3px;left:3px;background:var(--muted);transition:.14s}.switch input:checked+i{border-color:var(--lime)}.switch input:checked+i:after{background:var(--lime);transform:translateX(20px)}
+  .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.mode{position:relative;min-height:76px;padding:10px;border:1px solid var(--rule);background:var(--panel)}.mode.on{border-color:var(--lime);box-shadow:inset 0 -2px var(--lime)}.mode h2{margin:0 0 4px;font-size:11px;letter-spacing:.04em}.mode p{margin:0;color:var(--muted);font:10px/1.35 -apple-system,BlinkMacSystemFont,system-ui,sans-serif}.mode .switch{position:absolute;right:8px;top:8px;transform:scale(.75);transform-origin:top right}.mode.wide{grid-column:1/-1;min-height:auto;display:flex;align-items:center;gap:10px}.mode.wide select{margin-left:auto;width:125px}
+  label.range{display:block;margin-top:10px;color:var(--muted)}label.range output{float:right;color:var(--ink)}input[type=range]{width:100%;margin:6px 0 0;accent-color:var(--lime)}
+  select,input[type=text]{width:100%;border:1px solid var(--rule);background:var(--panel2);color:var(--ink);padding:7px 8px;border-radius:0}
+  #presets{display:grid;grid-template-columns:1fr 1fr;gap:6px}#presets button{border:1px solid var(--rule);background:var(--panel);padding:8px;text-align:left;cursor:pointer}#presets button:hover,#presets button.active{border-color:var(--blue)}#presets span{display:block;font-weight:800}#presets small{display:block;color:var(--muted);font:9px/1.3 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;margin-top:2px}
+  .action{width:100%;border:1px solid var(--rule);background:var(--panel);padding:9px 10px;text-align:left;cursor:pointer}.action:hover{border-color:var(--lime)}.action strong{display:block}.action small{color:var(--muted)}.action .badge{float:right;color:var(--lime);font-size:9px}.action.on{border-color:var(--lime)}
+  details{border-bottom:1px solid var(--rule)}details>summary{padding:12px 15px;cursor:pointer;list-style:none;font-weight:800;letter-spacing:.06em}details>summary:after{content:"+";float:right;color:var(--lime)}details[open]>summary:after{content:"−"}.advanced{padding:0 15px 14px}.field{margin-top:10px}.field>span{display:block;margin-bottom:4px;color:var(--muted)}.check{display:flex;align-items:center;gap:7px;margin-top:9px}.check input{accent-color:var(--lime)}
+  .locked{opacity:.42}.locked:after{content:" SUPPORTER";color:var(--lime);font-size:8px}.locked input,.locked select{pointer-events:none}
+  .licence .row{display:flex;gap:6px;margin-top:7px}.licence button,.buy{border:1px solid var(--lime);background:var(--lime);color:#080a09;padding:8px 10px;text-decoration:none;font-weight:900;cursor:pointer}.buy{margin-left:auto}.secondary{border-color:var(--rule)!important;background:var(--panel)!important;color:var(--ink)!important}.status{color:var(--muted);margin:7px 0 0}.status.ok{color:var(--lime)}
+  footer{padding:10px 15px;color:var(--muted);display:flex;gap:8px;align-items:center;font-size:9px}footer button{border:1px solid var(--rule);background:transparent;padding:5px 7px;cursor:pointer}footer span{margin-left:auto}
+</style>
+<style>
+  body{width:390px;max-height:640px;background-image:radial-gradient(#252d33 1px,transparent 1px);background-size:16px 16px}
+  header{position:sticky;top:0;z-index:3;background:#0b0e10}
+  .brand{font-size:18px}.tagline{color:#b5bec4}
+  section,details,footer{background:#0c1012}
+  .preview{padding:15px;background:radial-gradient(ellipse at 50% 100%,#3929c440,transparent 70%),#10151a;border-bottom:1px solid var(--rule)}
+  .preview p{margin:0;font:17px/1.5 Georgia,serif;color:#e5e5ed}
+  .preview .beam{display:block;position:relative;margin:6px 0;background:linear-gradient(90deg,transparent,#493cff75,transparent);color:#fff}
+  .preview .beam:after{content:"";display:block;width:25%;height:2px;background:#a298ff;margin-top:4px}
+  .preview small{display:block;margin-top:10px;color:#b8bec5;font:10px/1.4 system-ui,sans-serif}
+  .eyebrow{color:#afb8be}.mode-grid{grid-template-columns:1fr}
+  .mode{min-height:69px;padding:12px}.mode .switch{transform:none;right:12px;top:14px}.mode p{max-width:260px;font-size:11px;color:#bbc1c5}.mode h2{margin-bottom:6px}
+  .mode.wide{min-height:69px}.mode.wide p{max-width:190px}.mode.wide select{width:142px}
+  #presets button:first-child{grid-column:1/-1}#presets small{font-size:10px;color:#afb8be}
+  .locked{opacity:1}.locked:after{display:block;margin-top:4px;font-size:9px;color:#a7a0ff}
+  .locked input,.locked select{opacity:.65}.badge-free{float:right;color:var(--lime);font-size:9px}
+  .reader-links{display:flex;gap:8px}.reader-links a{flex:1;display:block;padding:10px;border:1px solid var(--rule);color:var(--ink);text-align:center;text-decoration:none}
+  .reader-links a:hover{border-color:var(--lime)}
+  #note{background:#201e35;color:#e5dfff;border-color:#514c75}
+  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+  .switch input:focus-visible+i{outline:2px solid white;outline-offset:3px}
+  .action small{display:block;max-width:270px;line-height:1.5}
+  .mobile-popup #card-line,.mobile-popup #sensitivity-row,.mobile-popup #lfCapture,.mobile-popup #lfCapture+*,.mobile-popup .line-help{display:none!important}
+  .mobile-popup .mode-grid{grid-template-columns:1fr}.mobile-popup .mode.wide{min-height:82px}
+  .mobile-popup .preview small{font-size:0}.mobile-popup .preview small:after{content:"Use word anchors, a reading font, or both.";font-size:10px}
+</style>
+</head>
+<body>
+<header><span class="mark"></span><span class="brand">WAYLIGHT</span><span class="tagline">A CALMER WAY<br>TO READ</span></header>
+<p id="note"></p>
+<div class="preview" aria-label="Word anchors example"><p>Your page. Your pace.</p><p class="beam"><b>Sm</b>all <b>st</b>eps <b>c</b>an <b>m</b>ake <b>a</b> <b>b</b>ig <b>diff</b>erence.</p><small>Reading tools stay separate. Use any combination.</small></div>
+<section><p class="eyebrow">This page</p><div class="site-row"><div class="site-copy"><b id="power-label">Off for this site</b><div class="host" id="host">this page</div></div><label class="switch"><input id="power" type="checkbox" aria-label="Enable Waylight for this site"><i></i></label></div></section>
+<section class="dimmable">
+  <p class="eyebrow">Reading tools <span class="badge-free">FREE</span></p>
+  <div class="mode-grid">
+    <div class="mode" id="card-anchors"><h2>WORD ANCHORS</h2><p>Bolds the first part of words.</p><label class="switch"><input id="anchorsOn" type="checkbox" aria-label="Word anchors"><i></i></label></div>
+    <div class="mode" id="card-line"><h2>LINE FOCUS</h2><p>Dims the page around one line.</p><label class="switch"><input id="lineFocusOn" type="checkbox" aria-label="Line focus"><i></i></label></div>
+    <div class="mode wide"><div><h2>READING FONT</h2><p>Visual only. Text stays untouched.</p></div><select id="font"><option value="default">Page default</option><option value="clear">Clear sans</option><option value="dyslexic">OpenDyslexic</option></select></div>
+  </div>
+  <label class="range" id="sensitivity-row">Mouse stroke sensitivity <output id="v-lfSensitivity"></output><input id="lfSensitivity" type="range" min="0.5" max="3" step="0.1"></label>
+  <label class="check line-help"><input id="lfCapture" type="checkbox">Capture mouse when I click a line</label>
+  <p class="status line-help">Click a line, then move right. Left and right arrows nudge the guide; Space moves down a line. Click Pause or press Esc to release.</p>
+</section>
+<section class="reader-links"><a href="https://waylight.netlify.app/reader" target="_blank" rel="noopener">Free PDF + text Reader ↗</a><a href="https://waylight.netlify.app/unlock" target="_blank" rel="noopener">Phone button · $5 ↗</a></section>
+<section class="dimmable"><p class="eyebrow">Free anchor presets</p><div id="presets"></div></section>
+<section>
+  <button class="action" id="site-settings"><span class="badge">SUPPORTER</span><strong id="site-settings-title">Remember settings for this site</strong><small id="site-settings-sub">Keep a different setup here</small></button>
+  <button class="action" id="everywhere-btn" style="margin-top:7px"><span class="badge">SUPPORTER</span><strong id="everywhere-title">Turn on for all pages</strong><small id="everywhere-sub">New sites stay off until you switch them on</small></button>
+</section>
+<details class="dimmable">
+  <summary>FINE CONTROLS</summary>
+  <div class="advanced">
+    <div class="field" data-pro><span>Which words</span><select id="wordScope"><option value="smart">Smart rhythm</option><option value="every">Every word</option><option value="length">Minimum length</option></select></div>
+    <label class="range" data-pro>Minimum word length <output id="v-minWordLength"></output><input id="minWordLength" type="range" min="1" max="8" step="1"></label>
+    <label class="range" data-pro>Anchor strength <output id="v-strength"></output><input id="strength" type="range" min="0.4" max="2" step="0.1"></label>
+    <label class="range" data-pro>Bold weight <output id="v-boldWeight"></output><input id="boldWeight" type="range" min="500" max="900" step="100"></label>
+    <div class="field" data-pro><span>Anchor rhythm</span><select id="chaosMode"><option value="jitter">Natural variation</option><option value="saccade">Every Nth word</option><option value="off">No skipping</option></select></div>
+    <label class="range" data-pro>Skip rate <output id="v-chaos"></output><input id="chaos" type="range" min="0" max="80" step="5"></label>
+    <label class="range" data-pro>Always anchor at <output id="v-alwaysBoldFrom"></output><input id="alwaysBoldFrom" type="range" min="3" max="20" step="1"></label>
+    <div class="field" data-pro><span>Emphasis</span><select id="emphasis"><option value="weight">Weight only</option><option value="color">Weight + color</option></select></div>
+    <div class="field" data-pro><span>Accent color</span><input id="accent" type="color"></div>
+    <label class="range" data-pro>Tail opacity <output id="v-tailOpacity"></output><input id="tailOpacity" type="range" min="0.85" max="1" step="0.01"></label>
+    <label class="check" data-pro><input id="dimTail" type="checkbox">Dim the rest of each word</label>
+    <label class="check" data-pro><input id="skipStopwords" type="checkbox">Skip filler words</label>
+    <label class="check" data-pro><input id="anchorSentenceStart" type="checkbox">Anchor sentence starts</label>
+    <label class="check" data-pro><input id="skipHeadings" type="checkbox">Leave headings alone</label>
+    <label class="check" data-pro><input id="articleOnly" type="checkbox">Article text only</label>
+    <label class="range" data-pro>Page dimming <output id="v-lfDim"></output><input id="lfDim" type="range" min="0.4" max="0.95" step="0.01"></label>
+    <div class="field" data-pro><span>Focus band</span><select id="lfBand"><option value="underline">Underline</option><option value="tint">Tint</option><option value="none">None</option></select></div>
+    <label class="check" data-pro><input id="lfFollow" type="checkbox">Glow on the moving guide</label>
+  </div>
+</details>
+<section class="licence">
+  <p class="eyebrow">$5 once. No subscription.</p>
+  <div id="lic-form"><input id="lic-key" type="text" placeholder="Paste supporter license key" autocomplete="off" spellcheck="false"><div class="row"><button id="lic-activate">UNLOCK</button><a class="buy" id="lic-buy" href="#" target="_blank" rel="noopener">BUY</a></div></div>
+  <div id="lic-active" hidden><strong>SUPPORTER ACTIVE</strong><button class="secondary" id="lic-remove" style="float:right">REMOVE</button></div>
+  <p class="status" id="lic-status"></p>
+</section>
+<footer><button id="reset">RESET</button><span>⌃⇧B SITE · ⌃⇧L LINE</span></footer>
+<script src="popup.js"></script>
+</body>
+</html>
