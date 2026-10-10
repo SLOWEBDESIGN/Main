@@ -72,7 +72,7 @@
 }
 
 html.atelier-document {
-  scroll-behavior: auto;
+  scroll-behavior: smooth;
   background: #222832;
 }
 .atelier {

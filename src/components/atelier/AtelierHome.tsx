@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import Script from "next/script";
 import DesignConstellation from "./DesignConstellation";
 import ConstellationField from "./ConstellationField";
 import {
@@ -128,7 +129,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
       document.documentElement.classList.remove("atelier-document");
     };
   }, [preview, previewTheme]);
-  // Native scrolling only: the smooth-scroll glide read as lag.
+  // Native wheel/touch scrolling; anchor links use the browser's smooth scroll.
   useEffect(() => {
     const element = page.current;
     if (!element) return;
@@ -171,9 +172,15 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
       className={`atelier ${paused || reduced ? "atelier-motion-paused" : ""}`}
       data-theme={light ? "light" : "dark"}
       data-hero-phase={heroPhase}
+      data-scroll-discovery={preview ? undefined : "waiting"}
+      data-scroll-delay={preview ? undefined : "7000"}
+      data-scroll-peek={preview ? undefined : ""}
       {...(preview ? viewOnly : {})}
       aria-hidden={preview || undefined}
     >
+      {!preview && <Script src="/scroll-discovery.js" strategy="afterInteractive" onReady={() => {
+        (window as Window & { initializeScrollDiscovery?: () => void }).initializeScrollDiscovery?.();
+      }} />}
       <noscript>
         <style>{`.atelier-nav,.atelier-hero-title,.atelier-scene-coordinate,.atelier-sculpture-control,.atelier-hero-bottom,.atelier-content,.atelier-footer{visibility:visible!important;opacity:1!important;transform:none!important}`}</style>
       </noscript>
@@ -332,12 +339,18 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
               <br />
               <span>Everything that connects them.</span>
             </p>
-            <a href="#work" className="atelier-explore">
+            <a href="#work" className="atelier-explore" data-scroll-cue>
               <span>
                 <strong>Scroll to the work</strong>
                 <small>Websites, reels &amp; useful tools</small>
               </span>
               <ArrowDown size={22} aria-hidden="true" />
+              <svg className="atelier-scroll-trail" viewBox="0 0 180 48" aria-hidden="true">
+                <path d="M2 8H42V18H82V28H122V38H172" />
+                <circle cx="42" cy="18" r="2.5" /><circle cx="82" cy="28" r="2.5" />
+                <circle cx="122" cy="38" r="2.5" />
+                <path className="atelier-scroll-trail-tip" d="m164 32 8 6-8 6" />
+              </svg>
             </a>
             {/* On phones the way in takes the place of the scroll prompt. */}
             <StepLink href="#queue" className="atelier-hero-cta atelier-mobile-only">
