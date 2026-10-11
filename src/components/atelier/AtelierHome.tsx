@@ -27,7 +27,8 @@ import ServiceStack from "./ServiceStack";
 import NextSlot from "./NextSlot";
 import RevisionStack from "./RevisionStack";
 import HowItWorksButton from "./HowItWorksButton";
-import { StepLink } from "./Step";
+import { StepButton, StepLink } from "./Step";
+import VisitCodeDialog from "./VisitCodeDialog";
 
 const Staircase = dynamic(() => import("./IcyStaircase"), {
   ssr: false,
@@ -75,6 +76,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
   const [paused, setPaused] = useState(preview);
   const [runner, setRunner] = useState<HeroStatus>("arriving");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [visitOpen, setVisitOpen] = useState(false);
   const [heroPhase, setHeroPhase] = useState<HeroPhase>(preview ? "ready" : "waiting");
   const [skipIntro, setSkipIntro] = useState(preview);
   const [heroUnavailable, setHeroUnavailable] = useState(false);
@@ -129,7 +131,39 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
       document.documentElement.classList.remove("atelier-document");
     };
   }, [preview, previewTheme]);
-  // Native wheel/touch scrolling; anchor links use the browser's smooth scroll.
+  // Handle section links before the browser can jump to a hash. This covers
+  // the header, footer, buttons, and links inside the page with one handler.
+  useEffect(() => {
+    if (preview) return;
+    const element = page.current;
+    if (!element) return;
+    const navigate = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = (event.target as Element).closest<HTMLAnchorElement>('a[href]');
+      if (!link || link.target === '_blank') return;
+      const url = new URL(link.href, window.location.href);
+      if (url.origin !== window.location.origin || url.pathname !== window.location.pathname || url.search !== window.location.search || !url.hash) return;
+      const target = document.getElementById(decodeURIComponent(url.hash.slice(1)));
+      if (!target) return;
+      event.preventDefault();
+      setSkipIntro(true);
+      setHeroPhase('ready');
+      setMenuOpen(false);
+      history.pushState(null, '', url.hash);
+      target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    };
+    element.addEventListener('click', navigate);
+    return () => element.removeEventListener('click', navigate);
+  }, [preview]);
+
+  useEffect(() => {
+    if (preview) return;
+    const switchTheme = (event: Event) => { event.preventDefault(); toggleTheme(); };
+    window.addEventListener('studio:toggle-theme', switchTheme);
+    return () => window.removeEventListener('studio:toggle-theme', switchTheme);
+  });
+
+  // Native wheel/touch scrolling is unaffected by section navigation.
   useEffect(() => {
     const element = page.current;
     if (!element) return;
@@ -218,6 +252,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
           <a href="#capabilities" onClick={closeMenu}>
             Capabilities
           </a>
+          <a href="#reels" onClick={closeMenu}>Reels</a>
           <a href="#about" onClick={closeMenu}>
             About
           </a>
@@ -225,10 +260,14 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
             Approach
           </a>
           <a href="#queue" className="atelier-nav-queue" onClick={closeMenu}>
-            The project queue <ArrowUpRight size={14} />
+            Let&rsquo;s talk <ArrowUpRight size={14} />
           </a>
         </nav>
         <div className="atelier-nav-tools">
+          <button type="button" className="atelier-visit-button" onClick={() => setVisitOpen(true)}>
+            <span className="atelier-desktop-only">Have a visit code?</span>
+            <span className="atelier-mobile-only">Visit code</span>
+          </button>
           <a href="/machine" className="atelier-machine-link atelier-desktop-only">
             <span>Human</span>
             <span>Machine ↗</span>
@@ -376,7 +415,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
         </section>
         <div className="atelier-architecture" aria-hidden="true" />
         <div className="atelier-content">
-          <WorkGrid paused={paused} reduced={reduced} />
+          <WorkGrid paused={paused} reduced={reduced} onVisitCode={preview ? undefined : () => setVisitOpen(true)} />
           <div className="atelier-ribbon-band atelier-desktop-only">
             <ToolRibbon />
             <p className="atelier-footnote">
@@ -438,6 +477,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
                 </a>
                 .
               </p>
+              {!preview && <StepButton quiet onClick={() => setVisitOpen(true)}>Have a visit code?</StepButton>}
               <span className="atelier-location atelier-desktop-only">
                 {copy.city}, California
                 <br />
@@ -502,6 +542,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
             Temporary project name; domain operated by the site owner.
           </span>
           <nav aria-label="More from the studio">
+            <button type="button" className="atelier-footer-visit" onClick={() => setVisitOpen(true)}>Have a visit code?</button>
             <a href="/projects">Fun projects</a>
             <a href="/1LhYKNpDUb9vRK95brXe/index.html">All site statuses</a>
             <a href="/legacy">Original site</a>
@@ -511,6 +552,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
         </div>
       </footer>
       {!preview && <HowItWorksButton />}
+      {!preview && visitOpen && <VisitCodeDialog onClose={() => setVisitOpen(false)} />}
     </div>
   );
 }

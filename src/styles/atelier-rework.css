@@ -2008,3 +2008,43 @@
   .atelier-scroll-trail { display: none; }
   .atelier[data-scroll-discovery] .atelier-explore > svg { animation: none; }
 }
+/* Private previews share the studio's blueprint and stair-tread language. */
+.atelier-nav { gap: 20px; }
+.atelier-nav nav { gap: clamp(10px, 1.4vw, 24px); }
+.atelier-nav-tools { gap: 12px; }
+.atelier-nav-tools > .atelier-visit-button {
+  width: auto; height: auto; border-radius: 0; padding: 10px 12px;
+  font-size: 11px; white-space: nowrap; display: block;
+}
+.atelier-footer-visit { text-align: left; }
+.atelier-code-dialog {
+  --ink: #eff3f8; --muted: #bcc6d2; --paper: #343d49; --line: #68788c; --accent: #ffc295;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--line);
+  width: min(520px, calc(100vw - 32px)); padding: 0; margin: auto; max-height: calc(100svh - 40px);
+  box-shadow: 0 24px 100px #0004; font-family: 'Instrument Sans Variable', sans-serif;
+}
+html[data-theme="light"] .atelier-code-dialog {
+  --ink: #263342; --muted: #526073; --paper: #f3f4f0; --line: #a2afbc; --accent: #a24a12;
+}
+.atelier-code-dialog::backdrop { background: #18233288; backdrop-filter: blur(8px); }
+.atelier-code-panel { padding: clamp(28px, 5vw, 44px); position: relative; }
+.atelier-code-close { position: absolute; right: 16px; top: 16px; padding: 8px; }
+.atelier-code-panel h2 { font-size: 38px; line-height: 1.04; letter-spacing: -.045em; margin: 22px 0; font-weight: 650; }
+.atelier-code-panel p { color: var(--muted); line-height: 1.55; margin: 0 0 24px; }
+.atelier-code-panel label { display: block; font-size: 13px; margin-bottom: 10px; }
+.atelier-code-panel input {
+  width: 100%; color: var(--ink); background: transparent; border: 1px solid var(--line);
+  padding: 16px; margin-bottom: 26px; font-size: 30px; letter-spacing: .28em;
+  font-variant-numeric: tabular-nums; outline-offset: 4px;
+}
+.atelier-code-panel .atelier-code-error { color: var(--accent); }
+.atelier-code-panel button:disabled { opacity: .55; cursor: wait; }
+@media (min-width: 801px) and (max-width: 1100px) {
+  .atelier-nav { padding-inline: 2%; gap: 12px; }
+  .atelier-nav nav { font-size: 11px; gap: 11px; }
+  .atelier-nav .atelier-machine-link { display: none; }
+  .atelier-brand { font-size: 26px; gap: 8px; }
+}
+@media (max-width: 800px) {
+  .atelier-nav-tools > .atelier-visit-button { padding: 8px; font-size: 10px; }
+}

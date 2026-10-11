@@ -193,7 +193,7 @@ function Overlay({ label, title, onClose, returnFocus, children }: {
 /** How many pieces of work the grid shows, folded ones included: three websites and Waylight. */
 export const WORK_SHOWN = 4;
 
-export default function WorkGrid({ paused, reduced }: { paused: boolean; reduced: boolean }) {
+export default function WorkGrid({ paused, reduced, onVisitCode }: { paused: boolean; reduced: boolean; onVisitCode?: () => void }) {
   const [opened, setOpened] = useState<Opened>(null);
   const [more, setMore] = useState(false);
   const opener = useRef<HTMLElement | null>(null);
@@ -235,6 +235,7 @@ export default function WorkGrid({ paused, reduced }: { paused: boolean; reduced
           <StepButton quiet aria-expanded={more} aria-controls="more-work" onClick={() => setMore((value) => !value)}>
             {more ? "Show less" : "See more work"}
           </StepButton>
+          {onVisitCode && <StepButton quiet onClick={onVisitCode}>Have a visit code?</StepButton>}
         </div>
         <div id="more-work" className="atelier-depth-more atelier-desktop-only" hidden={!more}>
           <div className="atelier-depth-row">

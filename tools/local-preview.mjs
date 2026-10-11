@@ -34,11 +34,14 @@ if (!existsSync(stamp) || readFileSync(stamp, 'utf8') !== hash || !existsSync(jo
 }
 if (!existsSync(join(runtime, 'node_modules'))) symlinkSync(join(cache, 'node_modules'), join(runtime, 'node_modules'), 'dir');
 function sync() {
-  for (const directory of ['src', 'public']) {
+  for (const directory of ['src', 'public', 'tools', 'private-demos']) {
     mkdirSync(join(runtime, directory), { recursive: true });
-    // Only these two dedicated cache directories are mirrored or pruned.
+    // Only these dedicated cache directories are mirrored or pruned.
     run('rsync', ['-a', '--delete', '--exclude=._*', join(source, directory) + '/', join(runtime, directory) + '/']);
   }
+  // All local previews share the same private store as Money. Never copy a
+  // stale password/counter snapshot into a second preview.
+  if (!existsSync(join(runtime, '.demo-access'))) symlinkSync(join(source, '.demo-access'), join(runtime, '.demo-access'), 'dir');
   for (const file of ['package.json', 'package-lock.json', 'next.config.js', 'next-env.d.ts', 'tsconfig.json', 'tailwind.config.js', 'tailwind.config.ts', 'postcss.config.js']) {
     if (existsSync(join(source, file))) run('rsync', ['-a', join(source, file), join(runtime, file)]);
   }
@@ -59,7 +62,7 @@ if (!building) {
     clearTimeout(debounce);
     debounce = setTimeout(() => { try { sync(); } catch (error) { console.error(error.message); } }, 350);
   };
-  for (const directory of ['src', 'public']) watchers.push(watch(join(source, directory), { recursive: true }, schedule));
+  for (const directory of ['src', 'public', 'tools', 'private-demos']) watchers.push(watch(join(source, directory), { recursive: true }, schedule));
 }
 function shutdown(signal) { clearTimeout(debounce); watchers.forEach(item => item.close()); child.kill(signal); }
 process.on('SIGINT', () => shutdown('SIGINT'));

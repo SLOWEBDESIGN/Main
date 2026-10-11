@@ -1,0 +1,6 @@
+[
+  { "slug": "outpost", "title": "Outpost Vans", "code": "779109", "project": "van-configurator", "port": 3232 },
+  { "slug": "vansmith", "title": "The Vansmith", "code": "820674", "project": "vansmith-configurator", "port": 3233 },
+  { "slug": "amano", "title": "A Mano Vans", "code": "855578", "project": "amano-configurator", "port": 3234 },
+  { "slug": "armes", "title": "ARMES Aviation", "code": "253308", "project": "armes-configurator", "port": 3231 }
+]

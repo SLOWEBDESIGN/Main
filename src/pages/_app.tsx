@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Script from 'next/script';
 import { getBrandCopy, getBrandVariant, type BrandVariant } from '@/src/lib/schema';
 import * as gtag from '@/src/lib/analytics';
 import '@/src/styles/globals.css';
@@ -8,6 +9,7 @@ import '@/src/styles/redesign.css';
 import '@/src/styles/studio.css';
 import '@/src/styles/atelier.css';
 import '@/src/styles/atelier-rework.css';
+import '@/src/styles/private-visits.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -35,5 +37,5 @@ export default function App({ Component, pageProps }: AppProps) {
     };
   }, [router.events]);
 
-  return <Component {...pageProps} {...(pageProps.variant && browserBrand ? { variant: browserBrand } : {})} />;
+  return <><Script src="/studio-shortcuts.js" strategy="afterInteractive" /><Component {...pageProps} {...(pageProps.variant && browserBrand ? { variant: browserBrand } : {})} /></>;
 }

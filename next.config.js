@@ -1,12 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   swcMinify: true,
   images: {
     formats: ['image/avif', 'image/webp'],
   },
   compress: true,
   poweredByHeader: false,
+  experimental: {
+    outputFileTracingExcludes: { '*': ['./.demo-access/**/*', './private-demos/artifacts/**/*', './private-demos/bundles/**/*'] },
+  },
+  rewrites: async () => [{
+    source: '/visit/:code/content/:token/:path*',
+    destination: '/api/visit-content/:code/:token/:path*',
+  }],
   headers: async () => {
     return [
       {

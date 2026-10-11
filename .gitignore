@@ -22,3 +22,8 @@ build/
 .atelier-evidence/
 .screenshots/
 tsconfig.tsbuildinfo
+.demo-access/
+private-demos/artifacts/
+private-demos/bundles/
+private-demos/sources/
+.next-release/
