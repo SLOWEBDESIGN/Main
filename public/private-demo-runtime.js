@@ -9,9 +9,11 @@
     if (url.origin !== location.origin || !/\/visit\/\d{6}\/content\/[a-f0-9]{64}\/.*\.glb$/.test(url.pathname) || request.method !== 'GET' || request.headers.has('Range')) {
       return nativeFetch(request);
     }
-    var head = await nativeFetch(request.url, { method: 'HEAD', credentials: 'omit', cache: 'no-store', signal: request.signal });
-    if (!head.ok) return head;
-    var length = Number(head.headers.get('Content-Length'));
+    var metadataUrl = new URL(request.url);
+    metadataUrl.searchParams.set('metadata', '1');
+    var metadata = await nativeFetch(metadataUrl.href, { credentials: 'omit', cache: 'no-store', signal: request.signal });
+    if (!metadata.ok) return metadata;
+    var length = Number((await metadata.json()).bytes);
     if (!Number.isSafeInteger(length) || length <= 0 || length > 64 * 1024 * 1024) throw new Error('Preview asset unavailable.');
     var pieces = [];
     for (var start = 0; start < length; start += 2 * 1024 * 1024) {

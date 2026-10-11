@@ -23,6 +23,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const candidates = req.headers.rsc === '1' ? [`${requested}.txt`, `${requested}/index.txt`, requested] : [requested, `${requested}.html`, `${requested}/index.html`];
     const file = await demoAssets().find(item.slug, candidates);
     if (!file) return res.status(404).end();
+    // Netlify's proxy can turn HEAD into GET or enforce the declared full model
+    // length. A tiny authenticated metadata response avoids either behavior.
+    if (req.query.metadata === '1') return res.json({ bytes: file.size });
     const extension = extname(file.name);
     res.setHeader('Content-Type', types[extension] || 'application/octet-stream');
     res.setHeader('Accept-Ranges', 'bytes');

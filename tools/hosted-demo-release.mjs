@@ -176,9 +176,9 @@ if (action === 'configure') {
           assert.equal((await fetch(prefix + '/' + jsPath)).status, 200);
           const model = paths.find(name => name.endsWith('.glb'));
           const local = await readFile(join(folder, model));
-          const head = await fetch(prefix + '/' + model, { method: 'HEAD' });
-          assert.equal(head.status, 200);
-          assert.equal(Number(head.headers.get('content-length')), local.length);
+          const metadata = await fetch(prefix + '/' + model + '?metadata=1');
+          assert.equal(metadata.status, 200);
+          assert.equal((await metadata.json()).bytes, local.length);
           const chunks = [];
           for (let start = 0; start < local.length; start += 2 * 1024 * 1024) {
             const end = Math.min(start + 2 * 1024 * 1024 - 1, local.length - 1);

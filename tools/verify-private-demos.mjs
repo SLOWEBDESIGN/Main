@@ -74,6 +74,9 @@ for (const demo of registry) {
     const head = await fetch(prefix + '/' + model, { method: 'HEAD' });
     assert.equal(head.status, 200);
     assert.equal(Number(head.headers.get('content-length')), original.length);
+    const metadata = await fetch(prefix + '/' + model + '?metadata=1');
+    assert.equal(metadata.status, 200);
+    assert.equal((await metadata.json()).bytes, original.length);
     const chunks = [];
     for (let start = 0; start < original.length; start += 2 * 1024 * 1024) {
       const end = Math.min(start + 2 * 1024 * 1024 - 1, original.length - 1);
