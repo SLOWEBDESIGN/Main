@@ -32,6 +32,8 @@ export const getBrandCopy = (variant: BrandVariant) => {
     siteName: isSanDiego ? 'San Diego Web Design' : 'SLO Web Design',
     shortName: isSanDiego ? 'SD' : 'SLO',
     contactEmail: CONTACT_EMAIL,
+    phone: isSanDiego ? null : '530-215-5987',
+    phoneHref: isSanDiego ? null : 'tel:+15302155987',
     logo: isSanDiego ? '/brand/logo-sd.svg' : '/brand/logo-slo.svg',
     favicon: '/brand/studio-mark-v2.svg',
     shareTitle: isSanDiego ? 'San Diego Web Design' : 'SLO Web Design',
@@ -48,7 +50,7 @@ export const getBrandCopy = (variant: BrandVariant) => {
     heroText: isSanDiego
       ? 'We modernize outdated websites and build beautiful, high-performing websites from scratch. Local service with personalized attention for San Diego businesses.'
       : 'We modernize outdated websites and build beautiful, high-performing websites from scratch. Local service with personalized attention.',
-    locationLine: isSanDiego ? 'San Diego, California • 530-215-5987' : 'San Luis Obispo, California • 530-215-5987',
+    locationLine: isSanDiego ? 'San Diego, California' : 'San Luis Obispo, California • 530-215-5987',
     footerCopy: isSanDiego
       ? 'Premium web design agency in San Diego, California.'
       : 'Premium web design agency in San Luis Obispo, California.',
@@ -86,7 +88,7 @@ export const generateLocalBusinessSchema = (variant: BrandVariant = 'slowebdesig
     image: `${copy.canonical}${copy.logo}`,
     description: copy.description,
     url: copy.canonical,
-    telephone: '530-215-5987',
+    ...(copy.phone ? { telephone: copy.phone } : {}),
     email: CONTACT_EMAIL,
     address: {
       '@type': 'PostalAddress',

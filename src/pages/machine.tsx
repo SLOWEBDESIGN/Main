@@ -132,8 +132,10 @@ export default function Machine({
               {copy.contactEmail}
             </a>
             <br />
-            <a href="tel:+15302155987">530-215-5987</a>
-            <br />
+            {copy.phone && copy.phoneHref && <>
+              <a href={copy.phoneHref}>{copy.phone}</a>
+              <br />
+            </>}
             {copy.city}, California
           </p>
           <a href="/#queue">Project inquiry form →</a>

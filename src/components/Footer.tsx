@@ -77,13 +77,13 @@ export const Footer: React.FC<{ variant?: BrandVariant }> = ({ variant = 'sloweb
           <div>
             <h4 className="font-semibold text-secondary-50 mb-4">Contact</h4>
             <div className="space-y-3 text-sm">
-              <a
-                href="tel:+15302155987"
+              {copy.phone && copy.phoneHref && <a
+                href={copy.phoneHref}
                 className="flex items-center gap-2 text-secondary-200 hover:text-secondary-100 transition-colors"
               >
                 <Phone size={16} />
-                530-215-5987
-              </a>
+                {copy.phone}
+              </a>}
               <a
                 href="mailto:contact@slowebdesign.com"
                 className="flex items-center gap-2 text-secondary-200 hover:text-secondary-100 transition-colors"
