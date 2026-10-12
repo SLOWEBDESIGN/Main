@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { process } from "@/src/data/atelier";
-import { getBrandCopy, type BrandVariant } from "@/src/lib/schema";
+import { getBrandCopy, getBrandContactCopy, type BrandVariant } from "@/src/lib/schema";
 import { ToolRibbon } from "@/src/components/studio/ToolRibbon";
 import type { HeroStatus } from "./IcyStaircase";
 import type { HeroPhase } from "./heroScene";
@@ -73,6 +73,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
   previewTheme?: "light" | "dark";
 }) {
   const copy = getBrandCopy(variant);
+  const contactCopy = getBrandContactCopy(variant);
   const showSloSections = variant === "slowebdesign";
   const [light, setLight] = useState(preview && previewTheme === "light");
   const [paused, setPaused] = useState(preview);
@@ -462,7 +463,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
               </p>
               <div className="atelier-inquiry-next">
                 <h3>What happens next?</h3>
-                <p>Ben reads your note and replies by email. We talk through
+                <p>{contactCopy.next} We talk through
                   the direction, scope, and timing before anything is booked.</p>
                 <span>No finished brief needed. No call to book first.</span>
               </div>
@@ -480,7 +481,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
                 Working wherever the right project takes us.
               </span>
             </div>
-            <ApplicationForm />
+            <ApplicationForm variant={variant} />
           </section>
           {showSloSections && <AboutSection city={copy.city} />}
           <ServiceStack />

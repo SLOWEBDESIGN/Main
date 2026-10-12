@@ -33,7 +33,10 @@ export const getBrandCopy = (variant: BrandVariant) => {
     shortName: isSanDiego ? 'SD' : 'SLO',
     contactEmail: CONTACT_EMAIL,
     logo: isSanDiego ? '/brand/logo-sd.svg' : '/brand/logo-slo.svg',
-    favicon: isSanDiego ? '/brand/favicon-sd.svg' : '/favicon-animated.svg',
+    favicon: '/brand/studio-mark-v2.svg',
+    shareTitle: isSanDiego ? 'San Diego Web Design' : 'SLO Web Design',
+    shareDescription: 'Distinctive websites. Reels worth watching. We make the impossible possible.',
+    shareImage: isSanDiego ? '/brand/share-sd-v2.jpg' : '/brand/share-slo-v2.jpg',
     city: isSanDiego ? 'San Diego' : 'San Luis Obispo',
     state: 'CA',
     description: isSanDiego
@@ -54,6 +57,22 @@ export const getBrandCopy = (variant: BrandVariant) => {
     keywords: isSanDiego
       ? 'web design, San Diego, website design, website modernization, web development, local business'
       : 'web design, San Luis Obispo, SLO, website design, website modernization, web development, local business',
+  };
+};
+
+// Keep personal SLO copy intact; SD speaks as the studio on every device and state.
+export const getBrandContactCopy = (variant: BrandVariant = 'slowebdesign') => {
+  const sd = variant === 'sdwebdesign';
+  return {
+    next: sd ? 'We read your note and reply by email.' : 'Ben reads your note and replies by email.',
+    emailPlaceholder: sd ? 'Where we can reply' : 'Where Ben can reply',
+    emailError: sd ? 'Check your email address so we can reply.' : 'Check your email address so Ben can reply.',
+    sentPrefix: sd ? 'We will read your note and reply to' : 'Ben will read your note and reply to',
+    note: sd ? 'Your note goes directly to our studio. No commitment, no payment.' : 'Your note goes directly to Ben. No commitment, no payment.',
+    expired: 'Your one-hour visit has ended. You can use your access code again if you have a visit left. Otherwise, ' + (sd ? 'email us for a new code.' : 'email Ben for a new code.'),
+    visitCta: sd ? 'Talk to us' : 'Talk to Ben',
+    accessIntro: 'A private, independent concept you can explore. Enter the four-digit access code ' + (sd ? 'we sent you.' : 'Ben sent you.'),
+    requestCode: sd ? 'Need an access code? Email us.' : 'Need an access code? Email Ben.',
   };
 };
 

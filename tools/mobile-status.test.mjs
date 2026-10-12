@@ -7,6 +7,45 @@ import ts from 'typescript';
 const read = file => fs.readFileSync(file, 'utf8');
 const directory = JSON.parse(read('src/data/status-directory.json'));
 
+function branding() {
+  const exports = {};
+  vm.runInNewContext(ts.transpileModule(read('src/lib/schema.ts'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+  }).outputText, { exports, process: { env: { NODE_ENV: 'production' } } });
+  return exports;
+}
+
+test('SD contact copy has no personal names in any form or private-visit state', () => {
+  const { getBrandContactCopy } = branding();
+  const sd = getBrandContactCopy('sdwebdesign');
+  for (const value of Object.values(sd)) assert.doesNotMatch(value, /\bBen\b|Benyamin/i);
+  assert.equal(sd.emailPlaceholder, 'Where we can reply');
+  assert.equal(sd.note, 'Your note goes directly to our studio. No commitment, no payment.');
+  assert.equal(sd.visitCta, 'Talk to us');
+  assert.equal(getBrandContactCopy('slowebdesign').emailPlaceholder, 'Where Ben can reply');
+  assert.equal(getBrandContactCopy('slowebdesign').sentPrefix, 'Ben will read your note and reply to');
+  assert.equal(getBrandContactCopy().note, 'Your note goes directly to Ben. No commitment, no payment.');
+  assert.match(read('src/components/atelier/AtelierHome.tsx'), /<ApplicationForm variant=\{variant\}/);
+});
+
+test('share cards are explicit, domain-specific, and never use a personal photo', () => {
+  const { getBrandCopy, getBrandVariant, getRequestBrandVariant } = branding();
+  for (const [host, variant] of [['sdwebdesign.tech', 'sdwebdesign'], ['slowebdesign.com', 'slowebdesign']]) {
+    assert.equal(getBrandVariant(host), variant);
+    assert.equal(getRequestBrandVariant({ 'x-forwarded-host': host }), variant);
+    const copy = getBrandCopy(variant);
+    assert.equal(copy.contactEmail, 'contact@slowebdesign.com');
+    assert.match(copy.shareImage, /^\/brand\/share-(sd|slo)-v2\.jpg$/);
+    assert.ok(fs.existsSync(`public${copy.shareImage}`));
+    assert.equal(copy.favicon, '/brand/studio-mark-v2.svg');
+    assert.doesNotMatch(copy.shareImage, /about|ben|kitchen/i);
+  }
+  const page = read('src/pages/index.tsx');
+  assert.match(page, /property="og:image" content=\{copy.canonical \+ copy.shareImage\}/);
+  assert.match(page, /name="twitter:image" content=\{copy.canonical \+ copy.shareImage\}/);
+  assert.match(read('src/pages/_document.tsx'), /studio-icon-180-v2\.png/);
+});
+
 test('SD reels contain only Lambda and PrintDash, while SLO keeps all five', () => {
   const exports = {};
   vm.runInNewContext(ts.transpileModule(read('src/data/reels.ts'), {

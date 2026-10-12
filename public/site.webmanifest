@@ -4,8 +4,8 @@
   "description": "Premium web design agency in San Luis Obispo",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fafaf7",
-  "theme_color": "#3d5e3f",
+  "background_color": "#edf1f5",
+  "theme_color": "#26323f",
   "orientation": "portrait-primary",
   "icons": [
     {

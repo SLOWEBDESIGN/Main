@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Web Design studio</title>
+  <rect width="64" height="64" rx="14" fill="#26323f"/>
+  <g stroke="#26323f" stroke-width="1" stroke-linejoin="round">
+    <path d="m10 35 11-6 11 6-11 6Z" fill="#f2f5f8"/>
+    <path d="m10 35 11 6v13l-11-6Z" fill="#a9b7c8"/>
+    <path d="m21 41 11-6v13l-11 6Z" fill="#d3dde7"/>
+    <path d="m21 25 11-6 11 6-11 6Z" fill="#f2f5f8"/>
+    <path d="m21 25 11 6v23l-11-6Z" fill="#a9b7c8"/>
+    <path d="m32 31 11-6v23l-11 6Z" fill="#d3dde7"/>
+    <path d="m32 15 11-6 11 6-11 6Z" fill="#f2f5f8"/>
+    <path d="m32 15 11 6v33l-11-6Z" fill="#a9b7c8"/>
+    <path d="m43 21 11-6v33l-11 6Z" fill="#d3dde7"/>
+  </g>
+  <circle cx="43" cy="13" r="2.5" fill="#ffc28c"/>
+</svg>

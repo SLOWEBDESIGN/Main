@@ -20,10 +20,11 @@ export default class MyDocument extends Document<{ variant: BrandVariant }> {
         <Head>
           {/* Favicon */}
           <link id="studio-favicon" rel="icon" type="image/svg+xml" href={copy.favicon} />
-          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#111111" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/brand/studio-icon-32-v2.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/brand/studio-icon-16-v2.png" />
+          <link rel="apple-touch-icon" sizes="180x180" href="/brand/studio-icon-180-v2.png" />
+          <link rel="mask-icon" href="/brand/studio-pinned-v2.svg" color="#26323f" />
           <link rel="manifest" href="/brand.webmanifest" />
-          <meta name="theme-color" content="#3d5e3f" />
 
           {/* Google Analytics */}
           {process.env.NEXT_PUBLIC_GA_ID && (

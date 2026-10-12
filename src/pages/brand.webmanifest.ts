@@ -15,10 +15,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     start_url: '/',
     scope: '/',
     display: 'standalone',
-    background_color: '#343d49',
-    theme_color: '#343d49',
+    background_color: '#edf1f5',
+    theme_color: '#26323f',
     lang: 'en-US',
-    icons: [{ src: copy.favicon, sizes: 'any', type: 'image/svg+xml', purpose: 'any' }],
+    icons: [
+      { src: copy.favicon, sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+      { src: '/brand/studio-icon-192-v2.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/brand/studio-icon-512-v2.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+    ],
   }));
   return { props: {} };
 };

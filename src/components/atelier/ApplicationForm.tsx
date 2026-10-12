@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { ArrowUpRight, Check, Loader2, Plus } from "lucide-react";
+import { getBrandContactCopy, type BrandVariant } from "@/src/lib/schema";
 
 const EMPTY = { name: "", email: "", website: "", description: "" };
 const PROJECT_TYPES = ["Website", "Reels & content", "App or extension", "Something else"];
 const FAILED = "Your note couldn't be sent. Your answers are still here. Try again, or email contact@slowebdesign.com.";
 
 /** Three essentials, optional context, and the existing studio inbox. */
-export default function ApplicationForm() {
+export default function ApplicationForm({ variant = "slowebdesign" }: { variant?: BrandVariant }) {
+  const copy = getBrandContactCopy(variant);
   const [fields, setFields] = useState(EMPTY);
   const [direction, setDirection] = useState("");
   const [botField, setBotField] = useState("");
@@ -55,7 +57,7 @@ export default function ApplicationForm() {
         setMessage(response.status === 429
           ? "Too many attempts. Give it a few minutes, then try again. Your answers are saved here."
           : body.error === "invalid_email"
-            ? "Check your email address so Ben can reply."
+            ? copy.emailError
             : FAILED);
         return;
       }
@@ -77,7 +79,7 @@ export default function ApplicationForm() {
       <div className="atelier-inquiry is-sent" role="status">
         <Check className="atelier-inquiry-check" size={28} aria-hidden="true" />
         <h3 ref={result} tabIndex={-1}>Your project is in.</h3>
-        <p>Ben will read your note and reply to <strong>{sentTo}</strong> with the next step.
+        <p>{copy.sentPrefix} <strong>{sentTo}</strong> with the next step.
           Nothing is booked or charged at this point.</p>
         <button className="atelier-inquiry-reset" type="button" onClick={() => setStatus("idle")}>Send another project</button>
       </div>
@@ -101,7 +103,7 @@ export default function ApplicationForm() {
         </div>
         <div className="atelier-inquiry-field">
           <label htmlFor="apply-email">Your email</label>
-          <input id="apply-email" name="email" type="email" inputMode="email" value={fields.email} onChange={update} required maxLength={320} autoComplete="email" placeholder="Where Ben can reply" />
+          <input id="apply-email" name="email" type="email" inputMode="email" value={fields.email} onChange={update} required maxLength={320} autoComplete="email" placeholder={copy.emailPlaceholder} />
         </div>
         <div className="atelier-inquiry-field">
           <label htmlFor="apply-description">What would you like to make happen?</label>
@@ -132,7 +134,7 @@ export default function ApplicationForm() {
           <span>{status === "sending" ? "Sending your project" : "Send my project"}</span>
           {status === "sending" ? <Loader2 className="is-spinning" size={20} aria-hidden="true" /> : <ArrowUpRight size={20} aria-hidden="true" />}
         </button>
-        <p>Your note goes directly to Ben. No commitment, no payment.</p>
+        <p>{copy.note}</p>
       </div>
     </form>
   );

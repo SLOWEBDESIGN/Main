@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { StepButton } from '@/src/components/atelier/Step';
-import { getBrandCopy, getRequestBrandVariant, type BrandVariant } from '@/src/lib/schema';
+import { getBrandCopy, getBrandContactCopy, getRequestBrandVariant, type BrandVariant } from '@/src/lib/schema';
 import registry from '../../../private-demos/registry.json';
 import { LOCAL_PREVIEW_TOKEN, localDemoPreviewEnabled } from '../../../tools/local-demo-preview.mjs';
 
@@ -22,6 +22,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ params, re
 
 export default function PrivateVisit({ code, title, variant, localVisit }: Props) {
   const brand = getBrandCopy(variant);
+  const contactCopy = getBrandContactCopy(variant);
   const [accessCode, setAccessCode] = useState('');
   const [visit, setVisit] = useState<Visit | null>(localVisit);
   const localPreview = !!localVisit && visit?.token === localVisit.token;
@@ -58,7 +59,7 @@ export default function PrivateVisit({ code, title, variant, localVisit }: Props
   }, [light]);
   useEffect(() => {
     if (!visit) return;
-    const expire = () => { setVisit(null); setError('Your one-hour visit has ended. You can use your access code again if you have a visit left. Otherwise, email Ben for a new code.'); };
+    const expire = () => { setVisit(null); setError(contactCopy.expired); };
     const timer = localPreview ? undefined : window.setTimeout(expire, Math.max(0, visit.expiresAt - Date.now()));
     const poll = window.setInterval(async () => {
       setMinutes(Math.max(0, Math.ceil((visit.expiresAt - Date.now()) / 60_000)));
@@ -68,7 +69,7 @@ export default function PrivateVisit({ code, title, variant, localVisit }: Props
       } catch { /* Server still checks every demo and asset request. */ }
     }, 15000);
     return () => { clearTimeout(timer); clearInterval(poll); };
-  }, [visit, code, localPreview]);
+  }, [visit, code, localPreview, contactCopy.expired]);
   async function unlock(event: FormEvent) {
     event.preventDefault();
     if (busy) return;
@@ -92,7 +93,7 @@ export default function PrivateVisit({ code, title, variant, localVisit }: Props
         <button type="button" aria-pressed={!phone} onClick={() => setPhone(false)}>Desktop</button>
         <button type="button" aria-pressed={phone} onClick={() => setPhone(true)}>Mobile preview</button></div>
         <span aria-live="polite">{localPreview ? 'Local design preview · password temporarily disabled' : `${minutes} min left · ${visit.remaining} return visit${visit.remaining === 1 ? '' : 's'} left`}</span>
-        <a href={`mailto:${brand.contactEmail}?subject=${encodeURIComponent(`${title} demo`)}`}>Talk to Ben</a></div>
+        <a href={`mailto:${brand.contactEmail}?subject=${encodeURIComponent(`${title} demo`)}`}>{contactCopy.visitCta}</a></div>
       <div ref={stageRef} className={`private-visit-stage ${phone ? 'is-phone' : ''}`}>
         <div className="private-visit-frame" style={phone ? { width: 393 * phoneScale, height: 852 * phoneScale } : undefined}>
           <iframe title={`${title} ${phone ? 'iPhone 15' : 'desktop'} preview`} referrerPolicy="no-referrer"
@@ -102,7 +103,7 @@ export default function PrivateVisit({ code, title, variant, localVisit }: Props
       </div>
     </> : <section className="private-visit-entry atelier-code-panel">
       <span className="atelier-overview-label">Made for {title}</span><h1>Your next website, imagined.</h1>
-      <p>A private, independent concept you can explore. Enter the four-digit access code Ben sent you.</p>
+      <p>{contactCopy.accessIntro}</p>
       {mobile && <p className="atelier-code-device-note">On your phone? Choose “Request Desktop Site” for the full preview, or continue on this screen. Your access code works either way.</p>}
       <form onSubmit={unlock}><label htmlFor="access-code">Access code</label>
         <input id="access-code" type="password" inputMode="numeric" autoComplete="off" maxLength={4} pattern="[0-9]{4}" required
@@ -110,7 +111,7 @@ export default function PrivateVisit({ code, title, variant, localVisit }: Props
         {error && <p className="atelier-code-error" role="alert">{error}</p>}
         <StepButton type="submit" disabled={busy || accessCode.length !== 4}>{busy ? 'Opening…' : 'Explore the preview'}</StepButton>
       </form><p className="private-visit-note">Two visits. An hour to explore each time. This preview stays private.</p>
-      <a href={`mailto:${brand.contactEmail}?subject=${encodeURIComponent(`${title} demo access`)}`}>Need an access code? Email Ben.</a>
+      <a href={`mailto:${brand.contactEmail}?subject=${encodeURIComponent(`${title} demo access`)}`}>{contactCopy.requestCode}</a>
     </section>}
   </div>;
 }
