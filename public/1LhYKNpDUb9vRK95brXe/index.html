@@ -3,171 +3,68 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sub-processors & status — SLOWEBDESIGN sites</title>
-<meta name="description" content="Third-party services used by SLOWEBDESIGN's sites, and where to check each one's live status." />
-<meta name="theme-color" content="#f5f4f0" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Websites & service status | SLO Web Design</title>
+<meta name="description" content="Our websites, their hosting platforms, and official service status pages." />
 <link rel="icon" type="image/svg+xml" href="/favicon-animated.svg" />
 <link rel="stylesheet" href="/1LhYKNpDUb9vRK95brXe/status.css" />
-<script src="../studio-shortcuts.js" defer></script></head>
+<script src="/studio-shortcuts.js" defer></script>
+</head>
 <body>
-
-<header class="top">
-  <div class="wrap top-row">
-    <a class="brand" href="/" aria-label="SLOWEBDESIGN home">
-      <span class="brand-text" style="display:inline-flex;flex-direction:column">
-        <span class="brand-word">SLOWEBDESIGN</span>
-      </span>
-    </a>
-    <div class="status-actions"><a class="home" href="/">slowebdesign.com →</a><button id="theme-toggle" type="button" aria-label="Switch theme">Dark mode</button></div>
-  </div>
-</header>
-
+<header class="top"><div class="wrap top-row">
+  <a class="brand" href="/" aria-label="Studio home"><span class="brand-word">SLO WEB DESIGN</span></a>
+  <div class="status-actions"><a class="home" href="/">Back to the studio</a><button id="theme-toggle" type="button">Dark mode</button></div>
+</div></header>
 <main class="wrap" style="padding-top:34px">
-  <div class="overall">
-    <div>
-      <h1 id="overall-text">Sub-processors & status, one site at a time</h1>
-      <div class="upd">Every site below, and the third parties it depends on. Each site's own official status link is included, so an issue anywhere is easy to confirm without emailing to ask.</div>
+  <div class="overall"><div>
+    <h1>Websites &amp; service status.</h1>
+    <p class="upd">Every published website in our connected Netlify and Vercel accounts, plus private concepts and projects awaiting a public URL.</p>
+  </div></div>
+  <p class="note">These links go to each provider’s official status page. They report platform incidents, not a guarantee that an individual website or form is working.</p>
+  <section class="sec" aria-labelledby="providers-title">
+    <h2 id="providers-title">Check a service</h2>
+    <div id="providers" class="provider-links">
+      <a href="https://www.netlifystatus.com/" target="_blank" rel="noopener noreferrer">Netlify status</a>
+      <a href="https://www.vercel-status.com/" target="_blank" rel="noopener noreferrer">Vercel status</a>
+      <a href="/3dprintdash/status/index.html">3D Print Dash status</a>
     </div>
-  </div>
-
-  <p class="note">3D Print Dash keeps its own separate status page at <a href="https://slowebdesign.com/3dprintdash/status/" style="color:var(--silver)">slowebdesign.com/3dprintdash/status</a> — it isn't repeated here.</p>
-
-  <div id="sites"></div>
-
-  <p class="note">Supabase is marked "shared" wherever the same underlying project backs more than one of these sites. An incident there would affect every site sharing it, not just one.</p>
-
-  <p class="note">This page is unlisted: it isn't linked from any site's navigation, isn't in a sitemap, and asks search engines not to index it. Its link is placed once in the footer of each site listed here. Questions: <a href="mailto:louwrensventures@gmail.com" style="color:var(--silver)">louwrensventures@gmail.com</a>.</p>
+  </section>
+  <div id="sites" aria-live="polite"><p class="note">Loading the website directory…</p></div>
+  <noscript><p class="note">Enable JavaScript to see the website directory. The service status links above still work.</p></noscript>
+  <p class="note">Private demo addresses and access codes aren’t published here. Questions? <a href="mailto:contact@slowebdesign.com">contact@slowebdesign.com</a>.</p>
 </main>
-
-<footer>
-  <div class="wrap fl">
-    <a href="/">slowebdesign.com</a>
-    <a href="https://slowebdesign.com/3dprintdash/status/">3D Print Dash status</a>
-  </div>
-</footer>
-
+<footer><div class="wrap fl"><a href="/">Back to the studio</a><a href="/3dprintdash/status/index.html">3D Print Dash status</a></div></footer>
 <script>
-  (function () {
-    var saved = localStorage.getItem('slo-theme');
-    var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-    var button = document.getElementById('theme-toggle');
-    button.textContent = dark ? 'Light mode' : 'Dark mode';
-    button.addEventListener('click', function () {
-      dark = !dark;
-      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-      localStorage.setItem('slo-theme', dark ? 'dark' : 'light');
-      button.textContent = dark ? 'Light mode' : 'Dark mode';
-    });
-  }());
-
-  /* ── EDIT HERE when a site's dependency list changes ─────────────────────────
-     One entry per site. Each dependency links to that vendor's own public status
-     page — this page does not attempt to track live uptime itself, it points at
-     the source of truth for each. "shared" marks infrastructure reused across
-     more than one site below (see the note in the page). */
-  var SITES = [
-    {
-      name: "SLO Web Design",
-      url: "https://slowebdesign.com",
-      deps: [
-        { name: "Supabase", desc: "Sign-in & data — shared", url: "https://status.supabase.com" },
-        { name: "Resend", desc: "Email", url: "https://resend-status.com" },
-        { name: "Netlify", desc: "Hosting", url: "https://www.netlifystatus.com" },
-        { name: "Google Analytics", desc: "Site analytics", url: "https://status.cloud.google.com" },
-        { name: "Stripe", desc: "Payment links (Essential/Growth/Priority plans)", url: "https://status.stripe.com" }
-      ]
-    },
-    {
-      name: "San Diego Web Design",
-      url: "https://sdwebdesign.tech",
-      note: "the San Diego host-aware version of this site",
-      deps: [
-        { name: "Supabase", desc: "Sign-in & data — shared", url: "https://status.supabase.com" },
-        { name: "Resend", desc: "Email", url: "https://resend-status.com" },
-        { name: "Netlify", desc: "Hosting", url: "https://www.netlifystatus.com" },
-        { name: "Google Analytics", desc: "Site analytics", url: "https://status.cloud.google.com" },
-        { name: "Stripe", desc: "Payment links (Essential/Growth/Priority plans)", url: "https://status.stripe.com" }
-      ]
-    },
-    {
-      name: "3D Print Dash",
-      url: "https://www.3dprintdash.com",
-      note: "separate product; its standalone status page remains independent",
-      deps: [
-        { name: "Supabase", desc: "Sign-in & data", url: "https://status.supabase.com" },
-        { name: "Resend", desc: "Email / notifications", url: "https://resend-status.com" },
-        { name: "Vercel", desc: "Hosting", url: "https://www.vercel-status.com" },
-        { name: "Stripe", desc: "Payments & payouts", url: "https://status.stripe.com" },
-        { name: "Shippo", desc: "Shipping labels", url: "https://status.goshippo.com" }
-      ]
-    },
-    {
-      name: "SLO Fulfillment",
-      url: "https://slocalfulfillment.com",
-      note: "a rebuild is pending cutover — this list is for the site live there today",
-      deps: [
-        { name: "Netlify", desc: "Hosting & form handling", url: "https://www.netlifystatus.com" }
-      ]
-    },
-    {
-      name: "RELIA NeuroIntegration",
-      url: null,
-      note: "domain not confirmed",
-      deps: [
-        { name: "Formspree", desc: "Contact form", url: "https://www.formspreestatus.com" },
-        { name: "Google Fonts", desc: "Web fonts", url: "https://status.cloud.google.com" }
-      ]
-    },
-    {
-      name: "Sensorium Therapy",
-      url: null,
-      note: "domain not live — not pointed at the deployed site",
-      deps: [
-        { name: "Formspree", desc: "Contact form", url: "https://www.formspreestatus.com" },
-        { name: "Google Fonts", desc: "Web fonts", url: "https://status.cloud.google.com" }
-      ]
-    },
-    {
-      name: "Avila Cake Design",
-      url: null,
-      note: "not live yet",
-      deps: [
-        { name: "Supabase", desc: "Sign-in & data (its own project)", url: "https://status.supabase.com" },
-        { name: "Stripe", desc: "Checkout", url: "https://status.stripe.com" },
-        { name: "Resend", desc: "Email", url: "https://resend-status.com" },
-        { name: "Vercel", desc: "Hosting", url: "https://www.vercel-status.com" }
-      ]
-    },
-    {
-      name: "3D Print Lessons",
-      url: null,
-      note: "not live yet",
-      deps: [
-        { name: "Supabase", desc: "Sign-in & data — shared with 3D Print Dash", url: "https://status.supabase.com" },
-        { name: "Resend", desc: "Email", url: "https://resend-status.com" },
-        { name: "Vercel", desc: "Hosting", url: "https://www.vercel-status.com" }
-      ]
-    }
-  ];
-
-  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
-
-  function renderSites() {
-    document.getElementById("sites").innerHTML = SITES.map(function(site){
-      var heading = site.url
-        ? '<a href="' + site.url + '" style="color:inherit;text-decoration:none">' + esc(site.name) + '</a>'
-        : esc(site.name);
-      if (site.note) heading += ' <span class="desc" style="font-weight:400">(' + esc(site.note) + ')</span>';
-      var rows = site.deps.map(function(d){
-        return '<div class="row"><span class="dot grey"></span>' +
-          '<div class="mid"><div class="name">' + esc(d.name) + '</div><div class="desc">' + esc(d.desc) + '</div></div>' +
-          '<a class="ext" href="' + d.url + '" target="_blank" rel="noopener">status ↗</a></div>';
-      }).join("");
-      return '<section class="sec"><h2>' + heading + '</h2><div class="list">' + rows + '</div></section>';
-    }).join("");
+(function () {
+  var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  try { var saved = localStorage.getItem('slo-theme'); if (saved) dark = saved === 'dark'; } catch (_) {}
+  var button = document.getElementById('theme-toggle');
+  function theme() { document.documentElement.dataset.theme = dark ? 'dark' : 'light'; button.textContent = dark ? 'Light mode' : 'Dark mode'; }
+  theme();
+  button.addEventListener('click', function () { dark = !dark; theme(); try { localStorage.setItem('slo-theme', dark ? 'dark' : 'light'); } catch (_) {} });
+  if (location.hostname.replace(/^www\./, '') === 'sdwebdesign.tech') {
+    document.querySelector('.brand-word').textContent = 'SAN DIEGO WEB DESIGN';
+    document.title = 'Websites & service status | San Diego Web Design';
   }
-  renderSites();
+  function esc(s) { return String(s).replace(/[&<>"']/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function link(url, label) { return '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(label) + '</a>'; }
+  fetch('/api/site-directory').then(function(response) {
+    if (!response.ok) throw new Error('Directory unavailable');
+    return response.json();
+  }).then(function(directory) {
+    var services = {};
+    directory.services.forEach(function(service) { services[service.id] = service; });
+    document.getElementById('providers').innerHTML = directory.services.map(function(service) { return link(service.url, service.name + ' status'); }).join('') + link('/3dprintdash/status/index.html', '3D Print Dash status');
+    document.getElementById('sites').innerHTML = directory.sites.map(function(site) {
+      var title = site.url ? link(site.url, site.name) : esc(site.name);
+      var rows = site.services.map(function(id) {
+        var service = services[id];
+        return '<div class="row"><span class="dot grey" aria-hidden="true"></span><div class="mid"><div class="name">' + esc(service.name) + '</div><div class="desc">Official service status</div></div>' + link(service.url, 'View status') + '</div>';
+      }).join('');
+      return '<section class="sec"><h2>' + title + '</h2><p class="note">' + esc(site.note) + '</p>' + (site.statusUrl ? '<p>' + link(site.statusUrl, 'Dedicated status page') + '</p>' : '') + '<div class="list">' + rows + '</div></section>';
+    }).join('');
+  }).catch(function() { document.getElementById('sites').innerHTML = '<p class="note" role="alert">The directory couldn’t load. The Netlify, Vercel, and 3D Print Dash status links above are still available. Please try again later.</p>'; });
+}());
 </script>
 </body>
 </html>

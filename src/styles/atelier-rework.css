@@ -1472,7 +1472,7 @@
     padding: 20px 20px 22px;
   }
   .atelier .atelier-scene {
-    pointer-events: none;
+    pointer-events: auto;
   }
   .atelier .atelier-stack-body,
   .atelier .atelier-stack-panel .atelier-service-art {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play, VolumeX } from "lucide-react";
-import { reels } from "@/src/data/reels";
+import { getReelsForBrand } from "@/src/data/reels";
+import type { BrandVariant } from "@/src/lib/schema";
 import { StepLink } from "./Step";
 
 // The stack shows three cards; any more wait out of sight behind the last one.
@@ -9,10 +10,13 @@ const STACK_SHOWN = 3;
 export default function ReelGallery({
   paused,
   reduced,
+  variant = "slowebdesign",
 }: {
   paused: boolean;
   reduced: boolean;
+  variant?: BrandVariant;
 }) {
+  const reels = getReelsForBrand(variant);
   const [active, setActive] = useState(0);
   const [manualPlaying, setManualPlaying] = useState<boolean | null>(null);
   const [visible, setVisible] = useState(false);

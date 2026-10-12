@@ -29,6 +29,7 @@ import RevisionStack from "./RevisionStack";
 import HowItWorksButton from "./HowItWorksButton";
 import { StepButton, StepLink } from "./Step";
 import VisitCodeDialog from "./VisitCodeDialog";
+import StatusLinks from "./StatusLinks";
 
 const Staircase = dynamic(() => import("./IcyStaircase"), {
   ssr: false,
@@ -72,6 +73,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
   previewTheme?: "light" | "dark";
 }) {
   const copy = getBrandCopy(variant);
+  const showSloSections = variant === "slowebdesign";
   const [light, setLight] = useState(preview && previewTheme === "light");
   const [paused, setPaused] = useState(preview);
   const [runner, setRunner] = useState<HeroStatus>("arriving");
@@ -219,11 +221,11 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
         <style>{`.atelier-nav,.atelier-hero-title,.atelier-scene-coordinate,.atelier-sculpture-control,.atelier-hero-bottom,.atelier-content,.atelier-footer{visibility:visible!important;opacity:1!important;transform:none!important}`}</style>
       </noscript>
       <a
-        href="#work"
+        href={showSloSections ? "#work" : "#capabilities"}
         className="atelier-skip"
         onClick={() => setSkipIntro(true)}
       >
-        Skip to the work
+        {showSloSections ? "Skip to the work" : "Skip to services"}
       </a>
       <header className="atelier-nav">
         <a
@@ -246,16 +248,14 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
           aria-label="Main navigation"
           className={menuOpen ? "is-open" : ""}
         >
-          <a href="#work" onClick={closeMenu}>
+          {showSloSections && <a href="#work" onClick={closeMenu}>
             Work <span>{workCount}</span>
-          </a>
+          </a>}
           <a href="#capabilities" onClick={closeMenu}>
             Capabilities
           </a>
           <a href="#reels" onClick={closeMenu}>Reels</a>
-          <a href="#about" onClick={closeMenu}>
-            About
-          </a>
+          {showSloSections && <a href="#about" onClick={closeMenu}>About</a>}
           <a href="#approach" onClick={closeMenu}>
             Approach
           </a>
@@ -264,7 +264,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
           </a>
         </nav>
         <div className="atelier-nav-tools">
-          <button type="button" className="atelier-visit-button" onClick={() => setVisitOpen(true)}>
+          <button type="button" className="atelier-visit-button" aria-label="Have a visit code?" onClick={() => setVisitOpen(true)}>
             <span className="atelier-desktop-only">Have a visit code?</span>
             <span className="atelier-mobile-only">Visit code</span>
           </button>
@@ -304,7 +304,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
               reduced={reduced}
               light={light}
               skipIntro={skipIntro}
-              interactive={heroInteractive}
+              interactive={!preview}
               onState={setRunner}
               onPhase={setHeroPhase}
               onUnavailable={() => setHeroUnavailable(true)}
@@ -323,9 +323,9 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
               <StepLink large href="#queue" className="atelier-hero-cta">
                 Let&rsquo;s talk
               </StepLink>
-              <StepLink large quiet href="#work" className="atelier-hero-cta">
+              {showSloSections && <StepLink large quiet href="#work" className="atelier-hero-cta">
                 See our work
-              </StepLink>
+              </StepLink>}
             </div>
           </div>
           <div className="atelier-scene-coordinate" aria-hidden="true">
@@ -340,8 +340,6 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
               <span aria-hidden="true">+</span>
               {heroUnavailable || reduced || paused ? (
                 "Still perspective"
-              ) : !heroInteractive ? (
-                "Watch the impossible unfold."
               ) : (
                 <>
                   <span className="atelier-hint-hover">
@@ -357,8 +355,6 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
                   ? "A DIFFERENT PERSPECTIVE"
                   : paused
                   ? "RESUME MOTION BELOW TO TRY IT"
-                  : !heroInteractive
-                  ? "AN ENDLESS CLIMB."
                   : "GO ON. IT PUTS ITSELF BACK TOGETHER."}
               </small>
             </p>
@@ -378,10 +374,10 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
               <br />
               <span>Everything that connects them.</span>
             </p>
-            <a href="#work" className="atelier-explore" data-scroll-cue>
+            <a href={showSloSections ? "#work" : "#capabilities"} className="atelier-explore" data-scroll-cue>
               <span>
-                <strong>Scroll to the work</strong>
-                <small>Websites, reels &amp; useful tools</small>
+                <strong>{showSloSections ? "Scroll to the work" : "Explore our services"}</strong>
+                <small>{showSloSections ? "Websites, reels & useful tools" : "See what we can make for you"}</small>
               </span>
               <ArrowDown size={22} aria-hidden="true" />
               <svg className="atelier-scroll-trail" viewBox="0 0 180 48" aria-hidden="true">
@@ -415,7 +411,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
         </section>
         <div className="atelier-architecture" aria-hidden="true" />
         <div className="atelier-content">
-          <WorkGrid paused={paused} reduced={reduced} onVisitCode={preview ? undefined : () => setVisitOpen(true)} />
+          {showSloSections && <WorkGrid paused={paused} reduced={reduced} onVisitCode={preview ? undefined : () => setVisitOpen(true)} />}
           <div className="atelier-ribbon-band atelier-desktop-only">
             <ToolRibbon />
             <p className="atelier-footnote">
@@ -451,7 +447,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
             </div>
           </section>
           <NextSlot />
-          <ReelGallery paused={paused} reduced={reduced} />
+          <ReelGallery key={variant} paused={paused} reduced={reduced} variant={variant} />
           <ContentDepth />
           <section id="queue" className="atelier-queue atelier-section">
             <div className="atelier-queue-intro">
@@ -486,7 +482,7 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
             </div>
             <ApplicationForm />
           </section>
-          <AboutSection city={copy.city} />
+          {showSloSections && <AboutSection city={copy.city} />}
           <ServiceStack />
           <section
             className="atelier-manifesto-section atelier-section atelier-desktop-only"
@@ -544,12 +540,13 @@ export default function AtelierHome({ variant, preview = false, previewTheme = "
           <nav aria-label="More from the studio">
             <button type="button" className="atelier-footer-visit" onClick={() => setVisitOpen(true)}>Have a visit code?</button>
             <a href="/projects">Fun projects</a>
-            <a href="/1LhYKNpDUb9vRK95brXe/index.html">All site statuses</a>
+            {showSloSections && <a href="/1LhYKNpDUb9vRK95brXe/index.html">All site statuses</a>}
             <a href="/legacy">Original site</a>
             <a href="/machine" className="atelier-desktop-only">For machines ↗</a>
             <a href="#top">Back to the top ↑</a>
           </nav>
         </div>
+        {showSloSections && <StatusLinks />}
       </footer>
       {!preview && <HowItWorksButton />}
       {!preview && visitOpen && <VisitCodeDialog onClose={() => setVisitOpen(false)} />}

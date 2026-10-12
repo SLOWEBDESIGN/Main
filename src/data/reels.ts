@@ -2,6 +2,7 @@
 // The first reel is the featured one: it loads first in the reel gallery.
 // Files are web encodes (720x1280 H.264, fast start) of the 1080x1920 masters.
 // Every preview is silent: the encodes carry no audio track at all.
+import type { BrandVariant } from '@/src/lib/schema';
 
 export interface Reel {
   id: string;
@@ -69,3 +70,7 @@ export const reels: Reel[] = [
 ];
 
 export const getReel = (id: string): Reel => reels.find((reel) => reel.id === id) ?? reels[0];
+
+const sdReelIds = new Set(['lambda-casino-night', 'printdash-operators', 'printdash-customers']);
+export const getReelsForBrand = (variant: BrandVariant): Reel[] =>
+  variant === 'sdwebdesign' ? reels.filter(reel => sdReelIds.has(reel.id)) : reels;

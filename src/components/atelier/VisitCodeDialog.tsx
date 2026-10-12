@@ -41,11 +41,9 @@ export default function VisitCodeDialog({ onClose }: { onClose: () => void }) {
     <div className="atelier-code-panel">
       <button className="atelier-code-close" type="button" onClick={onClose} aria-label="Close visit code dialog"><X size={20} /></button>
       <span className="atelier-overview-label">Your private preview</span>
-      <h2 id="visit-code-title">{mobile ? 'A bigger screen for the first look.' : 'Have a visit code?'}</h2>
-      {mobile ? <>
-        <p>Your demo includes desktop and mobile layouts. Open this site on a desktop or laptop to explore both, using the visit code in your email.</p>
-        <StepButton onClick={onClose}>Got it</StepButton>
-      </> : <form onSubmit={submit}>
+      <h2 id="visit-code-title">Have a visit code?</h2>
+      {mobile && <p className="atelier-code-device-note">For the full preview on your phone, choose “Request Desktop Site” in your browser. You can still continue here.</p>}
+      <form onSubmit={submit}>
         <p>Enter the six-digit visit code we sent you. Your personal access code comes next.</p>
         <label htmlFor="visit-code">Visit code</label>
         <input id="visit-code" autoFocus inputMode="numeric" autoComplete="off" pattern="[0-9]{6}" maxLength={6}
@@ -53,7 +51,7 @@ export default function VisitCodeDialog({ onClose }: { onClose: () => void }) {
           placeholder="000000" aria-describedby={error ? 'visit-code-error' : undefined} />
         {error && <p id="visit-code-error" className="atelier-code-error" role="alert">{error}</p>}
         <StepButton type="submit" disabled={busy || code.length !== 6}>{busy ? 'Finding your preview…' : 'Find my preview'}</StepButton>
-      </form>}
+      </form>
     </div>
   </dialog>;
 }

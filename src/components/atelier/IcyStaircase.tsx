@@ -614,15 +614,22 @@ export default function IcyStaircase(props: Props) {
       pointer.y = event.clientY - bounds.top;
     };
     const move = (event: PointerEvent) => {
-      if (!settings.current.interactive || event.pointerType === "touch") return;
+      if (!settings.current.interactive) return;
       place(event);
       pointer.active = true;
+    };
+    const release = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") pointer.active = false;
     };
     const leave = () => {
       pointer.active = false;
     };
+    renderer.domElement.addEventListener("pointerdown", move);
     renderer.domElement.addEventListener("pointermove", move);
     renderer.domElement.addEventListener("pointerleave", leave);
+    renderer.domElement.addEventListener("pointerup", release);
+    renderer.domElement.addEventListener("pointercancel", leave);
+    window.addEventListener("blur", leave);
 
     const project = new THREE.Vector3();
     const toScreen = (point: THREE.Vector3) => {
@@ -1165,8 +1172,12 @@ export default function IcyStaircase(props: Props) {
         "webglcontextlost",
         onContextLost
       );
+      renderer.domElement.removeEventListener("pointerdown", move);
       renderer.domElement.removeEventListener("pointermove", move);
       renderer.domElement.removeEventListener("pointerleave", leave);
+      renderer.domElement.removeEventListener("pointerup", release);
+      renderer.domElement.removeEventListener("pointercancel", leave);
+      window.removeEventListener("blur", leave);
       const geometries = new Set<THREE.BufferGeometry>(),
         materials = new Set<THREE.Material>();
       scene.traverse((object) => {

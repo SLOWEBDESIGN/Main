@@ -34,7 +34,7 @@ export default function PrivateVisit({ code, title, variant, localVisit }: Props
   const [minutes, setMinutes] = useState(60);
   const [light, setLight] = useState(false);
   useEffect(() => {
-    if (!phone || !visit || mobile || !stageRef.current) return;
+    if (!phone || !visit || !stageRef.current) return;
     const stage = stageRef.current;
     const resize = () => setPhoneScale(Math.max(0.1, Math.min(1,
       (stage.clientWidth - 32) / 393, (stage.clientHeight - 32) / 852)));
@@ -71,7 +71,7 @@ export default function PrivateVisit({ code, title, variant, localVisit }: Props
   }, [visit, code, localPreview]);
   async function unlock(event: FormEvent) {
     event.preventDefault();
-    if (busy || mobile) return;
+    if (busy) return;
     setBusy(true); setError('');
     try {
       const response = await fetch('/api/visits/unlock', { method: 'POST', credentials: 'omit', cache: 'no-store',
@@ -87,9 +87,7 @@ export default function PrivateVisit({ code, title, variant, localVisit }: Props
     <Head><title>{`${title} | Your private preview`}</title><meta name="robots" content="noindex,nofollow,noarchive" /></Head>
     <header className="private-visit-bar"><a href="/">{brand.siteName}</a><span>{title} · Private concept</span>
       <button type="button" onClick={() => setLight(value => !value)}>{light ? 'Dark' : 'Light'}</button></header>
-    {mobile ? <section className="private-visit-entry atelier-code-panel"><h1>A bigger screen for the first look.</h1>
-      <p>Your demo includes desktop and mobile layouts. Open this link on a desktop or laptop to explore both.</p><a href="/">Back to the studio</a></section>
-    : visit ? <>
+    {visit ? <>
       <div className="private-visit-tools"><div role="group" aria-label="Preview layout">
         <button type="button" aria-pressed={!phone} onClick={() => setPhone(false)}>Desktop</button>
         <button type="button" aria-pressed={phone} onClick={() => setPhone(true)}>Mobile preview</button></div>
@@ -105,6 +103,7 @@ export default function PrivateVisit({ code, title, variant, localVisit }: Props
     </> : <section className="private-visit-entry atelier-code-panel">
       <span className="atelier-overview-label">Made for {title}</span><h1>Your next website, imagined.</h1>
       <p>A private, independent concept you can explore. Enter the four-digit access code Ben sent you.</p>
+      {mobile && <p className="atelier-code-device-note">On your phone? Choose “Request Desktop Site” for the full preview, or continue on this screen. Your access code works either way.</p>}
       <form onSubmit={unlock}><label htmlFor="access-code">Access code</label>
         <input id="access-code" type="password" inputMode="numeric" autoComplete="off" maxLength={4} pattern="[0-9]{4}" required
           value={accessCode} onChange={event => setAccessCode(event.target.value.replace(/\D/g, ''))} placeholder="••••" />

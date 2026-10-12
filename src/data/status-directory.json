@@ -1,0 +1,31 @@
+{
+  "services": [
+    {"id":"netlify","name":"Netlify","url":"https://www.netlifystatus.com/"},
+    {"id":"vercel","name":"Vercel","url":"https://www.vercel-status.com/"},
+    {"id":"supabase","name":"Supabase","url":"https://status.supabase.com/"},
+    {"id":"resend","name":"Resend","url":"https://resend-status.com/"},
+    {"id":"stripe","name":"Stripe","url":"https://status.stripe.com/"},
+    {"id":"shippo","name":"Shippo","url":"https://status.goshippo.com/"},
+    {"id":"formspree","name":"Formspree","url":"https://www.formspreestatus.com/"},
+    {"id":"google","name":"Google Cloud","url":"https://status.cloud.google.com/"}
+  ],
+  "sites": [
+    {"name":"SLO Web Design","url":"https://slowebdesign.com","note":"Netlify","services":["netlify","supabase","resend"]},
+    {"name":"San Diego Web Design","url":"https://sdwebdesign.tech","note":"The same Netlify project, with San Diego branding","services":["netlify","supabase","resend"]},
+    {"name":"SloCal Fulfillment","url":"https://slocalfulfillment.com","note":"Netlify","services":["netlify"]},
+    {"name":"Waylight","url":"https://waylight.netlify.app","note":"Netlify","services":["netlify"]},
+    {"name":"3D Print Dash","url":"https://www.3dprintdash.com","note":"Vercel. Its dedicated status page is linked below.","statusUrl":"/3dprintdash/status/index.html","services":["vercel","supabase","resend","stripe","shippo"]},
+    {"name":"Street to Seat","url":"https://s2s-guidance.vercel.app","note":"Vercel","services":["vercel"]},
+    {"name":"Benyamin’s portfolio","url":"https://benyamin-portfolio.vercel.app","note":"Vercel","services":["vercel"]},
+    {"name":"Sunwater Swim","url":"https://sunwater-swim.vercel.app","note":"Vercel","services":["vercel"]},
+    {"name":"3D Print Lessons","url":"https://print-lessons-muse-html.vercel.app","note":"Vercel","services":["vercel"]},
+    {"name":"RELIA NeuroIntegration","url":"https://sensorium-relia.vercel.app","note":"Vercel","services":["vercel","formspree"]},
+    {"name":"Sensorium Therapy","url":"https://sensorium-therapy.vercel.app","note":"Vercel","services":["vercel","formspree"]},
+    {"name":"Redding Weed Suppression","url":"https://redding-weed-suppression.vercel.app","note":"Vercel","services":["vercel"]},
+    {"name":"Outpost Vans concept","url":null,"note":"Password-protected demo. Use your emailed visit code.","services":["netlify","supabase"]},
+    {"name":"The Vansmith concept","url":null,"note":"Password-protected demo. Use your emailed visit code.","services":["netlify","supabase"]},
+    {"name":"A Mano Vans concept","url":null,"note":"Password-protected demo. Use your emailed visit code.","services":["netlify","supabase"]},
+    {"name":"ARMES Aviation concept","url":null,"note":"Password-protected demo. Use your emailed visit code.","services":["netlify","supabase"]},
+    {"name":"Avila Cake Design","url":null,"note":"Not found in the connected hosting inventories. No public URL confirmed.","services":["vercel","supabase","stripe","resend"]}
+  ]
+}

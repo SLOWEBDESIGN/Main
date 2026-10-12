@@ -7,6 +7,12 @@
 .private-visit-entry h1 { font-size: clamp(36px, 4vw, 58px); font-weight: 650; line-height: 1.02; letter-spacing: -.05em; margin: 22px 0; }
 .private-visit-entry .private-visit-note { margin: 34px 0 12px; font-size: 13px; }
 .private-visit-entry > a { text-decoration: underline; text-underline-offset: 4px; font-size: 13px; }
+.atelier-code-device-note { padding: 12px 0 12px 16px; border-left: 2px solid var(--line); color: var(--muted); font-size: 14px; }
+.atelier-status-links { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; }
+.atelier-status-links summary { cursor: pointer; width: fit-content; }
+.atelier-status-links nav { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 18px; }
+.atelier-status-links a { text-decoration: underline; text-underline-offset: 4px; }
+.atelier-status-links a:focus-visible, .atelier-status-links summary:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
 .private-visit-tools { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 3%; font-size: 12px; border-bottom: 1px solid var(--line); }
 .private-visit-tools [role="group"] { display: flex; gap: 4px; }
 .private-visit-tools button { padding: 9px 14px; border: 1px solid var(--line); }
@@ -27,4 +33,11 @@
   .atelier .atelier-nav-tools > .atelier-visit-button { display: block; width: auto; height: auto; border-radius: 0; padding: 8px; }
   .private-visit-bar { flex-wrap: wrap; }
   .private-visit-bar > span { order: 3; flex-basis: 100%; }
+  .private-visit-tools { flex-wrap: wrap; }
+  .private-visit-entry { margin: 36px 18px; }
+  .atelier-hint-hover { display: none; }
+  .atelier .atelier-hint-touch { display: inline; }
+}
+@media (max-width: 700px) {
+  .atelier .atelier-visit-button .atelier-mobile-only { display: inline; }
 }
